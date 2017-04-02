@@ -10,6 +10,7 @@ type Config struct {
 	SiteTitle   string `yaml:"site-title"`
 	DatabaseDir string `yaml:"database-dir"`
 	TemplateDir string `yaml:"template-dir"`
+	StaticDir   string `yaml:"static-dir"`
 }
 
 func Parse(configFile string) (*Config, error) {

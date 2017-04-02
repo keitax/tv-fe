@@ -18,6 +18,7 @@ func TestParse(t *testing.T) {
 site-title: Textvid Blog
 database-dir: /usr/var/textvid/database
 template-dir: ./templates
+static-dir: ./static
 `); err != nil {
 		t.Fatal(err)
 	}
@@ -34,6 +35,7 @@ template-dir: ./templates
 		SiteTitle:   "Textvid Blog",
 		DatabaseDir: "/usr/var/textvid/database",
 		TemplateDir: "./templates",
+		StaticDir:   "./static",
 	}
 	if !reflect.DeepEqual(expected, parsed) {
 		t.Errorf("Failed to parse: expected: %v, parsed: %v", expected, parsed)
