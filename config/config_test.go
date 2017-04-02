@@ -17,6 +17,7 @@ func TestParse(t *testing.T) {
 	if _, err := f.WriteString(`
 site-title: Textvid Blog
 database-dir: /usr/var/textvid/database
+template-dir: ./templates
 `); err != nil {
 		t.Fatal(err)
 	}
@@ -32,6 +33,7 @@ database-dir: /usr/var/textvid/database
 	expected := &Config{
 		SiteTitle:   "Textvid Blog",
 		DatabaseDir: "/usr/var/textvid/database",
+		TemplateDir: "./templates",
 	}
 	if !reflect.DeepEqual(expected, parsed) {
 		t.Errorf("Failed to parse: expected: %v, parsed: %v", expected, parsed)

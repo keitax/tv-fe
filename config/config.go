@@ -9,6 +9,7 @@ import (
 type Config struct {
 	SiteTitle   string `yaml:"site-title"`
 	DatabaseDir string `yaml:"database-dir"`
+	TemplateDir string `yaml:"template-dir"`
 }
 
 func Parse(configFile string) (*Config, error) {
