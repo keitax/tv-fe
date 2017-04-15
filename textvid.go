@@ -16,7 +16,11 @@ func main() {
 		logrus.Fatal(err)
 		os.Exit(1)
 	}
-	app := application.New(c)
+	app, err := application.New(c)
+	if err != nil {
+		logrus.Fatal(err)
+		os.Exit(1)
+	}
 
 	logrus.Info("Listen on 8080.")
 	if err := http.ListenAndServe(":8080", app); err != nil {

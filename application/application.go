@@ -1,20 +1,28 @@
 package application
 
 import (
+	"database/sql"
 	"net/http"
 
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
 
 	"github.com/keitax/textvid/config"
 	"github.com/keitax/textvid/controller"
+	"github.com/keitax/textvid/dao"
 	"github.com/keitax/textvid/view"
 )
 
-func New(config *config.Config) http.Handler {
-	c := controller.New(view.New(config), config)
+func New(config *config.Config) (http.Handler, error) {
+	db, err := sql.Open("mysql", config.DataSourceName)
+	if err != nil {
+		return nil, err
+	}
+
+	c := controller.New(dao.NewPostDao(db), view.New(config), config)
 
 	router := mux.NewRouter()
 	router.HandleFunc("/", c.GetIndex)
 
-	return router
+	return router, nil
 }
