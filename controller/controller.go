@@ -4,7 +4,9 @@ import (
 	"net/http"
 
 	"github.com/Sirupsen/logrus"
+
 	"github.com/keitax/textvid/config"
+	"github.com/keitax/textvid/dao"
 	"github.com/keitax/textvid/view"
 )
 
@@ -15,12 +17,17 @@ type Controller interface {
 }
 
 type ControllerImpl struct {
-	view   view.View
-	config *config.Config
+	postDao dao.PostDao
+	view    view.View
+	config  *config.Config
 }
 
-func New(view_ view.View, config_ *config.Config) Controller {
-	return &ControllerImpl{view_, config_}
+func New(postDao dao.PostDao, view_ view.View, config_ *config.Config) Controller {
+	return &ControllerImpl{
+		postDao,
+		view_,
+		config_,
+	}
 }
 
 func (c *ControllerImpl) GetIndex(w http.ResponseWriter, req *http.Request) {
