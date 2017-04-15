@@ -2,25 +2,24 @@ package main
 
 import (
 	"net/http"
+	"os"
 
-	"github.com/gorilla/mux"
-	"github.com/labstack/gommon/log"
+	"github.com/Sirupsen/logrus"
 
+	"github.com/keitax/textvid/application"
 	"github.com/keitax/textvid/config"
-	"github.com/keitax/textvid/handler"
-	"github.com/keitax/textvid/view"
 )
 
 func main() {
-	c := &config.Config{}
-	v := view.New(c)
-	h := handler.New(v, c)
+	c, err := config.Parse("./config.yml")
+	if err != nil {
+		logrus.Fatal(err)
+		os.Exit(1)
+	}
+	app := application.New(c)
 
-	router := mux.NewRouter()
-	router.HandleFunc("/", h.Index)
-
-	log.Info("Listen on 8080.")
-	if err := http.ListenAndServe(":8080", router); err != nil {
-		log.Fatal(err)
+	logrus.Info("Listen on 8080.")
+	if err := http.ListenAndServe(":8080", app); err != nil {
+		logrus.Fatal(err)
 	}
 }
