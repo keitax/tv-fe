@@ -3,8 +3,7 @@ package controller
 import (
 	"net/http"
 
-	"github.com/labstack/gommon/log"
-
+	"github.com/Sirupsen/logrus"
 	"github.com/keitax/textvid/config"
 	"github.com/keitax/textvid/view"
 )
@@ -24,10 +23,16 @@ func New(view_ view.View, config_ *config.Config) Controller {
 	return &ControllerImpl{view_, config_}
 }
 
-func (h *ControllerImpl) GetIndex(w http.ResponseWriter, req *http.Request) {
-	if err := h.view.RenderIndex(w); err != nil {
-		if err := h.view.Render500(w); err != nil {
-			log.Error(err)
+func (c *ControllerImpl) GetIndex(w http.ResponseWriter, req *http.Request) {
+	if err := c.view.RenderIndex(w); err != nil {
+		if err := c.view.Render500(w); err != nil {
+			logrus.Error(err)
 		}
 	}
+}
+
+func (c *ControllerImpl) GetSingle(w http.ResponseWriter, req *http.Request) {
+}
+
+func (c *ControllerImpl) GetList(w http.ResponseWriter, req *http.Request) {
 }
