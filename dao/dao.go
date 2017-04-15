@@ -16,8 +16,8 @@ type PostDao interface {
 }
 
 type PostQuery struct {
-	Start   int
-	Results int
+	Start   uint64
+	Results uint64
 }
 
 type postDaoImpl struct {
@@ -42,7 +42,7 @@ func (pd *postDaoImpl) SelectOne(id int64) (*entity.Post, error) {
 
 func (pd *postDaoImpl) SelectByQuery(query *PostQuery) ([]*entity.Post, error) {
 	sb := sq.Select("id", "created_at", "updated_at", "url_name", "title", "body").
-		From("post")
+		From("post").OrderBy("id desc").Limit(query.Results).Offset(query.Start - 1)
 	rows, err := sb.RunWith(pd.db).Query()
 	if err != nil {
 		return nil, err

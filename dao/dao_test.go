@@ -47,6 +47,39 @@ func TestInsertAndSelectOne(t *testing.T) {
 	}
 }
 
+func TestSelectByQuery(t *testing.T) {
+	d := prepareDao(t)
+	defer d.(*postDaoImpl).cleanup(t)
+
+	for i := 0; i < 3; i++ {
+		if err := d.Insert(&entity.Post{
+			UrlName: "test-url-name",
+			Title: "test-title",
+			Body: "test-body",
+		}); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	ps, err := d.SelectByQuery(&PostQuery{
+		Start: 1,
+		Results: 2,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if len(ps) != 2{
+		t.Errorf("Selected post count isn't expected: expected: 2, actual: %d", len(ps))
+	}
+	if ps[0].Id != 3 {
+		t.Errorf("First post id isn't expected: expected: 3, actual: %d", ps[0].Id)
+	}
+	if ps[1].Id != 2 {
+		t.Errorf("Second post id isn't expected: expected: 2, actual: %d", ps[1].Id)
+	}
+}
+
 func prepareDao(t *testing.T) PostDao {
 	db, err := sql.Open("mysql", "keitax/keitax@tcp(localhost:3306)/test?parseTime=True")
 	if err != nil {
