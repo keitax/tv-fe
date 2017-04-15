@@ -2,8 +2,9 @@ package dao
 
 import (
 	"database/sql"
-	"errors"
 	"time"
+
+	sq "github.com/Masterminds/squirrel"
 
 	"github.com/keitax/textvid/entity"
 )
@@ -28,23 +29,21 @@ func NewPostDao(db *sql.DB) PostDao {
 }
 
 func (pd *postDaoImpl) SelectOne(id int64) (*entity.Post, error) {
-	rows, err := pd.db.Query("SELECT ID, CREATED_AT, UPDATED_AT, URL_NAME, TITLE, BODY FROM POST WHERE ID = ?", id)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	if !rows.Next() {
-		return nil, nil // not found
-	}
+	sb := sq.Select("id", "created_at", "updated_at", "url_name", "title", "body").
+		From("post").
+		Where(sq.Eq{"ID": id})
+	row := sb.RunWith(pd.db).QueryRow()
 	p := new(entity.Post)
-	if err := rows.Scan(&p.Id, &p.CreatedAt, &p.UpdatedAt, &p.UrlName, &p.Title, &p.Body); err != nil {
+	if err := row.Scan(&p.Id, &p.CreatedAt, &p.UpdatedAt, &p.UrlName, &p.Title, &p.Body); err != nil {
 		return nil, err
 	}
 	return p, nil
 }
 
 func (pd *postDaoImpl) SelectByQuery(query *PostQuery) ([]*entity.Post, error) {
-	rows, err := pd.db.Query("SELECT ID, CREATED_AT, UPDATED_AT, URL_NAME, TITLE, BODY FROM POST")
+	sb := sq.Select("id", "created_at", "updated_at", "url_name", "title", "body").
+		From("post")
+	rows, err := sb.RunWith(pd.db).Query()
 	if err != nil {
 		return nil, err
 	}
@@ -70,7 +69,10 @@ func (pd *postDaoImpl) Insert(post *entity.Post) error {
 		return pd.rollback(tx, err)
 	}
 	now := time.Now()
-	_, err = pd.db.Exec("INSERT INTO POST (ID, CREATED_AT, UPDATED_AT, URL_NAME, TITLE, BODY) VALUES (?, ?, ?, ?, ?, ?)", post.Id, now, now, post.UrlName, post.Title, post.Body)
+	ib := sq.Insert("post").
+		Columns("id", "created_at", "updated_at", "url_name", "title", "body").
+		Values(post.Id, now, now, post.UrlName, post.Title, post.Body)
+	_, err = ib.RunWith(pd.db).Exec()
 	if err != nil {
 		return pd.rollback(tx, err)
 	}
@@ -85,19 +87,14 @@ func (pd *postDaoImpl) rollback(tx *sql.Tx, err error) error {
 }
 
 func (pd *postDaoImpl) issuePostId() (int64, error) {
-	if _, err := pd.db.Exec("UPDATE LAST_ID SET POST_LAST_ID = LAST_INSERT_ID(POST_LAST_ID + 1)"); err != nil {
+	ub := sq.Update("last_id").Set("post_last_id", sq.Expr("last_insert_id(post_last_id + 1)"))
+	if _, err := ub.RunWith(pd.db).Exec(); err != nil {
 		return 0, err
 	}
-	rs, err := pd.db.Query("SELECT LAST_INSERT_ID() FROM DUAL")
-	if err != nil {
-		return 0, err
-	}
-	defer rs.Close()
-	if !rs.Next() {
-		return 0, errors.New("Failed to issue the id")
-	}
+	sb := sq.Select("last_insert_id()").From("dual")
+	row := sb.RunWith(pd.db).QueryRow()
 	var postId int64
-	if err := rs.Scan(&postId); err != nil {
+	if err := row.Scan(&postId); err != nil {
 		return 0, err
 	}
 	return postId, nil
