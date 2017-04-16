@@ -2,3 +2,4 @@ site-title: Textvid Blog
 data-source-name: ./test-db
 template-dir: ./templates
 static-dir: ./static
+site-footer: Copyright &copy; YOUR NAME

@@ -11,6 +11,7 @@ type Config struct {
 	DataSourceName string `yaml:"data-source-name"`
 	TemplateDir    string `yaml:"template-dir"`
 	StaticDir      string `yaml:"static-dir"`
+	SiteFooter     string `yaml:"site-footer"`
 }
 
 func Parse(configFile string) (*Config, error) {

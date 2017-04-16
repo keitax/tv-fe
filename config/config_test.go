@@ -19,6 +19,7 @@ site-title: Textvid Blog
 data-source-name: user/pass@tcp(address:port)/name
 template-dir: ./templates
 static-dir: ./static
+site-footer: Copyright &copy; YOUR NAME
 `); err != nil {
 		t.Fatal(err)
 	}
@@ -36,6 +37,7 @@ static-dir: ./static
 		DataSourceName: "user/pass@tcp(address:port)/name",
 		TemplateDir:    "./templates",
 		StaticDir:      "./static",
+		SiteFooter:     "Copyright &copy; YOUR NAME",
 	}
 	if !reflect.DeepEqual(expected, parsed) {
 		t.Errorf("Failed to parse: expected: %v, parsed: %v", expected, parsed)
