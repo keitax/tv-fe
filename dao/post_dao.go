@@ -20,15 +20,15 @@ type PostQuery struct {
 	Results uint64
 }
 
-type postDaoImpl struct {
+type postDao struct {
 	db *sql.DB
 }
 
 func NewPostDao(db *sql.DB) PostDao {
-	return &postDaoImpl{db}
+	return &postDao{db}
 }
 
-func (pd *postDaoImpl) SelectOne(id int64) (*entity.Post, error) {
+func (pd *postDao) SelectOne(id int64) (*entity.Post, error) {
 	sb := sq.Select("id", "created_at", "updated_at", "url_name", "title", "body").
 		From("post").
 		Where(sq.Eq{"ID": id})
@@ -40,7 +40,7 @@ func (pd *postDaoImpl) SelectOne(id int64) (*entity.Post, error) {
 	return p, nil
 }
 
-func (pd *postDaoImpl) SelectByQuery(query *PostQuery) ([]*entity.Post, error) {
+func (pd *postDao) SelectByQuery(query *PostQuery) ([]*entity.Post, error) {
 	sb := sq.Select("id", "created_at", "updated_at", "url_name", "title", "body").
 		From("post").OrderBy("id desc").Limit(query.Results).Offset(query.Start - 1)
 	rows, err := sb.RunWith(pd.db).Query()
@@ -59,7 +59,7 @@ func (pd *postDaoImpl) SelectByQuery(query *PostQuery) ([]*entity.Post, error) {
 	return ps, nil
 }
 
-func (pd *postDaoImpl) Insert(post *entity.Post) error {
+func (pd *postDao) Insert(post *entity.Post) error {
 	tx, err := pd.db.Begin()
 	if err != nil {
 		return err
@@ -79,14 +79,14 @@ func (pd *postDaoImpl) Insert(post *entity.Post) error {
 	return nil
 }
 
-func (pd *postDaoImpl) rollback(tx *sql.Tx, err error) error {
+func (pd *postDao) rollback(tx *sql.Tx, err error) error {
 	if err := tx.Rollback(); err != nil {
 		panic(err)
 	}
 	return err
 }
 
-func (pd *postDaoImpl) issuePostId() (int64, error) {
+func (pd *postDao) issuePostId() (int64, error) {
 	ub := sq.Update("last_id").Set("post_last_id", sq.Expr("last_insert_id(post_last_id + 1)"))
 	if _, err := ub.RunWith(pd.db).Exec(); err != nil {
 		return 0, err

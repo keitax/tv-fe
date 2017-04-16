@@ -12,7 +12,7 @@ import (
 
 func TestInsertAndSelectOne(t *testing.T) {
 	d := prepareDao(t)
-	defer d.(*postDaoImpl).cleanup(t)
+	defer d.(*postDao).cleanup(t)
 
 	original := &entity.Post{
 		UrlName: "test-url-name",
@@ -49,27 +49,27 @@ func TestInsertAndSelectOne(t *testing.T) {
 
 func TestSelectByQuery(t *testing.T) {
 	d := prepareDao(t)
-	defer d.(*postDaoImpl).cleanup(t)
+	defer d.(*postDao).cleanup(t)
 
 	for i := 0; i < 3; i++ {
 		if err := d.Insert(&entity.Post{
 			UrlName: "test-url-name",
-			Title: "test-title",
-			Body: "test-body",
+			Title:   "test-title",
+			Body:    "test-body",
 		}); err != nil {
 			t.Fatal(err)
 		}
 	}
 
 	ps, err := d.SelectByQuery(&PostQuery{
-		Start: 1,
+		Start:   1,
 		Results: 2,
 	})
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	if len(ps) != 2{
+	if len(ps) != 2 {
 		t.Errorf("Selected post count isn't expected: expected: 2, actual: %d", len(ps))
 	}
 	if ps[0].Id != 3 {
@@ -88,7 +88,7 @@ func prepareDao(t *testing.T) PostDao {
 	return NewPostDao(db)
 }
 
-func (pd *postDaoImpl) cleanup(t *testing.T) {
+func (pd *postDao) cleanup(t *testing.T) {
 	if _, err := pd.db.Exec("TRUNCATE TABLE POST"); err != nil {
 		t.Fatal(err)
 	}
