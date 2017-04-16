@@ -22,6 +22,7 @@ func New(config *config.Config) (http.Handler, error) {
 	pc := controller.NewPostController(dao.NewPostDao(db), view.New(config), config)
 
 	router := mux.NewRouter()
+	router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir(config.StaticDir))))
 	router.HandleFunc("/", pc.GetIndex)
 
 	return router, nil
