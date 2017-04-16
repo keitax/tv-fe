@@ -1,0 +1,72 @@
+@import "./normalize.css";
+
+* {
+    font-family: sans-serif;
+}
+
+body {
+    display: flex;
+    display: -webkit-flex;
+    flex-direction: row;
+    -webkit-flex-direction: row;
+    display: flex;
+    justify-content: center;
+    -webkit-justify-content: center;
+    color: #333;
+}
+
+@media only screen and (min-width: 40rem) {
+    .container {
+        width: 40rem;
+    }
+}
+
+@media only screen and (max-width: 40rem) {
+    .container {
+        width: 95%;
+    }
+}
+
+.site-title {
+    margin: 1rem 0 2rem;
+}
+
+.post-list {
+    padding: 0;
+}
+
+.post-list-item {
+    list-style-type: none;
+    margin-bottom: 3rem;
+}
+
+.post__title:before {
+    content: "▼ ";
+}
+
+.post__meta {
+    font-size: smaller;
+    color: #666;
+}
+
+.post h1 {
+    font-size: large;
+    color: #039;
+}
+
+.post h2 {
+    font-size: larger;
+}
+
+.post h3 {
+    font-size: medium;
+}
+
+.post__body {
+    line-height: 1.6;
+}
+
+.site-footer {
+    text-align: center;
+    font-size: smaller;
+}
