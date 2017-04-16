@@ -19,10 +19,10 @@ func New(config *config.Config) (http.Handler, error) {
 		return nil, err
 	}
 
-	c := controller.New(dao.NewPostDao(db), view.New(config), config)
+	pc := controller.NewPostController(dao.NewPostDao(db), view.New(config), config)
 
 	router := mux.NewRouter()
-	router.HandleFunc("/", c.GetIndex)
+	router.HandleFunc("/", pc.GetIndex)
 
 	return router, nil
 }
