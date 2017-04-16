@@ -1,6 +1,7 @@
 package util
 
 import (
+	"html/template"
 	"os"
 
 	"github.com/microcosm-cc/bluemonday"
@@ -18,8 +19,8 @@ func ExistsFile(path string) bool {
 	return true
 }
 
-func ParseMarkdown(text string) string {
+func ParseMarkdown(text string) template.HTML {
 	bs := blackfriday.MarkdownBasic([]byte(text))
 	bs = bluemonday.UGCPolicy().SanitizeBytes(bs)
-	return string(bs)
+	return template.HTML(string(bs))
 }
