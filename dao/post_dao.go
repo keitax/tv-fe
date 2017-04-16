@@ -69,9 +69,15 @@ func (pd *postDao) Insert(post *entity.Post) error {
 		return pd.rollback(tx, err)
 	}
 	now := time.Now()
+	if post.CreatedAt == nil {
+		post.CreatedAt = &now
+	}
+	if post.UpdatedAt == nil {
+		post.UpdatedAt = &now
+	}
 	ib := sq.Insert("post").
 		Columns("id", "created_at", "updated_at", "url_name", "title", "body").
-		Values(post.Id, now, now, post.UrlName, post.Title, post.Body)
+		Values(post.Id, post.CreatedAt, post.UpdatedAt, post.UrlName, post.Title, post.Body)
 	_, err = ib.RunWith(pd.db).Exec()
 	if err != nil {
 		return pd.rollback(tx, err)
