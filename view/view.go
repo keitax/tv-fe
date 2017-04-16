@@ -14,26 +14,26 @@ type View interface {
 	Render500(out io.Writer) error
 }
 
-type ViewImpl struct {
+type view struct {
 	config *config.Config
 }
 
 func New(config_ *config.Config) View {
-	return &ViewImpl{config_}
+	return &view{config_}
 }
 
-func (v *ViewImpl) RenderIndex(out io.Writer) error {
+func (v *view) RenderIndex(out io.Writer) error {
 	return v.renderTemplate("index.tmpl", out, map[string]interface{}{})
 }
 
-func (v *ViewImpl) Render500(out io.Writer) error {
+func (v *view) Render500(out io.Writer) error {
 	if _, err := out.Write([]byte("500 Internal Server Error")); err != nil {
 		logrus.Error(err)
 	}
 	return nil
 }
 
-func (v *ViewImpl) renderTemplate(templateName string, out io.Writer, context map[string]interface{}) error {
+func (v *view) renderTemplate(templateName string, out io.Writer, context map[string]interface{}) error {
 	t, err := template.ParseFiles(filepath.Join(v.config.TemplateDir, templateName))
 	if err != nil {
 		return err
