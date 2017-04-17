@@ -21,6 +21,7 @@ type PostQuery struct {
 	Results uint64
 	Year    int
 	Month   time.Month
+	UrlName string
 }
 
 type postDao struct {
@@ -57,6 +58,9 @@ func (pd *postDao) SelectByQuery(query *PostQuery) ([]*entity.Post, error) {
 		startDateTime := time.Date(query.Year, query.Month, 1, 0, 0, 0, 0, loc)
 		endDateTime := startDateTime.AddDate(0, 1, 0)
 		sb = sb.Where(sq.GtOrEq{"created_at": startDateTime}).Where(sq.Lt{"created_at": endDateTime})
+	}
+	if len(query.UrlName) > 0 {
+		sb = sb.Where(sq.Eq{"url_name": query.UrlName})
 	}
 	sb = sb.OrderBy("id desc").Limit(query.Results).Offset(query.Start - 1)
 

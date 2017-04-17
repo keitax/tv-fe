@@ -117,6 +117,39 @@ func TestSelectByQueryToSelectByMonth(t *testing.T) {
 	}
 }
 
+func TestSelectByQueryToSelectByUrlName(t *testing.T) {
+	d := prepareDao(t)
+	defer d.(*postDao).cleanup(t)
+
+	urlNames := []string{
+		"foo",
+		"bar",
+		"foobar",
+	}
+	for _, urlName := range urlNames {
+		if err := d.Insert(&entity.Post{
+			UrlName: urlName,
+		}); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	ps, err := d.SelectByQuery(&PostQuery{
+		Start:   1,
+		Results: 10,
+		UrlName: "bar",
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(ps) != 1 {
+		t.Fatalf("len(ps) = %d", len(ps))
+	}
+	if !reflect.DeepEqual("bar", ps[0].UrlName) {
+		t.Errorf("%q.UrlName = %q", ps[0], ps[0].UrlName)
+	}
+}
+
 func makePostSpecificCreatedAt(t *testing.T, createdAt string) *entity.Post {
 	ti, err := time.Parse(time.RFC3339, createdAt)
 	if err != nil {
