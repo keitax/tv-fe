@@ -20,6 +20,7 @@ data-source-name: user/pass@tcp(address:port)/name
 template-dir: ./templates
 static-dir: ./static
 site-footer: Copyright &copy; YOUR NAME
+locale: UTC
 `); err != nil {
 		t.Fatal(err)
 	}
@@ -38,6 +39,7 @@ site-footer: Copyright &copy; YOUR NAME
 		TemplateDir:    "./templates",
 		StaticDir:      "./static",
 		SiteFooter:     "Copyright &copy; YOUR NAME",
+		Locale:         "UTC",
 	}
 	if !reflect.DeepEqual(expected, parsed) {
 		t.Errorf("Failed to parse: expected: %v, parsed: %v", expected, parsed)
