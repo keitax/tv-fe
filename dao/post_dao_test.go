@@ -4,9 +4,11 @@ import (
 	"database/sql"
 	"reflect"
 	"testing"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 
+	"github.com/keitax/textvid/config"
 	"github.com/keitax/textvid/entity"
 )
 
@@ -47,7 +49,7 @@ func TestInsertAndSelectOne(t *testing.T) {
 	}
 }
 
-func TestSelectByQuery(t *testing.T) {
+func TestSelectByQueryToSelectByRange(t *testing.T) {
 	d := prepareDao(t)
 	defer d.(*postDao).cleanup(t)
 
@@ -80,12 +82,60 @@ func TestSelectByQuery(t *testing.T) {
 	}
 }
 
-func prepareDao(t *testing.T) PostDao {
-	db, err := sql.Open("mysql", "keitax/keitax@tcp(localhost:3306)/test?parseTime=True")
+func TestSelectByQueryToSelectByMonth(t *testing.T) {
+	d := prepareDao(t)
+	defer d.(*postDao).cleanup(t)
+
+	createdAtList := []string{
+		"2016-12-31T23:59:59+00:00",
+		"2017-01-01T00:00:00+00:00",
+		"2017-01-31T23:59:59+00:00",
+		"2017-02-01T00:00:00+00:00",
+	}
+	for _, createdAt := range createdAtList {
+		if err := d.Insert(makePostSpecificCreatedAt(t, createdAt)); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	ps, err := d.SelectByQuery(&PostQuery{
+		Start:   1,
+		Results: 10,
+		Year:    2017,
+		Month:   1,
+	})
 	if err != nil {
 		t.Fatal(err)
 	}
-	return NewPostDao(db)
+	if len(ps) != 2 {
+		t.Fatalf("len(ps) = %d", len(ps))
+	}
+	for _, p := range ps {
+		if !(p.CreatedAt.Year() == 2017 && p.CreatedAt.Month() == 1) {
+			t.Errorf("p.CreatedAt = %d/%d", p.CreatedAt.Year(), p.CreatedAt.Month())
+		}
+	}
+}
+
+func makePostSpecificCreatedAt(t *testing.T, createdAt string) *entity.Post {
+	ti, err := time.Parse(time.RFC3339, createdAt)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return &entity.Post{
+		CreatedAt: &ti,
+		Title:     "Some Title",
+	}
+}
+
+func prepareDao(t *testing.T) PostDao {
+	db, err := sql.Open("mysql", "keitax/keitax@tcp(localhost:3306)/test?parseTime=True&loc=UTC")
+	if err != nil {
+		t.Fatal(err)
+	}
+	return NewPostDao(db, &config.Config{
+		Locale: "UTC",
+	})
 }
 
 func (pd *postDao) cleanup(t *testing.T) {

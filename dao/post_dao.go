@@ -6,6 +6,7 @@ import (
 
 	sq "github.com/Masterminds/squirrel"
 
+	"github.com/keitax/textvid/config"
 	"github.com/keitax/textvid/entity"
 )
 
@@ -18,14 +19,20 @@ type PostDao interface {
 type PostQuery struct {
 	Start   uint64
 	Results uint64
+	Year    int
+	Month   time.Month
 }
 
 type postDao struct {
-	db *sql.DB
+	db     *sql.DB
+	config *config.Config
 }
 
-func NewPostDao(db *sql.DB) PostDao {
-	return &postDao{db}
+func NewPostDao(db *sql.DB, conf *config.Config) PostDao {
+	return &postDao{
+		db:     db,
+		config: conf,
+	}
 }
 
 func (pd *postDao) SelectOne(id int64) (*entity.Post, error) {
@@ -41,8 +48,18 @@ func (pd *postDao) SelectOne(id int64) (*entity.Post, error) {
 }
 
 func (pd *postDao) SelectByQuery(query *PostQuery) ([]*entity.Post, error) {
-	sb := sq.Select("id", "created_at", "updated_at", "url_name", "title", "body").
-		From("post").OrderBy("id desc").Limit(query.Results).Offset(query.Start - 1)
+	sb := sq.Select("id", "created_at", "updated_at", "url_name", "title", "body").From("post")
+	if query.Year != 0 && query.Month != 0 {
+		loc, err := time.LoadLocation(pd.config.Locale)
+		if err != nil {
+			return nil, err
+		}
+		startDateTime := time.Date(query.Year, query.Month, 1, 0, 0, 0, 0, loc)
+		endDateTime := startDateTime.AddDate(0, 1, 0)
+		sb = sb.Where(sq.GtOrEq{"created_at": startDateTime}).Where(sq.Lt{"created_at": endDateTime})
+	}
+	sb = sb.OrderBy("id desc").Limit(query.Results).Offset(query.Start - 1)
+
 	rows, err := sb.RunWith(pd.db).Query()
 	if err != nil {
 		return nil, err
