@@ -23,6 +23,7 @@ func New(config *config.Config) (http.Handler, error) {
 
 	router := mux.NewRouter()
 	router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir(config.StaticDir))))
+	router.HandleFunc("/{year:[0-9]{4}}/{month:0[1-9]|1[0-2]}/{name}.html", pc.GetSingle)
 	router.HandleFunc("/", pc.GetIndex)
 
 	return router, nil
