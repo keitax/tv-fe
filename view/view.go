@@ -14,6 +14,7 @@ import (
 
 type View interface {
 	RenderIndex(out io.Writer, posts []*entity.Post) error
+	RenderPost(out io.Writer, post *entity.Post) error
 	Render500(out io.Writer) error
 }
 
@@ -28,6 +29,12 @@ func New(config_ *config.Config) View {
 func (v *view) RenderIndex(out io.Writer, posts []*entity.Post) error {
 	return v.renderTemplate("post_list.tmpl", out, map[string]interface{}{
 		"posts": posts,
+	})
+}
+
+func (v *view) RenderPost(out io.Writer, post *entity.Post) error {
+	return v.renderTemplate("post_single.tmpl", out, map[string]interface{}{
+		"post": post,
 	})
 }
 

@@ -1,0 +1,15 @@
+{{ define "content" }}
+{{ with .post }}
+<article class="post">
+    <header class="post__header">
+        <h1 class="post__title">{{.Title}}</h1>
+        <p class="post__meta">
+            {{.CreatedAt | ShowTime}}
+        </p>
+    </header>
+    <main class="post__body">
+        {{.Body | RenderMarkdown}}
+    </main>
+</article>
+{{ end }}
+{{ end }}
