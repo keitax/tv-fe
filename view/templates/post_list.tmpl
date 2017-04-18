@@ -1,0 +1,19 @@
+{{ define "content" }}
+<ul class="post-list">
+    {{range .posts}}
+    <li class="post-list-item">
+        <article class="post">
+            <header class="post__header">
+                <h1 class="post__title">{{.Title}}</h1>
+                <p class="post__meta">
+                    {{.CreatedAt | ShowTime}}
+                </p>
+            </header>
+            <main class="post__body">
+                {{.Body | RenderMarkdown}}
+            </main>
+        </article>
+    </li>
+    {{end}}
+</ul>
+{{ end }}

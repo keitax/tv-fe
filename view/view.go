@@ -26,7 +26,7 @@ func New(config_ *config.Config) View {
 }
 
 func (v *view) RenderIndex(out io.Writer, posts []*entity.Post) error {
-	return v.renderTemplate("index.tmpl", out, map[string]interface{}{
+	return v.renderTemplate("post_list.tmpl", out, map[string]interface{}{
 		"posts": posts,
 	})
 }
@@ -39,13 +39,16 @@ func (v *view) Render500(out io.Writer) error {
 }
 
 func (v *view) renderTemplate(templateName string, out io.Writer, context map[string]interface{}) error {
-	t := template.New(templateName).Funcs(template.FuncMap{
+	ts := template.New("root").Funcs(template.FuncMap{
 		"RenderMarkdown": util.ParseMarkdown,
 		"ShowTime": func(t time.Time) string {
 			return t.Format("Jan. 02, 2006, 3:04 PM")
 		},
 	})
-	template.Must(t.ParseFiles(filepath.Join(v.config.TemplateDir, templateName)))
+	ts = template.Must(ts.ParseFiles(
+		filepath.Join(v.config.TemplateDir, "layout.tmpl"),
+		filepath.Join(v.config.TemplateDir, templateName),
+	))
 	context_ := map[string]interface{}{
 		"SiteTitle":  v.config.SiteTitle,
 		"SiteFooter": v.config.SiteFooter,
@@ -53,7 +56,7 @@ func (v *view) renderTemplate(templateName string, out io.Writer, context map[st
 	for key, value := range context {
 		context_[key] = value
 	}
-	if err := t.Execute(out, context_); err != nil {
+	if err := ts.ExecuteTemplate(out, "layout.tmpl", context_); err != nil {
 		return err
 	}
 	return nil

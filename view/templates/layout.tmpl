@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+<head>
+    <link rel="stylesheet" href="static/index.css">
+    <meta name=viewport content="width=device-width, initial-scale=1">
+    <title>{{.SiteTitle}}</title>
+</head>
+<body>
+<div class="container">
+    <header class="site-header">
+        <h1 class="site-title">{{.SiteTitle}}</h1>
+    </header>
+    <main>
+        {{template "content" .}}
+    </main>
+    <footer class="site-footer">
+        {{.SiteFooter | RenderMarkdown}}
+    </footer>
+</div>
+</body>
+</html>
