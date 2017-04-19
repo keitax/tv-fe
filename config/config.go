@@ -13,6 +13,7 @@ type Config struct {
 	StaticDir      string `yaml:"static-dir"`
 	SiteFooter     string `yaml:"site-footer"`
 	Locale         string `yaml:"locale"`
+	BaseUrl        string `yaml:"base-url"`
 }
 
 func Parse(configFile string) (*Config, error) {

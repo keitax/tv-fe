@@ -21,6 +21,7 @@ template-dir: ./templates
 static-dir: ./static
 site-footer: Copyright &copy; YOUR NAME
 locale: UTC
+base-url: http://localhost/
 `); err != nil {
 		t.Fatal(err)
 	}
@@ -40,6 +41,7 @@ locale: UTC
 		StaticDir:      "./static",
 		SiteFooter:     "Copyright &copy; YOUR NAME",
 		Locale:         "UTC",
+		BaseUrl:        "http://localhost/",
 	}
 	if !reflect.DeepEqual(expected, parsed) {
 		t.Errorf("Failed to parse: expected: %v, parsed: %v", expected, parsed)

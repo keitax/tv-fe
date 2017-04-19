@@ -4,3 +4,4 @@ template-dir: ./templates
 static-dir: ./static
 site-footer: Copyright &copy; YOUR NAME
 locale: UTC
+host: localhost
