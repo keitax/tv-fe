@@ -49,6 +49,55 @@ func TestInsertAndSelectOne(t *testing.T) {
 	}
 }
 
+func TestSelectOneWithNeighbors(t *testing.T) {
+	d := prepareDao(t)
+	defer d.(*postDao).cleanup(t)
+
+	for i := 0; i < 3; i++ {
+		if err := d.Insert(&entity.Post{
+			UrlName: "test-url-name",
+			Title:   "test-title",
+		}); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	p2, err := d.SelectOne(2)
+	if err != nil {
+		t.Fatal(err)
+	}
+	expectedNextId := int64(3)
+	if p2.NextPost.Id != expectedNextId {
+		t.Errorf("p1.NextPost.Id = %d, expected %d", p2.NextPost.Id, expectedNextId)
+	}
+	expectedPreviousId := int64(1)
+	if p2.PreviousPost.Id != expectedPreviousId {
+		t.Errorf("p1.PreviousPost.Id = %d, expected %d", p2.NextPost.Id, expectedNextId)
+	}
+
+	p1, err := d.SelectOne(1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if p1.PreviousPost != nil {
+		t.Errorf("p1.PreviousPost = %v, expected nil", p1.PreviousPost)
+	}
+	if p1.NextPost == nil {
+		t.Errorf("p1.NextPost = %v, expected non-nil", p1.NextPost)
+	}
+
+	p3, err := d.SelectOne(3)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if p3.PreviousPost == nil {
+		t.Errorf("p3.PreviousPost = %v, expected non-nil", p3.PreviousPost)
+	}
+	if p3.NextPost != nil {
+		t.Errorf("p3.NextPost = %v, expected nil", p3.NextPost)
+	}
+}
+
 func TestSelectByQueryToSelectByRange(t *testing.T) {
 	d := prepareDao(t)
 	defer d.(*postDao).cleanup(t)

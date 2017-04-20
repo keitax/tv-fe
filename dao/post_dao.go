@@ -42,13 +42,37 @@ func (pd *postDao) SelectOne(id int64) (*entity.Post, error) {
 	sb := sess.Select("id", "created_at", "updated_at", "url_name", "title", "body").
 		From("post").
 		Where("id = ?", id)
-	if _, err := sb.Load(&ps); err != nil {
+	cnt, err := sb.Load(&ps)
+	if err != nil {
 		return nil, err
 	}
-	if len(ps) <= 0 {
+	if cnt <= 0 {
 		return nil, nil
 	}
-	return ps[0], nil
+	p := ps[0]
+	var nps []*entity.Post
+	nsb := sess.Select("id", "created_at", "updated_at", "url_name", "title", "body").
+		From("post").
+		Where("id = ?", dbr.Select("min(id)").From("post").Where("id > ?", id))
+	nCnt, err := nsb.Load(&nps)
+	if err != nil {
+		return nil, err
+	}
+	if nCnt > 0 {
+		p.NextPost = nps[0]
+	}
+	var pps []*entity.Post
+	psb := sess.Select("id", "created_at", "updated_at", "url_name", "title", "body").
+		From("post").
+		Where("id = ?", dbr.Select("max(id)").From("post").Where("id < ?", id))
+	pCnt, err := psb.Load(&pps)
+	if err != nil {
+		return nil, err
+	}
+	if pCnt > 0 {
+		p.PreviousPost = pps[0]
+	}
+	return p, nil
 }
 
 func (pd *postDao) SelectByQuery(query *PostQuery) ([]*entity.Post, error) {
