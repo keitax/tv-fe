@@ -8,6 +8,17 @@ import (
 	"github.com/keitax/textvid/entity"
 )
 
+func TestLinkToTopPage( t *testing.T) {
+	urlBuilder := &UrlBuilder{config : &config.Config{
+		BaseUrl: "http://localhost/",
+	}}
+	url := urlBuilder.LinkToTopPage()
+	expected := "http://localhost/"
+	if url != expected {
+		t.Errorf("urlBuilder.LinkToTopPage() = %q, expected: %q", url, expected)
+	}
+}
+
 func TestLinkToPostPage(t *testing.T) {
 	urlBuilder := &UrlBuilder{config: &config.Config{
 		BaseUrl: "http://localhost/",
