@@ -9,7 +9,9 @@
 <body>
 <div class="container">
     <header class="site-header">
-        <h1 class="site-title">{{.SiteTitle}}</h1>
+        <h1 class="site-title">
+            <a class="site-title__link" href="{{LinkToTopPage}}">{{.SiteTitle}}</a>
+        </h1>
     </header>
     <main>
         {{template "content" .}}
