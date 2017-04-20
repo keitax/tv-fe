@@ -10,6 +10,7 @@ import (
 	"github.com/keitax/textvid/config"
 	"github.com/keitax/textvid/controller"
 	"github.com/keitax/textvid/dao"
+	"github.com/keitax/textvid/util"
 	"github.com/keitax/textvid/view"
 )
 
@@ -19,7 +20,8 @@ func New(config *config.Config) (http.Handler, error) {
 		return nil, err
 	}
 
-	pc := controller.NewPostController(dao.NewPostDao(db, config), view.New(config), config)
+	v := view.New(util.NewUrlBuilder(config), config)
+	pc := controller.NewPostController(dao.NewPostDao(db, config), v, config)
 
 	router := mux.NewRouter()
 	router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir(config.StaticDir))))

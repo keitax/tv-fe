@@ -2,7 +2,9 @@
 {{ with .post }}
 <article class="post">
     <header class="post__header">
-        <h1 class="post__title">{{.Title}}</h1>
+        <h1 class="post__title">
+            <a class="post__title-link" href="{{LinkToPostPage .}}">{{.Title}}</a>
+        </h1>
         <p class="post__meta">
             {{.CreatedAt | ShowTime}}
         </p>

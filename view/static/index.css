@@ -44,6 +44,11 @@ body {
     content: "▼ ";
 }
 
+.post__title-link {
+    text-decoration: none;
+    color: inherit;
+}
+
 .post__meta {
     font-size: smaller;
     color: #666;

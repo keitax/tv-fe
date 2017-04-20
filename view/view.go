@@ -19,11 +19,12 @@ type View interface {
 }
 
 type view struct {
-	config *config.Config
+	urlBuilder *util.UrlBuilder
+	config     *config.Config
 }
 
-func New(config_ *config.Config) View {
-	return &view{config_}
+func New(urlBuilder *util.UrlBuilder, config_ *config.Config) View {
+	return &view{urlBuilder, config_}
 }
 
 func (v *view) RenderIndex(out io.Writer, posts []*entity.Post) error {
@@ -51,6 +52,7 @@ func (v *view) renderTemplate(templateName string, out io.Writer, context map[st
 		"ShowTime": func(t time.Time) string {
 			return t.Format("Jan. 02, 2006, 3:04 PM")
 		},
+		"LinkToPostPage": v.urlBuilder.LinkToPostPage,
 	})
 	ts = template.Must(ts.ParseFiles(
 		filepath.Join(v.config.TemplateDir, "layout.tmpl"),
