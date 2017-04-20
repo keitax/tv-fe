@@ -1,12 +1,12 @@
 package dao
 
 import (
-	"database/sql"
 	"reflect"
 	"testing"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/gocraft/dbr"
 
 	"github.com/keitax/textvid/config"
 	"github.com/keitax/textvid/entity"
@@ -162,23 +162,23 @@ func makePostSpecificCreatedAt(t *testing.T, createdAt string) *entity.Post {
 }
 
 func prepareDao(t *testing.T) PostDao {
-	db, err := sql.Open("mysql", "keitax/keitax@tcp(localhost:3306)/test?parseTime=True&loc=UTC")
+	conn, err := dbr.Open("mysql", "keitax/keitax@tcp(localhost:3306)/test?parseTime=True&loc=UTC", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
-	return NewPostDao(db, &config.Config{
+	return NewPostDao(conn, &config.Config{
 		Locale: "UTC",
 	})
 }
 
 func (pd *postDao) cleanup(t *testing.T) {
-	if _, err := pd.db.Exec("TRUNCATE TABLE POST"); err != nil {
+	if _, err := pd.conn.Exec("TRUNCATE TABLE POST"); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := pd.db.Exec("TRUNCATE TABLE LAST_ID"); err != nil {
+	if _, err := pd.conn.Exec("TRUNCATE TABLE LAST_ID"); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := pd.db.Exec("INSERT INTO LAST_ID (POST_LAST_ID) VALUES (0)"); err != nil {
+	if _, err := pd.conn.Exec("INSERT INTO LAST_ID (POST_LAST_ID) VALUES (0)"); err != nil {
 		t.Fatal(err)
 	}
 }

@@ -1,10 +1,10 @@
 package application
 
 import (
-	"database/sql"
 	"net/http"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/gocraft/dbr"
 	"github.com/gorilla/mux"
 
 	"github.com/keitax/textvid/config"
@@ -15,13 +15,13 @@ import (
 )
 
 func New(config *config.Config) (http.Handler, error) {
-	db, err := sql.Open("mysql", config.DataSourceName)
+	conn, err := dbr.Open("mysql", config.DataSourceName, nil)
 	if err != nil {
 		return nil, err
 	}
 
 	v := view.New(util.NewUrlBuilder(config), config)
-	pc := controller.NewPostController(dao.NewPostDao(db, config), v, config)
+	pc := controller.NewPostController(dao.NewPostDao(conn, config), v, config)
 
 	router := mux.NewRouter()
 	router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir(config.StaticDir))))
