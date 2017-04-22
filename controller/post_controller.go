@@ -70,7 +70,12 @@ func (c *PostController) GetSingle(w http.ResponseWriter, req *http.Request) {
 		http.NotFound(w, req)
 		return
 	}
-	if err := c.view.RenderPost(w, posts[0]); err != nil {
+	p, err := c.postDao.SelectOne(posts[0].Id)
+	if err != nil {
+		c.fatalResponse(w, err)
+		return
+	}
+	if err := c.view.RenderPost(w, p); err != nil {
 		c.fatalResponse(w, err)
 		return
 	}
