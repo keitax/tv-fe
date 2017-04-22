@@ -96,6 +96,44 @@ func (c *PostController) GetSingle(w http.ResponseWriter, req *http.Request) {
 }
 
 func (c *PostController) GetList(w http.ResponseWriter, req *http.Request) {
+	s, err := strconv.Atoi(req.URL.Query().Get("start"))
+	if err != nil {
+		c.view.Render400(w)
+		return
+	}
+	r, err := strconv.Atoi(req.URL.Query().Get("results"))
+	if err != nil {
+		c.view.Render400(w)
+		return
+	}
+	q := &dao.PostQuery{
+		Start:   uint64(s),
+		Results: uint64(r),
+	}
+	ps, err := c.postDao.SelectByQuery(q)
+	if err != nil {
+		c.view.Render500(w)
+		return
+	}
+	nextPosts, err := c.postDao.SelectByQuery(q.Next())
+	if err != nil {
+		c.view.Render500(w)
+		return
+	}
+	prevPosts, err := c.postDao.SelectByQuery(q.Previous())
+	if err != nil {
+		c.view.Render500(w)
+		return
+	}
+	if err := c.view.RenderTemplate("post_list.tmpl", w, map[string]interface{}{
+		"CurrentQuery":  q,
+		"posts":         ps,
+		"NextPosts":     nextPosts,
+		"PreviousPosts": prevPosts,
+	}); err != nil {
+		c.view.Render500(w)
+		return
+	}
 }
 
 func (c *PostController) fatalResponse(w http.ResponseWriter, err error) {
