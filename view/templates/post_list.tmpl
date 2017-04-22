@@ -22,7 +22,7 @@
     <ul class="post-nav__list">
         <li class="post-nav__item">
             ←
-            {{if .HasNextPosts}}
+            {{if .NextPosts}}
             <a href="{{.Urls.LinkToPostListPage .CurrentQuery.Next}}">Next Posts</a>
             {{else}}
             <span class="post-nav--disable">(no posts)</span>
@@ -30,7 +30,7 @@
         </li>
         <li class="post-nav__item">
             →
-            {{if .HasPreviousPosts}}
+            {{if .PreviousPosts}}
             <a href="{{.Urls.LinkToPostListPage .CurrentQuery.Previous}}">Previous Posts</a>
             {{else}}
             <span class="post-nav--disable">(no posts)</span>

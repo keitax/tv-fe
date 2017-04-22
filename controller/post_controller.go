@@ -45,9 +45,9 @@ func (c *PostController) GetIndex(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	if err := c.view.RenderTemplate("post_list.tmpl", w, map[string]interface{}{
-		"posts":            posts,
-		"HasPreviousPosts": len(prevPosts) > 0,
-		"CurrentQuery": q,
+		"posts":         posts,
+		"PreviousPosts": prevPosts,
+		"CurrentQuery":  q,
 	}); err != nil {
 		c.fatalResponse(w, err)
 		return
