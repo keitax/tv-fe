@@ -36,7 +36,9 @@ func (c *PostController) GetIndex(w http.ResponseWriter, req *http.Request) {
 		c.fatalResponse(w, err)
 		return
 	}
-	if err := c.view.RenderIndex(w, posts); err != nil {
+	if err := c.view.RenderTemplate("post_list.tmpl", w, map[string]interface{}{
+		"posts": posts,
+	}); err != nil {
 		c.fatalResponse(w, err)
 		return
 	}
@@ -75,7 +77,9 @@ func (c *PostController) GetSingle(w http.ResponseWriter, req *http.Request) {
 		c.fatalResponse(w, err)
 		return
 	}
-	if err := c.view.RenderPost(w, p); err != nil {
+	if err := c.view.RenderTemplate("post_single.tmpl", w, map[string]interface{}{
+		"post": p,
+	}); err != nil {
 		c.fatalResponse(w, err)
 		return
 	}

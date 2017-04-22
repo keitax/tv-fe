@@ -7,14 +7,13 @@ import (
 	"time"
 
 	"github.com/Sirupsen/logrus"
+
 	"github.com/keitax/textvid/config"
-	"github.com/keitax/textvid/entity"
 	"github.com/keitax/textvid/util"
 )
 
 type View interface {
-	RenderIndex(out io.Writer, posts []*entity.Post) error
-	RenderPost(out io.Writer, post *entity.Post) error
+	RenderTemplate(templateName string, out io.Writer, context map[string]interface{}) error
 	Render500(out io.Writer) error
 }
 
@@ -27,26 +26,7 @@ func New(urlBuilder *util.UrlBuilder, config_ *config.Config) View {
 	return &view{urlBuilder, config_}
 }
 
-func (v *view) RenderIndex(out io.Writer, posts []*entity.Post) error {
-	return v.renderTemplate("post_list.tmpl", out, map[string]interface{}{
-		"posts": posts,
-	})
-}
-
-func (v *view) RenderPost(out io.Writer, post *entity.Post) error {
-	return v.renderTemplate("post_single.tmpl", out, map[string]interface{}{
-		"post": post,
-	})
-}
-
-func (v *view) Render500(out io.Writer) error {
-	if _, err := out.Write([]byte("500 Internal Server Error")); err != nil {
-		logrus.Error(err)
-	}
-	return nil
-}
-
-func (v *view) renderTemplate(templateName string, out io.Writer, context map[string]interface{}) error {
+func (v *view) RenderTemplate(templateName string, out io.Writer, context map[string]interface{}) error {
 	ts := template.New("root").Funcs(template.FuncMap{
 		"RenderMarkdown": util.ParseMarkdown,
 		"ShowTime": func(t time.Time) string {
@@ -68,6 +48,13 @@ func (v *view) renderTemplate(templateName string, out io.Writer, context map[st
 	}
 	if err := ts.ExecuteTemplate(out, "layout.tmpl", context_); err != nil {
 		return err
+	}
+	return nil
+}
+
+func (v *view) Render500(out io.Writer) error {
+	if _, err := out.Write([]byte("500 Internal Server Error")); err != nil {
+		logrus.Error(err)
 	}
 	return nil
 }
