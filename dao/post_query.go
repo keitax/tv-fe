@@ -17,3 +17,9 @@ func (pq *PostQuery) Next() *PostQuery {
 	pq_.Start = pq.Start - pq.Results
 	return &pq_
 }
+
+func (pq *PostQuery) Previous() *PostQuery {
+	pq_ := *pq
+	pq_.Start = pq.Start + pq.Results
+	return &pq_
+}
