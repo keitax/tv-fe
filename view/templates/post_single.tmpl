@@ -13,5 +13,25 @@
         {{.Body | RenderMarkdown}}
     </main>
 </article>
+<nav class="post-nav">
+    <ul class="post-nav__list">
+        <li class="post-nav__item">
+            ←
+            {{if .NextPost}}
+            <a href="{{LinkToPostPage .NextPost}}">{{.NextPost.Title}}</a>
+            {{else}}
+            <span class="post-nav--disable">(no post)</span>
+            {{end}}
+        </li>
+        <li class="post-nav__item">
+            →
+            {{if .PreviousPost}}
+            <a href="{{LinkToPostPage .PreviousPost}}">{{.PreviousPost.Title}}</a>
+            {{else}}
+            <span class="post-nav--disable">(no post)</span>
+            {{end}}
+        </li>
+    </ul>
+</nav>
 {{ end }}
 {{ end }}
