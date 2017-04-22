@@ -16,14 +16,6 @@ type PostDao interface {
 	Insert(post *entity.Post) error
 }
 
-type PostQuery struct {
-	Start   uint64
-	Results uint64
-	Year    int
-	Month   time.Month
-	UrlName string
-}
-
 type postDao struct {
 	conn   *dbr.Connection
 	config *config.Config
