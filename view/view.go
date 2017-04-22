@@ -33,8 +33,6 @@ func (v *view) RenderTemplate(templateName string, out io.Writer, context map[st
 		"ShowTime": func(t time.Time) string {
 			return t.Format("Jan. 02, 2006, 3:04 PM")
 		},
-		"LinkToTopPage":  v.urlBuilder.LinkToTopPage,
-		"LinkToPostPage": v.urlBuilder.LinkToPostPage,
 	})
 	ts = template.Must(ts.ParseFiles(
 		filepath.Join(v.config.TemplateDir, "layout.tmpl"),

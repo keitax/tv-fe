@@ -3,7 +3,7 @@
 <article class="post">
     <header class="post__header">
         <h1 class="post__title">
-            <a class="post__title-link" href="{{LinkToPostPage .}}">▼ {{.Title}}</a>
+            <a class="post__title-link" href="{{$.Urls.LinkToPostPage .}}">▼ {{.Title}}</a>
         </h1>
         <p class="post__meta">
             {{.CreatedAt | ShowTime}}
@@ -18,7 +18,7 @@
         <li class="post-nav__item">
             ←
             {{if .NextPost}}
-            <a href="{{LinkToPostPage .NextPost}}">{{.NextPost.Title}}</a>
+            <a href="{{$.Urls.LinkToPostPage .NextPost}}">{{.NextPost.Title}}</a>
             {{else}}
             <span class="post-nav--disable">(no post)</span>
             {{end}}
@@ -26,7 +26,7 @@
         <li class="post-nav__item">
             →
             {{if .PreviousPost}}
-            <a href="{{LinkToPostPage .PreviousPost}}">{{.PreviousPost.Title}}</a>
+            <a href="{{$.Urls.LinkToPostPage .PreviousPost}}">{{.PreviousPost.Title}}</a>
             {{else}}
             <span class="post-nav--disable">(no post)</span>
             {{end}}
