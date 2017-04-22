@@ -42,6 +42,7 @@ func (v *view) RenderTemplate(templateName string, out io.Writer, context map[st
 	context_ := map[string]interface{}{
 		"SiteTitle":  v.config.SiteTitle,
 		"SiteFooter": v.config.SiteFooter,
+		"Urls": v.urlBuilder,
 	}
 	for key, value := range context {
 		context_[key] = value

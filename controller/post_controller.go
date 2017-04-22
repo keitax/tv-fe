@@ -28,16 +28,26 @@ func NewPostController(postDao dao.PostDao, view_ view.View, config_ *config.Con
 }
 
 func (c *PostController) GetIndex(w http.ResponseWriter, req *http.Request) {
-	posts, err := c.postDao.SelectByQuery(&dao.PostQuery{
+	q := &dao.PostQuery{
 		Start:   1,
 		Results: 5,
-	})
+	}
+	posts, err := c.postDao.SelectByQuery(q)
+	if err != nil {
+		c.fatalResponse(w, err)
+		return
+	}
+	qp := q.Previous()
+	qp.Results = 1
+	prevPosts, err := c.postDao.SelectByQuery(qp)
 	if err != nil {
 		c.fatalResponse(w, err)
 		return
 	}
 	if err := c.view.RenderTemplate("post_list.tmpl", w, map[string]interface{}{
-		"posts": posts,
+		"posts":            posts,
+		"HasPreviousPosts": len(prevPosts) > 0,
+		"CurrentQuery": q,
 	}); err != nil {
 		c.fatalResponse(w, err)
 		return

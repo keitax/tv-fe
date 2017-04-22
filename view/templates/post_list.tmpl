@@ -18,4 +18,24 @@
     </li>
     {{end}}
 </ul>
+<nav class="post-nav">
+    <ul class="post-nav__list">
+        <li class="post-nav__item">
+            ←
+            {{if .HasNextPosts}}
+            <a href="{{.Urls.LinkToPostListPage .CurrentQuery.Next}}">Next Posts</a>
+            {{else}}
+            <span class="post-nav--disable">(no posts)</span>
+            {{end}}
+        </li>
+        <li class="post-nav__item">
+            →
+            {{if .HasPreviousPosts}}
+            <a href="{{.Urls.LinkToPostListPage .CurrentQuery.Previous}}">Previous Posts</a>
+            {{else}}
+            <span class="post-nav--disable">(no posts)</span>
+            {{end}}
+        </li>
+    </ul>
+</nav>
 {{ end }}
