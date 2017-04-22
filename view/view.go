@@ -14,6 +14,7 @@ import (
 
 type View interface {
 	RenderTemplate(templateName string, out io.Writer, context map[string]interface{}) error
+	Render400(out io.Writer) error
 	Render500(out io.Writer) error
 }
 
@@ -42,13 +43,20 @@ func (v *view) RenderTemplate(templateName string, out io.Writer, context map[st
 	context_ := map[string]interface{}{
 		"SiteTitle":  v.config.SiteTitle,
 		"SiteFooter": v.config.SiteFooter,
-		"Urls": v.urlBuilder,
+		"Urls":       v.urlBuilder,
 	}
 	for key, value := range context {
 		context_[key] = value
 	}
 	if err := ts.ExecuteTemplate(out, "layout.tmpl", context_); err != nil {
 		return err
+	}
+	return nil
+}
+
+func (v *view) Render400(out io.Writer) error {
+	if _, err := out.Write([]byte("400 Bad Request")); err != nil {
+		logrus.Error(err)
 	}
 	return nil
 }
