@@ -5,35 +5,60 @@
 }
 
 body {
-    display: flex;
-    display: -webkit-flex;
-    flex-direction: row;
-    -webkit-flex-direction: row;
-    display: flex;
-    justify-content: center;
-    -webkit-justify-content: center;
-    color: #333;
+    background: #eee;
+    margin: 0;
+}
+
+a:link, a:visited {
+    color: #00f;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
 }
 
 @media only screen and (min-width: 40rem) {
-    .container {
+    .container > * {
         width: 40rem;
     }
 }
 
 @media only screen and (max-width: 40rem) {
-    .container {
+    .container > * {
         width: 95%;
     }
 }
 
-.site-title {
-    margin: 1rem 0 2rem;
+.container {
+    background: #fff;
+    display: flex;
+    display: -webkit-flex;
+    flex-direction: column;
+    -webkit-flex-direction: column;
+    display: flex;
+    justify-content: center;
+    -webkit-justify-content: center;
+    -webkit-align-items: center;
+    align-items: center;
+    color: #333;
 }
 
-.site-title__link {
+.site-title {
+    margin: 1rem 0;
+}
+
+.site-title__link:link, .site-title__link:visited {
     text-decoration: none;
-    color: inherit;
+    color: #666;
+}
+
+.site-main {
+    margin: 0;
+}
+
+.post {
+    margin: 1rem 0rem 2rem;
 }
 
 .post-list {
@@ -45,23 +70,23 @@ body {
     margin-bottom: 3rem;
 }
 
-.post__title:before {
-    content: "▼ ";
+.post__title {
+    font-size: large;
+    color: #039;
 }
 
-.post__title-link {
+.post__title-link:link, .post__title-link:visited {
     text-decoration: none;
     color: inherit;
+}
+
+.post__title-link:hover {
+    text-decoration: underline;
 }
 
 .post__meta {
     font-size: smaller;
     color: #666;
-}
-
-.post h1 {
-    font-size: large;
-    color: #039;
 }
 
 .post h2 {
@@ -76,7 +101,25 @@ body {
     line-height: 1.6;
 }
 
+.post-nav__list {
+    margin: 0;
+    padding: 0;
+    font-size: inherit;
+}
+
+.post-nav__item {
+    margin: 0.25rem 0;
+    list-style-type: none;
+}
+
+.post-nav--disable {
+    color: #999;
+}
+
 .site-footer {
-    text-align: center;
+    border-top: solid 0.5pt #666;
+    color: #666;
+    text-align: right;
     font-size: smaller;
+    margin: 2rem 0;
 }
