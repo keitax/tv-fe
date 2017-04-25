@@ -51,3 +51,16 @@ func TestLinkToPostListPage(t *testing.T) {
 		t.Errorf("ub.LinkToPostListPage(_) = %q, expected %q", u, expected)
 	}
 }
+
+func TestLinkToPostEditorPage(t *testing.T) {
+	ub := &UrlBuilder{config: &config.Config{
+		BaseUrl: "http://localhost/",
+	}}
+	u := ub.LinkToPostEditorPage(&entity.Post{
+		Id: 10,
+	})
+	expected := "http://localhost/posts/10/edit"
+	if u != expected {
+		t.Errorf("ub.LinkToPostEditorPage(_) = %#v, expected %#v", u, expected)
+	}
+}

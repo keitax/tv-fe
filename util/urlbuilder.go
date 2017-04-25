@@ -41,3 +41,7 @@ func (ub *UrlBuilder) LinkToPostListPage(query *dao.PostQuery) string {
 	}
 	return fmt.Sprintf("%sposts/%s", ub.config.BaseUrl, qs)
 }
+
+func (ub *UrlBuilder) LinkToPostEditorPage(post *entity.Post) string {
+	return fmt.Sprintf("%sposts/%d/edit", ub.config.BaseUrl, post.Id)
+}
