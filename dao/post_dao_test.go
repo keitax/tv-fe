@@ -211,7 +211,7 @@ func makePostSpecificCreatedAt(t *testing.T, createdAt string) *entity.Post {
 }
 
 func prepareDao(t *testing.T) PostDao {
-	conn, err := dbr.Open("mysql", "keitax/keitax@tcp(localhost:3306)/test?parseTime=True&loc=UTC", nil)
+	conn, err := dbr.Open("mysql", "keitax:keitax@tcp(localhost:3306)/test?parseTime=True&loc=UTC", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
