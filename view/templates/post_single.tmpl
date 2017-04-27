@@ -2,6 +2,11 @@
 {{with .post}}
 <article class="post">
     <header class="post__header">
+        <ul class="post__admin-menu">
+           <li class="post__admin-menu-item">
+               <a href="{{$.Urls.LinkToPostEditorPage .}}">[Edit]</a>
+           </li>
+        </ul>
         <h1 class="post__title">
             <a class="post__title-link" href="{{$.Urls.LinkToPostPage .}}">▼ {{.Title}}</a>
         </h1>
