@@ -26,7 +26,10 @@ func TestInsertAndSelectOne(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	inserted := d.SelectOne(original.Id)
+	inserted, err := d.SelectOne(original.Id)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	testCases := []struct {
 		descr    string
@@ -59,7 +62,10 @@ func TestSelectOneWithNeighbors(t *testing.T) {
 		}
 	}
 
-	p2 := d.SelectOne(2)
+	p2, err := d.SelectOne(2)
+	if err != nil {
+		t.Fatal(err)
+	}
 	expectedNextId := int64(3)
 	if p2.NextPost.Id != expectedNextId {
 		t.Errorf("p1.NextPost.Id = %d, expected %d", p2.NextPost.Id, expectedNextId)
@@ -69,7 +75,10 @@ func TestSelectOneWithNeighbors(t *testing.T) {
 		t.Errorf("p1.PreviousPost.Id = %d, expected %d", p2.NextPost.Id, expectedNextId)
 	}
 
-	p1 := d.SelectOne(1)
+	p1, err := d.SelectOne(1)
+	if err != nil {
+		t.Fatal(err)
+	}
 	if p1.PreviousPost != nil {
 		t.Errorf("p1.PreviousPost = %v, expected nil", p1.PreviousPost)
 	}
@@ -77,7 +86,10 @@ func TestSelectOneWithNeighbors(t *testing.T) {
 		t.Errorf("p1.NextPost = %v, expected non-nil", p1.NextPost)
 	}
 
-	p3 := d.SelectOne(3)
+	p3, err := d.SelectOne(3)
+	if err != nil {
+		t.Fatal(err)
+	}
 	if p3.PreviousPost == nil {
 		t.Errorf("p3.PreviousPost = %v, expected non-nil", p3.PreviousPost)
 	}

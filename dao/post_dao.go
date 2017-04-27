@@ -11,7 +11,7 @@ import (
 )
 
 type PostDao interface {
-	SelectOne(id int64) *entity.Post
+	SelectOne(id int64) (*entity.Post, error)
 	SelectByQuery(query *PostQuery) ([]*entity.Post, error)
 	Insert(post *entity.Post) error
 }
@@ -28,7 +28,7 @@ func NewPostDao(conn *dbr.Connection, conf *config.Config) PostDao {
 	}
 }
 
-func (pd *postDao) SelectOne(id int64) *entity.Post {
+func (pd *postDao) SelectOne(id int64) (*entity.Post, error) {
 	sess := pd.conn.NewSession(nil)
 	var ps []*entity.Post
 	sb := sess.Select("id", "created_at", "updated_at", "url_name", "title", "body").
@@ -36,10 +36,10 @@ func (pd *postDao) SelectOne(id int64) *entity.Post {
 		Where("id = ?", id)
 	cnt, err := sb.Load(&ps)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	if cnt <= 0 {
-		return nil
+		return nil, nil
 	}
 	p := ps[0]
 	var nps []*entity.Post
@@ -48,7 +48,7 @@ func (pd *postDao) SelectOne(id int64) *entity.Post {
 		Where("id = ?", dbr.Select("min(id)").From("post").Where("id > ?", id))
 	nCnt, err := nsb.Load(&nps)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	if nCnt > 0 {
 		p.NextPost = nps[0]
@@ -59,12 +59,12 @@ func (pd *postDao) SelectOne(id int64) *entity.Post {
 		Where("id = ?", dbr.Select("max(id)").From("post").Where("id < ?", id))
 	pCnt, err := psb.Load(&pps)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	if pCnt > 0 {
 		p.PreviousPost = pps[0]
 	}
-	return p
+	return p, nil
 }
 
 func (pd *postDao) SelectByQuery(query *PostQuery) ([]*entity.Post, error) {
