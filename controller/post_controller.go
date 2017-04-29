@@ -98,12 +98,12 @@ func (c *PostController) GetSingle(w http.ResponseWriter, req *http.Request) {
 func (c *PostController) GetList(w http.ResponseWriter, req *http.Request) {
 	s, err := strconv.Atoi(req.URL.Query().Get("start"))
 	if err != nil {
-		http.NotFound(w, req)
+		c.fatalResponse(w, err)
 		return
 	}
 	r, err := strconv.Atoi(req.URL.Query().Get("results"))
 	if err != nil {
-		http.NotFound(w, req)
+		c.fatalResponse(w, err)
 		return
 	}
 	q := &dao.PostQuery{
@@ -112,17 +112,17 @@ func (c *PostController) GetList(w http.ResponseWriter, req *http.Request) {
 	}
 	ps, err := c.postDao.SelectByQuery(q)
 	if err != nil {
-		c.view.Render500(w)
+		c.fatalResponse(w, err)
 		return
 	}
 	nextPosts, err := c.postDao.SelectByQuery(q.Next())
 	if err != nil {
-		c.view.Render500(w)
+		c.fatalResponse(w, err)
 		return
 	}
 	prevPosts, err := c.postDao.SelectByQuery(q.Previous())
 	if err != nil {
-		c.view.Render500(w)
+		c.fatalResponse(w, err)
 		return
 	}
 	if err := c.view.RenderTemplate("post_list.tmpl", w, map[string]interface{}{
@@ -131,7 +131,7 @@ func (c *PostController) GetList(w http.ResponseWriter, req *http.Request) {
 		"NextPosts":     nextPosts,
 		"PreviousPosts": prevPosts,
 	}); err != nil {
-		c.view.Render500(w)
+		c.fatalResponse(w, err)
 		return
 	}
 }
