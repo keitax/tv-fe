@@ -136,6 +136,29 @@ func (c *PostController) GetList(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
+func (c *PostController) GetEditor(w http.ResponseWriter, req *http.Request) {
+	vs := mux.Vars(req)
+	id, err := strconv.Atoi(vs["id"])
+	if err != nil {
+		c.fatalResponse(w, err)
+		return
+	}
+	p, err := c.postDao.SelectOne(int64(id))
+	if err != nil {
+		c.fatalResponse(w, err)
+		return
+	}
+	if p == nil {
+		http.NotFound(w, req)
+		return
+	}
+	if err := c.view.RenderTemplate("post_editor.tmpl", w, map[string]interface{}{
+		"post": p,
+	}); err != nil {
+		c.fatalResponse(w, err)
+	}
+}
+
 func (c *PostController) fatalResponse(w http.ResponseWriter, err error) {
 	logrus.Error(err)
 	http.Error(w, "Internal Server Error", http.StatusInternalServerError)
