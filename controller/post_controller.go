@@ -98,12 +98,12 @@ func (c *PostController) GetSingle(w http.ResponseWriter, req *http.Request) {
 func (c *PostController) GetList(w http.ResponseWriter, req *http.Request) {
 	s, err := strconv.Atoi(req.URL.Query().Get("start"))
 	if err != nil {
-		c.view.Render400(w)
+		http.NotFound(w, req)
 		return
 	}
 	r, err := strconv.Atoi(req.URL.Query().Get("results"))
 	if err != nil {
-		c.view.Render400(w)
+		http.NotFound(w, req)
 		return
 	}
 	q := &dao.PostQuery{
