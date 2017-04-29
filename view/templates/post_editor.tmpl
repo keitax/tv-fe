@@ -1,0 +1,15 @@
+{{define "content"}}
+{{with .post}}
+<section class="post-editor">
+    <form class="post-editor__form">
+        <dl>
+            <dt>Title</dt>
+            <dd><input type="text" value="{{.Title}}"/>
+            <dt>Body</dt>
+            <dd><textarea>{{.Body}}</textarea></dd>
+        </dl>
+        <input type="submit">
+    </form>
+</section>
+{{end}}
+{{end}}
