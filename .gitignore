@@ -1,5 +1,5 @@
 .idea/
 *.iml
-config.yml
+config.toml
 vendor/
 lock.json

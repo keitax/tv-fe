@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	c, err := config.Parse("./config.yml")
+	c, err := config.Parse("./config.toml")
 	if err != nil {
 		logrus.Fatal(err)
 		os.Exit(1)

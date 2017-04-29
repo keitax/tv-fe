@@ -15,13 +15,13 @@ func TestParse(t *testing.T) {
 	defer os.Remove(f.Name())
 
 	if _, err := f.WriteString(`
-site-title: Textvid Blog
-data-source-name: user/pass@tcp(address:port)/name
-template-dir: ./templates
-static-dir: ./static
-site-footer: Copyright &copy; YOUR NAME
-locale: UTC
-base-url: http://localhost/
+site-title = "Textvid Blog"
+data-source-name = "user:pass@tcp(address:port)/name"
+template-dir = "./templates"
+static-dir = "./static"
+site-footer = "Copyright &copy; YOUR NAME"
+locale = "UTC"
+base-url = "http://localhost/"
 `); err != nil {
 		t.Fatal(err)
 	}
@@ -36,7 +36,7 @@ base-url: http://localhost/
 
 	expected := &Config{
 		SiteTitle:      "Textvid Blog",
-		DataSourceName: "user/pass@tcp(address:port)/name",
+		DataSourceName: "user:pass@tcp(address:port)/name",
 		TemplateDir:    "./templates",
 		StaticDir:      "./static",
 		SiteFooter:     "Copyright &copy; YOUR NAME",

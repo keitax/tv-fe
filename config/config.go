@@ -3,17 +3,17 @@ package config
 import (
 	"io/ioutil"
 
-	"gopkg.in/yaml.v2"
+	"github.com/BurntSushi/toml"
 )
 
 type Config struct {
-	SiteTitle      string `yaml:"site-title"`
-	DataSourceName string `yaml:"data-source-name"`
-	TemplateDir    string `yaml:"template-dir"`
-	StaticDir      string `yaml:"static-dir"`
-	SiteFooter     string `yaml:"site-footer"`
-	Locale         string `yaml:"locale"`
-	BaseUrl        string `yaml:"base-url"`
+	SiteTitle      string `toml:"site-title"`
+	DataSourceName string `toml:"data-source-name"`
+	TemplateDir    string `toml:"template-dir"`
+	StaticDir      string `toml:"static-dir"`
+	SiteFooter     string `toml:"site-footer"`
+	Locale         string `toml:"locale"`
+	BaseUrl        string `toml:"base-url"`
 }
 
 func Parse(configFile string) (*Config, error) {
@@ -22,7 +22,7 @@ func Parse(configFile string) (*Config, error) {
 		return nil, err
 	}
 	var c Config
-	if err := yaml.Unmarshal(bs, &c); err != nil {
+	if err := toml.Unmarshal(bs, &c); err != nil {
 		return nil, err
 	}
 	return &c, nil
