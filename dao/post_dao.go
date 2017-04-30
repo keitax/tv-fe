@@ -14,6 +14,7 @@ type PostDao interface {
 	SelectOne(id int64) (*entity.Post, error)
 	SelectByQuery(query *PostQuery) ([]*entity.Post, error)
 	Insert(post *entity.Post) error
+	Update(post *entity.Post) error
 }
 
 type postDao struct {
@@ -111,6 +112,28 @@ func (pd *postDao) Insert(post *entity.Post) error {
 		Columns("id", "created_at", "updated_at", "url_name", "title", "body").
 		Values(post.Id, post.CreatedAt, post.UpdatedAt, post.UrlName, post.Title, post.Body)
 	if _, err := ib.Exec(); err != nil {
+		return pd.rollback(tx, err)
+	}
+	return nil
+}
+
+func (pd *postDao) Update(post *entity.Post) error {
+	s := pd.conn.NewSession(nil)
+	tx, err := s.Begin()
+	if err != nil {
+		return err
+	}
+	now := time.Now()
+	if post.UpdatedAt == nil {
+		post.UpdatedAt = &now
+	}
+	ub := s.Update("post").SetMap(map[string]interface{}{
+		"updated_at": post.UpdatedAt,
+		"url_name":   post.UrlName,
+		"title":      post.Title,
+		"body":       post.Body,
+	}).Where("id = ?", post.Id)
+	if _, err := ub.Exec(); err != nil {
 		return pd.rollback(tx, err)
 	}
 	return nil

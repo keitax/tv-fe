@@ -199,6 +199,50 @@ func TestSelectByQueryToSelectByUrlName(t *testing.T) {
 	}
 }
 
+func TestUpdate(t *testing.T) {
+	d := prepareDao(t)
+	defer d.(*postDao).cleanup(t)
+
+	op := &entity.Post{
+		Title: "Original Title",
+		Body: "Original Body",
+		UrlName: "original-url-name",
+	}
+	if err := d.Insert(op); err != nil {
+		t.Fatal(err)
+	}
+
+	up := &entity.Post{
+		Id: op.Id,
+		Title: "Updated Title",
+		Body: "Updated Body",
+		UrlName: "updated-url-name",
+	}
+	if err := d.Update(up); err != nil {
+		t.Fatal(err)
+	}
+
+	p, err := d.SelectOne(op.Id)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	testCases := []struct{
+		descr string
+		expected interface{}
+		actual interface{}
+	}{
+		{"Title", "Updated Title", p.Title},
+		{"Body", "Updated Body", p.Body},
+		{"UrlName", "updated-url-name", p.UrlName},
+	}
+	for _, tc := range testCases {
+		if tc.expected != tc.actual {
+			t.Errorf("%s = %#v, expected %#v", tc.descr, tc.actual, tc.expected)
+		}
+	}
+}
+
 func makePostSpecificCreatedAt(t *testing.T, createdAt string) *entity.Post {
 	ti, err := time.Parse(time.RFC3339, createdAt)
 	if err != nil {
