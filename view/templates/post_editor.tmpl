@@ -1,14 +1,22 @@
 {{define "content"}}
 {{with .post}}
 <section class="post-editor">
+    {{if .Title}}
+        <h2 class="post-editor__title">Edit: {{.Title}}</h2>
+    {{else}}
+        <h2 class="post-editor__title">New</h2>
+    {{end}}
     <form class="post-editor__form">
         <dl>
-            <dt>Title</dt>
-            <dd><input type="text" value="{{.Title}}"/>
-            <dt>Body</dt>
-            <dd><textarea>{{.Body}}</textarea></dd>
+            <dt class="post-editor__field-label">Title</dt>
+            <dd class="post-editor__field"><input class="post-editor__input" type="text" value="{{.Title}}"/></dd>
+            <dt class="post-editor__field-label">Body</dt>
+            <dd class="post-editor__field"><textarea class="post-editor__textarea">{{.Body}}</textarea></dd>
         </dl>
-        <input type="submit">
+        <ul class="post-editor__action-list">
+            <li class="post-editor__action"><input class="post-editor__field-submit" type="submit" value="Preview"/></li>
+            <li class="post-editor__action"><input class="post-editor__field-submit" type="submit" value="Submit"/></li>
+        </ul>
     </form>
 </section>
 {{end}}
