@@ -52,6 +52,27 @@ func TestLinkToPostListPage(t *testing.T) {
 	}
 }
 
+func TestLinkToPostResource(t *testing.T) {
+	ub := &UrlBuilder{config: &config.Config{
+		BaseUrl: "http://localhost/",
+	}}
+
+	testCases := []struct {
+		descr    string
+		expected interface{}
+		arg      *entity.Post
+	}{
+		{"to post list", "http://localhost/posts/", nil},
+		{"to single post", "http://localhost/posts/1", &entity.Post{Id: 1}},
+	}
+	for _, tc := range testCases {
+		actual := ub.LinkToPostResource(tc.arg)
+		if actual != tc.expected {
+			t.Errorf("ub.LinkToPostResource(%#v) = %#v, expected %#v", tc.arg, actual, tc.expected)
+		}
+	}
+}
+
 func TestLinkToPostEditorPage(t *testing.T) {
 	ub := &UrlBuilder{config: &config.Config{
 		BaseUrl: "http://localhost/",

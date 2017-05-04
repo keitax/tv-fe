@@ -25,6 +25,16 @@ func (ub *UrlBuilder) LinkToPostPage(post *entity.Post) string {
 	return fmt.Sprintf("%s%04d/%02d/%s.html", ub.config.BaseUrl, post.CreatedAt.Year(), post.CreatedAt.Month(), post.UrlName)
 }
 
+func (ub *UrlBuilder) LinkToPostResource(post *entity.Post) string {
+	var path string
+	if post == nil {
+		path = "posts/"
+	} else {
+		path = fmt.Sprintf("posts/%d", post.Id)
+	}
+	return ub.config.BaseUrl + path
+}
+
 func (ub *UrlBuilder) LinkToPostListPage(query *dao.PostQuery) string {
 	q := []string{}
 	if query.Start != 0 {
