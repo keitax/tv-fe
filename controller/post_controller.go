@@ -6,23 +6,27 @@ import (
 	"time"
 
 	"github.com/Sirupsen/logrus"
-
 	"github.com/gorilla/mux"
+
 	"github.com/keitax/textvid/config"
 	"github.com/keitax/textvid/dao"
+	"github.com/keitax/textvid/entity"
+	"github.com/keitax/textvid/util"
 	"github.com/keitax/textvid/view"
 )
 
 type PostController struct {
-	postDao dao.PostDao
-	view    view.View
-	config  *config.Config
+	postDao    dao.PostDao
+	view       view.View
+	urlBuilder *util.UrlBuilder
+	config     *config.Config
 }
 
-func NewPostController(postDao dao.PostDao, view_ view.View, config_ *config.Config) *PostController {
+func NewPostController(postDao dao.PostDao, view_ view.View, ub *util.UrlBuilder, config_ *config.Config) *PostController {
 	return &PostController{
 		postDao,
 		view_,
+		ub,
 		config_,
 	}
 }
@@ -157,6 +161,35 @@ func (c *PostController) GetEditor(w http.ResponseWriter, req *http.Request) {
 	}); err != nil {
 		c.fatalResponse(w, err)
 	}
+}
+
+func (c *PostController) EditPost(w http.ResponseWriter, req *http.Request) {
+	vs := mux.Vars(req)
+	id, err := strconv.Atoi(vs["id"])
+	if err != nil {
+		c.fatalResponse(w, err)
+		return
+	}
+	if err := req.ParseForm(); err != nil {
+		c.fatalResponse(w, err)
+		return
+	}
+	p := &entity.Post{
+		Id:      int64(id),
+		Title:   req.Form.Get("title"),
+		Body:    req.Form.Get("body"),
+		UrlName: req.Form.Get("url-name"),
+	}
+	if err := c.postDao.Update(p); err != nil {
+		c.fatalResponse(w, err)
+		return
+	}
+	p, err = c.postDao.SelectOne(int64(id))
+	if err != nil {
+		c.fatalResponse(w, err)
+		return
+	}
+	http.Redirect(w, req, c.urlBuilder.LinkToPostPage(p), http.StatusSeeOther)
 }
 
 func (c *PostController) fatalResponse(w http.ResponseWriter, err error) {
