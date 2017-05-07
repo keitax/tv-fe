@@ -147,10 +147,9 @@ func (c *PostController) GetEditor(w http.ResponseWriter, req *http.Request) {
 		http.NotFound(w, req)
 		return
 	}
-	if err := c.view.RenderTemplate("post_editor.tmpl", w, map[string]interface{}{
-		"post": p,
-	}); err != nil {
+	if err := c.viewSet.PostEditorView(p).Render(w); err != nil {
 		c.fatalResponse(w, err)
+		return
 	}
 }
 
