@@ -50,11 +50,7 @@ func (c *PostController) GetIndex(w http.ResponseWriter, req *http.Request) {
 		c.fatalResponse(w, err)
 		return
 	}
-	if err := c.view.RenderTemplate("post_list.tmpl", w, map[string]interface{}{
-		"posts":         posts,
-		"PreviousPosts": prevPosts,
-		"CurrentQuery":  q,
-	}); err != nil {
+	if err := c.viewSet.PostListView(posts, nil, prevPosts, q).Render(w); err != nil {
 		c.fatalResponse(w, err)
 		return
 	}
@@ -129,12 +125,7 @@ func (c *PostController) GetList(w http.ResponseWriter, req *http.Request) {
 		c.fatalResponse(w, err)
 		return
 	}
-	if err := c.view.RenderTemplate("post_list.tmpl", w, map[string]interface{}{
-		"CurrentQuery":  q,
-		"posts":         ps,
-		"NextPosts":     nextPosts,
-		"PreviousPosts": prevPosts,
-	}); err != nil {
+	if err := c.viewSet.PostListView(ps, nextPosts, prevPosts, q).Render(w); err != nil {
 		c.fatalResponse(w, err)
 		return
 	}
