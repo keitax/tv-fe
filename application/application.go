@@ -21,9 +21,8 @@ func New(config *config.Config) (http.Handler, error) {
 	}
 
 	ub := util.NewUrlBuilder(config)
-	v := view.New(ub, config)
 	vs := view.NewViewSet(ub, config)
-	pc := controller.NewPostController(dao.NewPostDao(conn, config), v, vs, ub, config)
+	pc := controller.NewPostController(dao.NewPostDao(conn, config), vs, ub, config)
 
 	router := mux.NewRouter()
 	router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir(config.StaticDir))))

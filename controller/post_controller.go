@@ -17,16 +17,14 @@ import (
 
 type PostController struct {
 	postDao    dao.PostDao
-	view       view.View
 	viewSet    *view.ViewSet
 	urlBuilder *util.UrlBuilder
 	config     *config.Config
 }
 
-func NewPostController(postDao dao.PostDao, view_ view.View, vs *view.ViewSet, ub *util.UrlBuilder, config_ *config.Config) *PostController {
+func NewPostController(postDao dao.PostDao, vs *view.ViewSet, ub *util.UrlBuilder, config_ *config.Config) *PostController {
 	return &PostController{
 		postDao,
-		view_,
 		vs,
 		ub,
 		config_,

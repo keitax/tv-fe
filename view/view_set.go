@@ -19,8 +19,8 @@ func NewViewSet(ub *util.UrlBuilder, conf *config.Config) *ViewSet {
 	}
 }
 
-func (vs *ViewSet) PostSingleView(p *entity.Post) View_ {
-	return &view{
+func (vs *ViewSet) PostSingleView(p *entity.Post) *View {
+	return &View{
 		vs.urlBuilder,
 		vs.config,
 		"post_single.tmpl",
@@ -30,8 +30,8 @@ func (vs *ViewSet) PostSingleView(p *entity.Post) View_ {
 	}
 }
 
-func (vs *ViewSet) PostListView(ps []*entity.Post, nextPosts []*entity.Post, previousPosts []*entity.Post, q *dao.PostQuery) View_ {
-	return &view{
+func (vs *ViewSet) PostListView(ps []*entity.Post, nextPosts []*entity.Post, previousPosts []*entity.Post, q *dao.PostQuery) *View {
+	return &View{
 		vs.urlBuilder,
 		vs.config,
 		"post_list.tmpl",
@@ -44,8 +44,8 @@ func (vs *ViewSet) PostListView(ps []*entity.Post, nextPosts []*entity.Post, pre
 	}
 }
 
-func (vs *ViewSet) PostEditorView(p *entity.Post) View_ {
-	return &view{
+func (vs *ViewSet) PostEditorView(p *entity.Post) *View {
+	return &View{
 		vs.urlBuilder,
 		vs.config,
 		"post_editor.tmpl",
