@@ -10,17 +10,23 @@ import (
 	"github.com/keitax/textvid/util"
 )
 
+type View_ interface {
+	Render(w io.Writer) error
+}
+
 type View interface {
 	RenderTemplate(templateName string, out io.Writer, context map[string]interface{}) error
 }
 
 type view struct {
-	urlBuilder *util.UrlBuilder
-	config     *config.Config
+	urlBuilder   *util.UrlBuilder
+	config       *config.Config
+	templateName string
+	context      map[string]interface{}
 }
 
 func New(urlBuilder *util.UrlBuilder, config_ *config.Config) View {
-	return &view{urlBuilder, config_}
+	return &view{urlBuilder, config_, "", nil}
 }
 
 func (v *view) RenderTemplate(templateName string, out io.Writer, context map[string]interface{}) error {
@@ -46,4 +52,8 @@ func (v *view) RenderTemplate(templateName string, out io.Writer, context map[st
 		return err
 	}
 	return nil
+}
+
+func (v *view) Render(w io.Writer) error {
+	return v.RenderTemplate(v.templateName, w, v.context)
 }
