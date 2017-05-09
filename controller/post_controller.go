@@ -5,7 +5,6 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/Sirupsen/logrus"
 	"github.com/gorilla/mux"
 
 	"github.com/keitax/textvid/config"
@@ -47,13 +46,11 @@ func (c *PostController) GetSingle(w http.ResponseWriter, req *http.Request) {
 	params := mux.Vars(req)
 	year, err := strconv.Atoi(params["year"])
 	if err != nil {
-		c.fatalResponse(w, err)
-		return
+		panic(err)
 	}
 	month, err := strconv.Atoi(params["month"])
 	if err != nil {
-		c.fatalResponse(w, err)
-		return
+		panic(err)
 	}
 	urlName := params["name"]
 	posts := c.postDao.SelectByQuery(&dao.PostQuery{
@@ -74,13 +71,11 @@ func (c *PostController) GetSingle(w http.ResponseWriter, req *http.Request) {
 func (c *PostController) GetList(w http.ResponseWriter, req *http.Request) {
 	s, err := strconv.Atoi(req.URL.Query().Get("start"))
 	if err != nil {
-		c.fatalResponse(w, err)
-		return
+		panic(err)
 	}
 	r, err := strconv.Atoi(req.URL.Query().Get("results"))
 	if err != nil {
-		c.fatalResponse(w, err)
-		return
+		panic(err)
 	}
 	q := &dao.PostQuery{
 		Start:   uint64(s),
@@ -96,8 +91,7 @@ func (c *PostController) GetEditor(w http.ResponseWriter, req *http.Request) {
 	vs := mux.Vars(req)
 	id, err := strconv.Atoi(vs["id"])
 	if err != nil {
-		c.fatalResponse(w, err)
-		return
+		panic(err)
 	}
 	p := c.postDao.SelectOne(int64(id))
 	if p == nil {
@@ -111,12 +105,10 @@ func (c *PostController) EditPost(w http.ResponseWriter, req *http.Request) {
 	vs := mux.Vars(req)
 	id, err := strconv.Atoi(vs["id"])
 	if err != nil {
-		c.fatalResponse(w, err)
-		return
+		panic(err)
 	}
 	if err := req.ParseForm(); err != nil {
-		c.fatalResponse(w, err)
-		return
+		panic(err)
 	}
 	p := &entity.Post{
 		Id:      int64(id),
@@ -127,9 +119,4 @@ func (c *PostController) EditPost(w http.ResponseWriter, req *http.Request) {
 	c.postDao.Update(p)
 	p = c.postDao.SelectOne(int64(id))
 	http.Redirect(w, req, c.urlBuilder.LinkToPostPage(p), http.StatusSeeOther)
-}
-
-func (c *PostController) fatalResponse(w http.ResponseWriter, err error) {
-	logrus.Error(err)
-	http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 }
