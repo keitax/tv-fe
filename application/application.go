@@ -2,12 +2,12 @@ package application
 
 import (
 	"net/http"
+	"runtime/debug"
 
 	"github.com/Sirupsen/logrus"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gocraft/dbr"
 	"github.com/gorilla/mux"
-
 	"github.com/keitax/textvid/config"
 	"github.com/keitax/textvid/controller"
 	"github.com/keitax/textvid/dao"
@@ -22,8 +22,10 @@ type application struct {
 func (a *application) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	defer func() {
 		err := recover()
-		logrus.Error(err)
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		if err != nil {
+			logrus.Errorf("%s: %s", err, debug.Stack())
+			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		}
 	}()
 	a.router.ServeHTTP(w, r)
 }
