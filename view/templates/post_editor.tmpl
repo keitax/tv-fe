@@ -1,29 +1,29 @@
-{{define "stylesheets"}}
+{{define "stylesheets" -}}
 <link rel="stylesheet" href="static/admin.css">
-{{end}}
+{{end -}}
 
-{{define "content"}}
-{{with .post}}
+{{define "content" -}}
+{{with .post -}}
 <section class="post-editor">
-    {{if .Title}}
-        <h2 class="post-editor__title">Edit: {{.Title}}</h2>
-    {{else}}
-        <h2 class="post-editor__title">New</h2>
-    {{end}}
-    <form class="post-editor__form" method="post" action="{{$.Urls.LinkToPostResource .}}">
-        <dl>
-            <dt class="post-editor__field-label">Title</dt>
-            <dd class="post-editor__field"><input class="post-editor__input" type="text" name="title" value="{{.Title}}"/></dd>
-            <dt class="post-editor__field-label">URL Name</dt>
-            <dd class="post-editor__field"><input class="post-editor__input" type="text" name="url-name" value="{{.UrlName}}"/></dd>
-            <dt class="post-editor__field-label">Body</dt>
-            <dd class="post-editor__field"><textarea class="post-editor__textarea" name="body">{{.Body}}</textarea></dd>
-        </dl>
-        <ul class="post-editor__action-list">
-            <li class="post-editor__action"><button class="post-editor__field-submit" type="submit">Preview</button></li>
-            <li class="post-editor__action"><button class="post-editor__field-submit" type="submit">Submit</button></li>
-        </ul>
-    </form>
+{{if .Title -}}
+<h2 class="post-editor__title">Edit: {{.Title}}</h2>
+{{else -}}
+<h2 class="post-editor__title">New</h2>
+{{end -}}
+<form class="post-editor__form" method="post" action="{{$.Urls.LinkToPostResource .}}">
+<dl>
+<dt class="post-editor__field-label">Title</dt>
+<dd class="post-editor__field"><input class="post-editor__input" type="text" name="title" value="{{.Title}}"/></dd>
+<dt class="post-editor__field-label">URL Name</dt>
+<dd class="post-editor__field"><input class="post-editor__input" type="text" name="url-name" value="{{.UrlName}}"/></dd>
+<dt class="post-editor__field-label">Body</dt>
+<dd class="post-editor__field"><textarea class="post-editor__textarea" name="body">{{.Body}}</textarea></dd>
+</dl>
+<ul class="post-editor__action-list">
+<li class="post-editor__action"><button class="post-editor__field-submit" type="submit">Preview</button></li>
+<li class="post-editor__action"><button class="post-editor__field-submit" type="submit">Submit</button></li>
+</ul>
+</form>
 </section>
-{{end}}
-{{end}}
+{{end -}}
+{{end -}}

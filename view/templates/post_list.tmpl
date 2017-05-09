@@ -1,45 +1,45 @@
-{{define "stylesheets"}}
+{{define "stylesheets" -}}
 <link rel="stylesheet" href="static/index.css">
-{{end}}
+{{end -}}
 
-{{define "content"}}
+{{define "content" -}}
 <ul class="post-list">
-    {{range .posts}}
-    <li class="post-list-item">
-        <article class="post">
-            <header class="post__header">
-                <h1 class="post__title">
-                    <a class="post__title-link" href="{{$.Urls.LinkToPostPage .}}">▼ {{.Title}}</a>
-                </h1>
-                <p class="post__meta">
-                    {{.CreatedAt | ShowTime}}
-                </p>
-            </header>
-            <main class="post__body">
-                {{.Body | RenderMarkdown}}
-            </main>
-        </article>
-    </li>
-    {{end}}
+{{range .posts -}}
+<li class="post-list-item">
+<article class="post">
+<header class="post__header">
+<h1 class="post__title">
+<a class="post__title-link" href="{{$.Urls.LinkToPostPage .}}">▼ {{.Title}}</a>
+</h1>
+<p class="post__meta">
+{{.CreatedAt | ShowTime}}
+</p>
+</header>
+<main class="post__body">
+{{.Body | RenderMarkdown -}}
+</main>
+</article>
+</li>
+{{end -}}
 </ul>
 <nav class="post-nav">
-    <ul class="post-nav__list">
-        <li class="post-nav__item">
-            ←
-            {{if .NextPosts}}
-            <a href="{{.Urls.LinkToPostListPage .CurrentQuery.Next}}">Next Posts</a>
-            {{else}}
-            <span class="post-nav--disable">(no posts)</span>
-            {{end}}
-        </li>
-        <li class="post-nav__item">
-            →
-            {{if .PreviousPosts}}
-            <a href="{{.Urls.LinkToPostListPage .CurrentQuery.Previous}}">Previous Posts</a>
-            {{else}}
-            <span class="post-nav--disable">(no posts)</span>
-            {{end}}
-        </li>
-    </ul>
+<ul class="post-nav__list">
+<li class="post-nav__item">
+←
+{{if .NextPosts -}}
+<a href="{{.Urls.LinkToPostListPage .CurrentQuery.Next}}">Next Posts</a>
+{{else -}}
+<span class="post-nav--disable">(no posts)</span>
+{{end -}}
+</li>
+<li class="post-nav__item">
+→
+{{if .PreviousPosts -}}
+<a href="{{.Urls.LinkToPostListPage .CurrentQuery.Previous}}">Previous Posts</a>
+{{else -}}
+<span class="post-nav--disable">(no posts)</span>
+{{end -}}
+</li>
+</ul>
 </nav>
-{{end}}
+{{end -}}
