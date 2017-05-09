@@ -17,7 +17,7 @@ type View struct {
 	context      map[string]interface{}
 }
 
-func (v *View) Render(w io.Writer) error {
+func (v *View) Render(w io.Writer) {
 	ts := template.New("root").Funcs(template.FuncMap{
 		"RenderMarkdown": util.ParseMarkdown,
 		"ShowTime": func(t time.Time) string {
@@ -37,7 +37,6 @@ func (v *View) Render(w io.Writer) error {
 		context_[key] = value
 	}
 	if err := ts.ExecuteTemplate(w, "layout.tmpl", context_); err != nil {
-		return err
+		panic(err)
 	}
-	return nil
 }

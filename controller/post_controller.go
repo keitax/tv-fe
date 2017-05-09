@@ -40,10 +40,7 @@ func (c *PostController) GetIndex(w http.ResponseWriter, req *http.Request) {
 	qp := q.Previous()
 	qp.Results = 1
 	prevPosts := c.postDao.SelectByQuery(qp)
-	if err := c.viewSet.PostListView(posts, nil, prevPosts, q).Render(w); err != nil {
-		c.fatalResponse(w, err)
-		return
-	}
+	c.viewSet.PostListView(posts, nil, prevPosts, q).Render(w)
 }
 
 func (c *PostController) GetSingle(w http.ResponseWriter, req *http.Request) {
@@ -71,10 +68,7 @@ func (c *PostController) GetSingle(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	p := c.postDao.SelectOne(posts[0].Id)
-	if err := c.viewSet.PostSingleView(p).Render(w); err != nil {
-		c.fatalResponse(w, err)
-		return
-	}
+	c.viewSet.PostSingleView(p).Render(w)
 }
 
 func (c *PostController) GetList(w http.ResponseWriter, req *http.Request) {
@@ -95,10 +89,7 @@ func (c *PostController) GetList(w http.ResponseWriter, req *http.Request) {
 	ps := c.postDao.SelectByQuery(q)
 	nextPosts := c.postDao.SelectByQuery(q.Next())
 	prevPosts := c.postDao.SelectByQuery(q.Previous())
-	if err := c.viewSet.PostListView(ps, nextPosts, prevPosts, q).Render(w); err != nil {
-		c.fatalResponse(w, err)
-		return
-	}
+	c.viewSet.PostListView(ps, nextPosts, prevPosts, q).Render(w)
 }
 
 func (c *PostController) GetEditor(w http.ResponseWriter, req *http.Request) {
@@ -113,10 +104,7 @@ func (c *PostController) GetEditor(w http.ResponseWriter, req *http.Request) {
 		http.NotFound(w, req)
 		return
 	}
-	if err := c.viewSet.PostEditorView(p).Render(w); err != nil {
-		c.fatalResponse(w, err)
-		return
-	}
+	c.viewSet.PostEditorView(p).Render(w)
 }
 
 func (c *PostController) EditPost(w http.ResponseWriter, req *http.Request) {
