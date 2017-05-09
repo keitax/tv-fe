@@ -3,6 +3,7 @@ package application
 import (
 	"net/http"
 
+	"github.com/Sirupsen/logrus"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gocraft/dbr"
 	"github.com/gorilla/mux"
@@ -13,6 +14,19 @@ import (
 	"github.com/keitax/textvid/util"
 	"github.com/keitax/textvid/view"
 )
+
+type application struct {
+	router http.Handler
+}
+
+func (a *application) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := recover()
+		logrus.Error(err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+	}()
+	a.router.ServeHTTP(w, r)
+}
 
 func New(config *config.Config) (http.Handler, error) {
 	conn, err := dbr.Open("mysql", config.DataSourceName, nil)
@@ -32,5 +46,5 @@ func New(config *config.Config) (http.Handler, error) {
 	router.HandleFunc("/posts/{id:[0-9]+}", pc.EditPost)
 	router.HandleFunc("/", pc.GetIndex)
 
-	return router, nil
+	return &application{router}, nil
 }
