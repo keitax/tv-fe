@@ -22,14 +22,9 @@ func TestInsertAndSelectOne(t *testing.T) {
 		Title:   "test-title",
 		Body:    "test-body",
 	}
-	if err := d.Insert(original); err != nil {
-		t.Fatal(err)
-	}
+	d.Insert(original)
 
-	inserted, err := d.SelectOne(original.Id)
-	if err != nil {
-		t.Fatal(err)
-	}
+	inserted := d.SelectOne(original.Id)
 
 	testCases := []struct {
 		descr    string
@@ -54,18 +49,14 @@ func TestSelectOneWithNeighbors(t *testing.T) {
 	defer d.(*postDao).cleanup(t)
 
 	for i := 0; i < 3; i++ {
-		if err := d.Insert(&entity.Post{
+		d.Insert(&entity.Post{
 			UrlName: "test-url-name",
 			Title:   "test-title",
-		}); err != nil {
-			t.Fatal(err)
-		}
+		})
 	}
 
-	p2, err := d.SelectOne(2)
-	if err != nil {
-		t.Fatal(err)
-	}
+	p2 := d.SelectOne(2)
+
 	expectedNextId := int64(3)
 	if p2.NextPost.Id != expectedNextId {
 		t.Errorf("p1.NextPost.Id = %d, expected %d", p2.NextPost.Id, expectedNextId)
@@ -75,10 +66,7 @@ func TestSelectOneWithNeighbors(t *testing.T) {
 		t.Errorf("p1.PreviousPost.Id = %d, expected %d", p2.NextPost.Id, expectedNextId)
 	}
 
-	p1, err := d.SelectOne(1)
-	if err != nil {
-		t.Fatal(err)
-	}
+	p1 := d.SelectOne(1)
 	if p1.PreviousPost != nil {
 		t.Errorf("p1.PreviousPost = %v, expected nil", p1.PreviousPost)
 	}
@@ -86,10 +74,7 @@ func TestSelectOneWithNeighbors(t *testing.T) {
 		t.Errorf("p1.NextPost = %v, expected non-nil", p1.NextPost)
 	}
 
-	p3, err := d.SelectOne(3)
-	if err != nil {
-		t.Fatal(err)
-	}
+	p3 := d.SelectOne(3)
 	if p3.PreviousPost == nil {
 		t.Errorf("p3.PreviousPost = %v, expected non-nil", p3.PreviousPost)
 	}
@@ -103,22 +88,17 @@ func TestSelectByQueryToSelectByRange(t *testing.T) {
 	defer d.(*postDao).cleanup(t)
 
 	for i := 0; i < 3; i++ {
-		if err := d.Insert(&entity.Post{
+		d.Insert(&entity.Post{
 			UrlName: "test-url-name",
 			Title:   "test-title",
 			Body:    "test-body",
-		}); err != nil {
-			t.Fatal(err)
-		}
+		})
 	}
 
-	ps, err := d.SelectByQuery(&PostQuery{
+	ps := d.SelectByQuery(&PostQuery{
 		Start:   1,
 		Results: 2,
 	})
-	if err != nil {
-		t.Fatal(err)
-	}
 
 	if len(ps) != 2 {
 		t.Errorf("Selected post count isn't expected: expected: 2, actual: %d", len(ps))
@@ -142,20 +122,15 @@ func TestSelectByQueryToSelectByMonth(t *testing.T) {
 		"2017-02-01T00:00:00+00:00",
 	}
 	for _, createdAt := range createdAtList {
-		if err := d.Insert(makePostSpecificCreatedAt(t, createdAt)); err != nil {
-			t.Fatal(err)
-		}
+		d.Insert(makePostSpecificCreatedAt(t, createdAt))
 	}
 
-	ps, err := d.SelectByQuery(&PostQuery{
+	ps := d.SelectByQuery(&PostQuery{
 		Start:   1,
 		Results: 10,
 		Year:    2017,
 		Month:   1,
 	})
-	if err != nil {
-		t.Fatal(err)
-	}
 	if len(ps) != 2 {
 		t.Fatalf("len(ps) = %d", len(ps))
 	}
@@ -176,21 +151,16 @@ func TestSelectByQueryToSelectByUrlName(t *testing.T) {
 		"foobar",
 	}
 	for _, urlName := range urlNames {
-		if err := d.Insert(&entity.Post{
+		d.Insert(&entity.Post{
 			UrlName: urlName,
-		}); err != nil {
-			t.Fatal(err)
-		}
+		})
 	}
 
-	ps, err := d.SelectByQuery(&PostQuery{
+	ps := d.SelectByQuery(&PostQuery{
 		Start:   1,
 		Results: 10,
 		UrlName: "bar",
 	})
-	if err != nil {
-		t.Fatal(err)
-	}
 	if len(ps) != 1 {
 		t.Fatalf("len(ps) = %d", len(ps))
 	}
@@ -204,33 +174,26 @@ func TestUpdate(t *testing.T) {
 	defer d.(*postDao).cleanup(t)
 
 	op := &entity.Post{
-		Title: "Original Title",
-		Body: "Original Body",
+		Title:   "Original Title",
+		Body:    "Original Body",
 		UrlName: "original-url-name",
 	}
-	if err := d.Insert(op); err != nil {
-		t.Fatal(err)
-	}
+	d.Insert(op)
 
 	up := &entity.Post{
-		Id: op.Id,
-		Title: "Updated Title",
-		Body: "Updated Body",
+		Id:      op.Id,
+		Title:   "Updated Title",
+		Body:    "Updated Body",
 		UrlName: "updated-url-name",
 	}
-	if err := d.Update(up); err != nil {
-		t.Fatal(err)
-	}
+	d.Update(up)
 
-	p, err := d.SelectOne(op.Id)
-	if err != nil {
-		t.Fatal(err)
-	}
+	p := d.SelectOne(op.Id)
 
-	testCases := []struct{
-		descr string
+	testCases := []struct {
+		descr    string
 		expected interface{}
-		actual interface{}
+		actual   interface{}
 	}{
 		{"Title", "Updated Title", p.Title},
 		{"Body", "Updated Body", p.Body},

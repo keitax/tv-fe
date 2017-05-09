@@ -36,18 +36,10 @@ func (c *PostController) GetIndex(w http.ResponseWriter, req *http.Request) {
 		Start:   1,
 		Results: 5,
 	}
-	posts, err := c.postDao.SelectByQuery(q)
-	if err != nil {
-		c.fatalResponse(w, err)
-		return
-	}
+	posts := c.postDao.SelectByQuery(q)
 	qp := q.Previous()
 	qp.Results = 1
-	prevPosts, err := c.postDao.SelectByQuery(qp)
-	if err != nil {
-		c.fatalResponse(w, err)
-		return
-	}
+	prevPosts := c.postDao.SelectByQuery(qp)
 	if err := c.viewSet.PostListView(posts, nil, prevPosts, q).Render(w); err != nil {
 		c.fatalResponse(w, err)
 		return
@@ -67,26 +59,18 @@ func (c *PostController) GetSingle(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	urlName := params["name"]
-	posts, err := c.postDao.SelectByQuery(&dao.PostQuery{
+	posts := c.postDao.SelectByQuery(&dao.PostQuery{
 		Start:   1,
 		Results: 1,
 		Year:    year,
 		Month:   time.Month(month),
 		UrlName: urlName,
 	})
-	if err != nil {
-		c.fatalResponse(w, err)
-		return
-	}
 	if len(posts) <= 0 {
 		http.NotFound(w, req)
 		return
 	}
-	p, err := c.postDao.SelectOne(posts[0].Id)
-	if err != nil {
-		c.fatalResponse(w, err)
-		return
-	}
+	p := c.postDao.SelectOne(posts[0].Id)
 	if err := c.viewSet.PostSingleView(p).Render(w); err != nil {
 		c.fatalResponse(w, err)
 		return
@@ -108,21 +92,9 @@ func (c *PostController) GetList(w http.ResponseWriter, req *http.Request) {
 		Start:   uint64(s),
 		Results: uint64(r),
 	}
-	ps, err := c.postDao.SelectByQuery(q)
-	if err != nil {
-		c.fatalResponse(w, err)
-		return
-	}
-	nextPosts, err := c.postDao.SelectByQuery(q.Next())
-	if err != nil {
-		c.fatalResponse(w, err)
-		return
-	}
-	prevPosts, err := c.postDao.SelectByQuery(q.Previous())
-	if err != nil {
-		c.fatalResponse(w, err)
-		return
-	}
+	ps := c.postDao.SelectByQuery(q)
+	nextPosts := c.postDao.SelectByQuery(q.Next())
+	prevPosts := c.postDao.SelectByQuery(q.Previous())
 	if err := c.viewSet.PostListView(ps, nextPosts, prevPosts, q).Render(w); err != nil {
 		c.fatalResponse(w, err)
 		return
@@ -136,11 +108,7 @@ func (c *PostController) GetEditor(w http.ResponseWriter, req *http.Request) {
 		c.fatalResponse(w, err)
 		return
 	}
-	p, err := c.postDao.SelectOne(int64(id))
-	if err != nil {
-		c.fatalResponse(w, err)
-		return
-	}
+	p := c.postDao.SelectOne(int64(id))
 	if p == nil {
 		http.NotFound(w, req)
 		return
@@ -168,15 +136,8 @@ func (c *PostController) EditPost(w http.ResponseWriter, req *http.Request) {
 		Body:    req.Form.Get("body"),
 		UrlName: req.Form.Get("url-name"),
 	}
-	if err := c.postDao.Update(p); err != nil {
-		c.fatalResponse(w, err)
-		return
-	}
-	p, err = c.postDao.SelectOne(int64(id))
-	if err != nil {
-		c.fatalResponse(w, err)
-		return
-	}
+	c.postDao.Update(p)
+	p = c.postDao.SelectOne(int64(id))
 	http.Redirect(w, req, c.urlBuilder.LinkToPostPage(p), http.StatusSeeOther)
 }
 
