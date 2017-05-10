@@ -77,11 +77,19 @@ func TestLinkToPostEditorPage(t *testing.T) {
 	ub := &UrlBuilder{config: &config.Config{
 		BaseUrl: "http://localhost/",
 	}}
-	u := ub.LinkToPostEditorPage(&entity.Post{
-		Id: 10,
-	})
-	expected := "http://localhost/posts/10/edit"
-	if u != expected {
-		t.Errorf("ub.LinkToPostEditorPage(_) = %#v, expected %#v", u, expected)
+
+	testCases := []struct {
+		descr    string
+		expected string
+		post     *entity.Post
+	}{
+		{"new", "http://localhost/posts/new", nil},
+		{"edit", "http://localhost/posts/10/edit", &entity.Post{Id: 10}},
+	}
+	for _, tc := range testCases {
+		actual := ub.LinkToPostEditorPage(tc.post)
+		if tc.expected != actual {
+			t.Errorf("%s: ub.LinkToPostEditorPage(_) = %#v, expected %#v", tc.descr, actual, tc.expected)
+		}
 	}
 }
