@@ -1,5 +1,37 @@
 @import "./index.css";
 
+.new-post-button {
+    margin: 0.5rem 0;
+    padding: 0.25rem 0.5rem;
+    display: inline-block;
+    background-color: #66f;
+}
+
+.new-post-button:link, .new-post-button:visited {
+    color: #fff;
+}
+
+.post-table {
+    width: 100%;
+}
+
+.post-table__column {
+    font-size: smaller;
+    padding: 0.5rem 0;
+}
+
+.post-table--title-width {
+    width: 55%;
+}
+
+.post-table--created-at-width {
+    width: 30%;
+}
+
+.post-table--control-column {
+    text-align: right;
+}
+
 .post-editor__title {
     font-size: large;
 }

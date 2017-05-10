@@ -1,0 +1,19 @@
+{{define "stylesheets" -}}
+<link rel="stylesheet" href="static/admin.css">
+{{end -}}
+
+{{define "content" -}}
+<header>
+<h2 class="post-editor__title">Manage Posts</h2>
+<a class="new-post-button" href="{{$.Urls.LinkToPostEditorPage nil}}">New post</a>
+</header>
+<table class="post-table">
+{{range .posts -}}
+<tr>
+<td class="post-table__column post-table--title-width"><a href="{{$.Urls.LinkToPostPage .}}">{{.Title}}</a></td>
+<td class="post-table__column post-table--created-at-width">{{.CreatedAt | ShowTime}}</td>
+<td class="post-table__column post-table--control-column"><a href="{{$.Urls.LinkToPostEditorPage .}}">Edit</a> | Delete</td>
+</tr>
+{{end -}}
+</table>
+{{end -}}
