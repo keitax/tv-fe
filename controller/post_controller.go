@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
-
 	"github.com/keitax/textvid/config"
 	"github.com/keitax/textvid/dao"
 	"github.com/keitax/textvid/entity"
@@ -88,15 +87,20 @@ func (c *PostController) GetList(w http.ResponseWriter, req *http.Request) {
 }
 
 func (c *PostController) GetEditor(w http.ResponseWriter, req *http.Request) {
-	vs := mux.Vars(req)
-	id, err := strconv.Atoi(vs["id"])
-	if err != nil {
-		panic(err)
-	}
-	p := c.postDao.SelectOne(int64(id))
-	if p == nil {
-		http.NotFound(w, req)
-		return
+	ids := mux.Vars(req)["id"]
+	var p *entity.Post
+	if ids == "" {
+		p = &entity.Post{}
+	} else {
+		id, err := strconv.Atoi(ids)
+		if err != nil {
+			panic(err)
+		}
+		p = c.postDao.SelectOne(int64(id))
+		if p == nil {
+			http.NotFound(w, req)
+			return
+		}
 	}
 	c.viewSet.PostEditorView(p).Render(w)
 }
