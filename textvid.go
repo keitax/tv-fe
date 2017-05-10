@@ -5,7 +5,6 @@ import (
 	"os"
 
 	"github.com/Sirupsen/logrus"
-
 	"github.com/keitax/textvid/application"
 	"github.com/keitax/textvid/config"
 )
@@ -16,6 +15,10 @@ func main() {
 		logrus.Fatal(err)
 		os.Exit(1)
 	}
+	if c.RunLevel == config.DevelopmentRunLevel {
+		logrus.SetLevel(logrus.DebugLevel)
+	}
+
 	app, err := application.New(c)
 	if err != nil {
 		logrus.Fatal(err)
