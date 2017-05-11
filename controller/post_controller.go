@@ -105,6 +105,20 @@ func (c *PostController) GetEditor(w http.ResponseWriter, req *http.Request) {
 	c.viewSet.PostEditorView(p).Render(w)
 }
 
+func (c *PostController) SubmitPost(w http.ResponseWriter, req *http.Request) {
+	if err := req.ParseForm(); err != nil {
+		panic(err)
+	}
+	p := &entity.Post{
+		Title:   req.Form.Get("title"),
+		Body:    req.Form.Get("body"),
+		UrlName: req.Form.Get("url-name"),
+	}
+	c.postDao.Insert(p)
+	p = c.postDao.SelectOne(int64(p.Id))
+	http.Redirect(w, req, c.urlBuilder.LinkToPostPage(p), http.StatusSeeOther)
+}
+
 func (c *PostController) EditPost(w http.ResponseWriter, req *http.Request) {
 	vs := mux.Vars(req)
 	id, err := strconv.Atoi(vs["id"])

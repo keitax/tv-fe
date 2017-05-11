@@ -47,7 +47,13 @@ func New(config *config.Config) (http.Handler, error) {
 	router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir(config.StaticDir))))
 	router.HandleFunc("/{year:[0-9]{4}}/{month:0[1-9]|1[0-2]}/{name}.html", pc.GetSingle)
 	router.HandleFunc("/posts/{id:[0-9]+}/edit", pc.GetEditor)
-	router.HandleFunc("/posts/", pc.GetList)
+	router.HandleFunc("/posts/", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodPost {
+			pc.SubmitPost(w, r)
+			return
+		}
+		pc.GetList(w, r)
+	})
 	router.HandleFunc("/posts/{id:[0-9]+}", pc.EditPost)
 	router.HandleFunc("/", pc.GetIndex)
 	router.HandleFunc("/admin", ac.GetIndex)
