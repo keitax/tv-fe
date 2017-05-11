@@ -5,12 +5,16 @@
 {{define "content" -}}
 {{with .post -}}
 <section class="post-editor">
-{{if .Title -}}
+{{if .Id -}}
 <h2 class="post-editor__title">Edit: {{.Title}}</h2>
 {{else -}}
 <h2 class="post-editor__title">New</h2>
 {{end -}}
+{{if .Id -}}
 <form class="post-editor__form" method="post" action="{{$.Urls.LinkToPostResource .}}">
+{{else -}}
+<form class="post-editor__form" method="post" action="{{$.Urls.LinkToPostResource nil}}">
+{{end -}}
 <dl>
 <dt class="post-editor__field-label">Title</dt>
 <dd class="post-editor__field"><input class="post-editor__input" type="text" name="title" value="{{.Title}}"/></dd>
