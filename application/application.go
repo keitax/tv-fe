@@ -44,9 +44,8 @@ func New(config *config.Config) (http.Handler, error) {
 	ac := controller.NewAdminController(d, vs, config)
 
 	r := mux.NewRouter()
+	r.HandleFunc("/", pc.GetIndex)
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir(config.StaticDir))))
-	r.HandleFunc("/{year:[0-9]{4}}/{month:0[1-9]|1[0-2]}/{name}.html", pc.GetSingle)
-	r.HandleFunc("/posts/{id:[0-9]+}/edit", pc.GetEditor)
 	r.HandleFunc("/posts/", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost {
 			pc.SubmitPost(w, r)
@@ -54,10 +53,11 @@ func New(config *config.Config) (http.Handler, error) {
 		}
 		pc.GetList(w, r)
 	})
-	r.HandleFunc("/posts/{id:[0-9]+}", pc.EditPost)
-	r.HandleFunc("/", pc.GetIndex)
-	r.HandleFunc("/admin", ac.GetIndex)
 	r.HandleFunc("/posts/new", pc.GetEditor)
+	r.HandleFunc("/posts/{id:[0-9]+}", pc.EditPost)
+	r.HandleFunc("/posts/{id:[0-9]+}/edit", pc.GetEditor)
+	r.HandleFunc("/{year:[0-9]{4}}/{month:0[1-9]|1[0-2]}/{name}.html", pc.GetSingle)
+	r.HandleFunc("/admin", ac.GetIndex)
 
 	return &application{r}, nil
 }
