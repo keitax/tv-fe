@@ -29,6 +29,14 @@ func ParseMarkdown(text string) template.HTML {
 	return template.HTML(string(bs))
 }
 
+func ConvertToStringSlice(orig []interface{}) []string {
+	dest := []string{}
+	for _, elem := range orig {
+		dest = append(dest, elem.(string))
+	}
+	return dest
+}
+
 func StripMetadata(content string) (map[string]interface{}, string) {
 	lineno := 0
 	lines := strings.Split(content, "\n")
