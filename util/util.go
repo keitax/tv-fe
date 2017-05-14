@@ -3,14 +3,14 @@ package util
 import (
 	"html/template"
 	"os"
-	"strings"
+	"regexp"
 
 	"github.com/microcosm-cc/bluemonday"
 	"github.com/russross/blackfriday"
 	"gopkg.in/yaml.v2"
 )
 
-const metadataSeparator = "---"
+var metadataRe = regexp.MustCompile(`(?ms)^---\s*$\n(.*?)^---\s*$\n(.*)`)
 
 func ExistsFile(path string) bool {
 	_, err := os.Stat(path)
@@ -38,53 +38,17 @@ func ConvertToStringSlice(orig []interface{}) []string {
 }
 
 func StripMetadata(content string) (map[string]interface{}, string) {
-	lineno := 0
-	lines := strings.Split(content, "\n")
-
-	isEof := func() bool {
-		return lineno >= len(lines)
+	ms := metadataRe.FindStringSubmatch(content)
+	if len(ms) < 3 {
+		return map[string]interface{}{}, content
 	}
-	parseMetadataSeparator := func() bool {
-		if isEof() {
-			return false
-		}
-		if lines[lineno] == metadataSeparator {
-			lineno++
-			return true
-		}
-		return false
+	if len(ms) > 3 {
+		panic("BUG: must not happen")
 	}
-	parseMetadataBody := func() map[string]interface{} {
-		ls := []string{}
-		for !isEof() {
-			if lines[lineno] == metadataSeparator {
-				break
-			}
-			ls = append(ls, lines[lineno])
-			lineno++
-		}
-		metadata := map[string]interface{}{}
-		if err := yaml.Unmarshal([]byte(strings.Join(ls, "\n")), &metadata); err != nil {
-			return metadata
-		}
-		return metadata
+	metadataSection, bodySection := ms[1], ms[2]
+	var metadata map[string]interface{}
+	if err := yaml.Unmarshal([]byte(metadataSection), &metadata); err != nil {
+		return map[string]interface{}{}, bodySection
 	}
-	parseBody := func() string {
-		ls := []string{}
-		for !isEof() {
-			ls = append(ls, lines[lineno])
-			lineno++
-		}
-		return strings.Join(ls, "\n")
-	}
-
-	emptyMetadata := map[string]interface{}{}
-	if !parseMetadataSeparator() {
-		return emptyMetadata, parseBody()
-	}
-	metadata := parseMetadataBody()
-	if !parseMetadataSeparator() {
-		return emptyMetadata, parseBody()
-	}
-	return metadata, parseBody()
+	return metadata, bodySection
 }

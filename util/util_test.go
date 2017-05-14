@@ -66,7 +66,10 @@ title: Hello, World
 hello, world
 `,
 			expectedMetadata: map[string]interface{}{},
-			expectedBody:     "",
+			expectedBody: `---
+title: Hello, World
+hello, world
+`,
 		},
 		{
 			descr: "broken metadata (broken yaml)",
