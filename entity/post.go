@@ -5,6 +5,7 @@ import "time"
 type Post struct {
 	Id           int64 `db:"id"`
 	Key          string
+	Date         *time.Time
 	CreatedAt    *time.Time `db:"created_at"`
 	UpdatedAt    *time.Time `db:"updated_at"`
 	UrlName      string     `db:"url_name"`
