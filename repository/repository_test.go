@@ -35,3 +35,15 @@ func TestFetchOne(t *testing.T) {
 		}
 	}
 }
+
+func TestFetch(t *testing.T) {
+	r := New("./test-repo", "")
+	ps := r.Fetch(nil)
+	if len(ps) != 1 {
+		t.Fatalf("len(ps) = %d, expected %d", len(ps), 1)
+	}
+	expected := "2017/01/test-post"
+	if ps[0].Key != "2017/01/test-post" {
+		t.Errorf("ps[0].Key = %#v, expected %#v", ps[0], expected)
+	}
+}

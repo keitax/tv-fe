@@ -2,13 +2,19 @@ package repository
 
 import (
 	"io/ioutil"
+	"os"
 	"path/filepath"
+	"regexp"
+	"sort"
 	"time"
-	"gopkg.in/src-d/go-git.v4"
 
+	"github.com/keitax/textvid/dao"
 	"github.com/keitax/textvid/entity"
 	"github.com/keitax/textvid/util"
+	"gopkg.in/src-d/go-git.v4"
 )
+
+var postFileRe = regexp.MustCompile(`^.*([0-9][0-9][0-9][0-9]/[0-9][0-9]/.+)\.md$`)
 
 type Repository struct {
 	localGitRepoPath  string
@@ -45,5 +51,23 @@ func (r *Repository) FetchOne(key string) *entity.Post {
 		Body:   body,
 		Labels: util.ConvertToStringSlice(meta["labels"].([]interface{})),
 	}
-	return nil
+}
+
+func (r *Repository) Fetch(pq *dao.PostQuery) []*entity.Post {
+	ps := []*entity.Post{}
+	if err := filepath.Walk(filepath.Join(r.localGitRepoPath, "posts"), func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if !postFileRe.MatchString(path) {
+			return nil
+		}
+		key := postFileRe.FindStringSubmatch(path)[1]
+		ps = append(ps, r.FetchOne(key))
+		return nil
+	}); err != nil {
+		panic(err)
+	}
+	sort.Sort(entity.SortPost(ps))
+	return ps
 }
