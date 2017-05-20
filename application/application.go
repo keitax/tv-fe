@@ -11,6 +11,7 @@ import (
 	"github.com/keitax/textvid/config"
 	"github.com/keitax/textvid/controller"
 	"github.com/keitax/textvid/dao"
+	"github.com/keitax/textvid/repository"
 	"github.com/keitax/textvid/util"
 	"github.com/keitax/textvid/view"
 )
@@ -40,7 +41,8 @@ func New(config *config.Config) (http.Handler, error) {
 
 	ub := util.NewUrlBuilder(config)
 	vs := view.NewViewSet(ub, config)
-	pc := controller.NewPostController(d, vs, ub, config)
+	re := repository.New(config.LocalGitRepository, config.RemoteGitRepository)
+	pc := controller.NewPostController(d, re, vs, ub, config)
 	ac := controller.NewAdminController(d, vs, config)
 
 	r := mux.NewRouter()
