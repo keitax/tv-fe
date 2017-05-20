@@ -22,7 +22,7 @@ func (ub *UrlBuilder) LinkToTopPage() string {
 }
 
 func (ub *UrlBuilder) LinkToPostPage(post *entity.Post) string {
-	return fmt.Sprintf("%s%04d/%02d/%s.html", ub.config.BaseUrl, post.CreatedAt.Year(), post.CreatedAt.Month(), post.UrlName)
+	return fmt.Sprintf("%s%s.html", ub.config.BaseUrl, post.Key)
 }
 
 func (ub *UrlBuilder) LinkToPostResource(post *entity.Post) string {
