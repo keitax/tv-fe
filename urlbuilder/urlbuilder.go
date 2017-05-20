@@ -1,4 +1,4 @@
-package util
+package urlbuilder
 
 import (
 	"fmt"
@@ -9,7 +9,7 @@ import (
 	"github.com/keitax/textvid/entity"
 )
 
-func NewUrlBuilder(conf *config.Config) *UrlBuilder {
+func New(conf *config.Config) *UrlBuilder {
 	return &UrlBuilder{conf}
 }
 

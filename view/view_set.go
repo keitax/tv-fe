@@ -4,15 +4,15 @@ import (
 	"github.com/keitax/textvid/config"
 	"github.com/keitax/textvid/dao"
 	"github.com/keitax/textvid/entity"
-	"github.com/keitax/textvid/util"
+	"github.com/keitax/textvid/urlbuilder"
 )
 
 type ViewSet struct {
-	urlBuilder *util.UrlBuilder
+	urlBuilder *urlbuilder.UrlBuilder
 	config     *config.Config
 }
 
-func NewViewSet(ub *util.UrlBuilder, conf *config.Config) *ViewSet {
+func NewViewSet(ub *urlbuilder.UrlBuilder, conf *config.Config) *ViewSet {
 	return &ViewSet{
 		urlBuilder: ub,
 		config:     conf,

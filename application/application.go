@@ -9,8 +9,8 @@ import (
 	"github.com/keitax/textvid/config"
 	"github.com/keitax/textvid/controller"
 	"github.com/keitax/textvid/repository"
-	"github.com/keitax/textvid/util"
 	"github.com/keitax/textvid/view"
+	"github.com/keitax/textvid/urlbuilder"
 )
 
 type application struct {
@@ -29,7 +29,7 @@ func (a *application) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func New(config *config.Config) (http.Handler, error) {
-	ub := util.NewUrlBuilder(config)
+	ub := urlbuilder.New(config)
 	vs := view.NewViewSet(ub, config)
 	re := repository.New(config.LocalGitRepository, config.RemoteGitRepository)
 	pc := controller.NewPostController(re, vs, ub, config)

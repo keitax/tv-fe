@@ -10,18 +10,18 @@ import (
 	"github.com/keitax/textvid/dao"
 	"github.com/keitax/textvid/entity"
 	"github.com/keitax/textvid/repository"
-	"github.com/keitax/textvid/util"
+	"github.com/keitax/textvid/urlbuilder"
 	"github.com/keitax/textvid/view"
 )
 
 type PostController struct {
 	repository *repository.Repository
 	viewSet    *view.ViewSet
-	urlBuilder *util.UrlBuilder
+	urlBuilder *urlbuilder.UrlBuilder
 	config     *config.Config
 }
 
-func NewPostController(r *repository.Repository, vs *view.ViewSet, ub *util.UrlBuilder, config_ *config.Config) *PostController {
+func NewPostController(r *repository.Repository, vs *view.ViewSet, ub *urlbuilder.UrlBuilder, config_ *config.Config) *PostController {
 	return &PostController{
 		r,
 		vs,

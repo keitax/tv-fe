@@ -1,7 +1,8 @@
-package util
+package urlbuilder
 
 import (
 	"testing"
+
 	"github.com/keitax/textvid/config"
 	"github.com/keitax/textvid/dao"
 	"github.com/keitax/textvid/entity"
