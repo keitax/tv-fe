@@ -11,7 +11,7 @@
 {{range .posts -}}
 <tr>
 <td class="post-table__column post-table--title-width"><a href="{{$.Urls.LinkToPostPage .}}">{{.Title}}</a></td>
-<td class="post-table__column post-table--created-at-width">{{.CreatedAt | ShowTime}}</td>
+<td class="post-table__column post-table--created-at-width">{{.Date | ShowTime}}</td>
 <td class="post-table__column post-table--control-column"><a href="{{$.Urls.LinkToPostEditorPage .}}">Edit</a> | Delete</td>
 </tr>
 {{end -}}
