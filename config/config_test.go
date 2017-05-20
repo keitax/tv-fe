@@ -25,6 +25,8 @@ site-footer = "Copyright &copy; YOUR NAME"
 locale = "UTC"
 base-url = "http://localhost/"
 run-level = "production"
+local-git-repository = "/tmp/textvid-blog"
+remote-git-repository = "https://host.git/textvid-blog.git"
 `); err != nil {
 		t.Fatal(err)
 	}
@@ -38,14 +40,16 @@ run-level = "production"
 	}
 
 	expected := &Config{
-		SiteTitle:      "Textvid Blog",
-		DataSourceName: "user:pass@tcp(address:port)/name",
-		TemplateDir:    "./templates",
-		StaticDir:      "./static",
-		SiteFooter:     "Copyright &copy; YOUR NAME",
-		Locale:         "UTC",
-		BaseUrl:        "http://localhost/",
-		RunLevel:       ProductionRunLevel,
+		SiteTitle:           "Textvid Blog",
+		DataSourceName:      "user:pass@tcp(address:port)/name",
+		TemplateDir:         "./templates",
+		StaticDir:           "./static",
+		SiteFooter:          "Copyright &copy; YOUR NAME",
+		Locale:              "UTC",
+		BaseUrl:             "http://localhost/",
+		RunLevel:            ProductionRunLevel,
+		LocalGitRepository:  "/tmp/textvid-blog",
+		RemoteGitRepository: "https://host.git/textvid-blog.git",
 	}
 	if !reflect.DeepEqual(expected, parsed) {
 		t.Errorf("Failed to parse: expected: %v, parsed: %v", expected, parsed)

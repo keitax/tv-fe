@@ -13,14 +13,16 @@ const (
 )
 
 type Config struct {
-	SiteTitle      string `toml:"site-title"`
-	DataSourceName string `toml:"data-source-name"`
-	TemplateDir    string `toml:"template-dir"`
-	StaticDir      string `toml:"static-dir"`
-	SiteFooter     string `toml:"site-footer"`
-	Locale         string `toml:"locale"`
-	BaseUrl        string `toml:"base-url"`
-	RunLevel       string `toml:"run-level"`
+	SiteTitle           string `toml:"site-title"`
+	DataSourceName      string `toml:"data-source-name"`
+	TemplateDir         string `toml:"template-dir"`
+	StaticDir           string `toml:"static-dir"`
+	SiteFooter          string `toml:"site-footer"`
+	Locale              string `toml:"locale"`
+	BaseUrl             string `toml:"base-url"`
+	RunLevel            string `toml:"run-level"`
+	LocalGitRepository  string `toml:"local-git-repository"`
+	RemoteGitRepository string `toml:"remote-git-repository"`
 }
 
 func Parse(configFile string) (*Config, error) {
