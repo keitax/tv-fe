@@ -5,12 +5,9 @@ import (
 	"runtime/debug"
 
 	"github.com/Sirupsen/logrus"
-	_ "github.com/go-sql-driver/mysql"
-	"github.com/gocraft/dbr"
 	"github.com/gorilla/mux"
 	"github.com/keitax/textvid/config"
 	"github.com/keitax/textvid/controller"
-	"github.com/keitax/textvid/dao"
 	"github.com/keitax/textvid/repository"
 	"github.com/keitax/textvid/util"
 	"github.com/keitax/textvid/view"
@@ -32,18 +29,11 @@ func (a *application) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func New(config *config.Config) (http.Handler, error) {
-	conn, err := dbr.Open("mysql", config.DataSourceName, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	d := dao.NewPostDao(conn, config)
-
 	ub := util.NewUrlBuilder(config)
 	vs := view.NewViewSet(ub, config)
 	re := repository.New(config.LocalGitRepository, config.RemoteGitRepository)
 	pc := controller.NewPostController(re, vs, ub, config)
-	ac := controller.NewAdminController(d, vs, config)
+	ac := controller.NewAdminController(re, vs, config)
 
 	r := mux.NewRouter()
 	r.HandleFunc("/", pc.GetIndex)
