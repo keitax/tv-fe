@@ -94,3 +94,22 @@ hello, world
 		}
 	}
 }
+
+func TestMax(t *testing.T) {
+	testCases := []struct {
+		descr    string
+		x        int
+		y        int
+		expected int
+	}{
+		{"equal", 5, 5, 5},
+		{"x > y", 6, 5, 6},
+		{"x < y", 5, 6, 6},
+	}
+	for _, tc := range testCases {
+		actual := Max(tc.x, tc.y)
+		if actual != tc.expected {
+			t.Errorf("Max(%d, %d) = %d, expected %d", tc.x, tc.y, actual, tc.expected)
+		}
+	}
+}

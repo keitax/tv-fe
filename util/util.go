@@ -52,3 +52,10 @@ func StripMetadata(content string) (map[string]interface{}, string) {
 	}
 	return metadata, bodySection
 }
+
+func Max(x, y int) int {
+	if x < y {
+		return y
+	}
+	return x
+}
