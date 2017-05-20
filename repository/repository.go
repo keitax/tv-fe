@@ -30,9 +30,50 @@ func New(localGitRepoPath, remoteGitRepoPath string) *Repository {
 }
 
 func (r *Repository) FetchOne(key string) *entity.Post {
+	ps := r.Fetch(&dao.PostQuery{
+		Start:   1,
+		Results: 0,
+	})
+	for _, p := range ps {
+		if key == p.Key {
+			return p
+		}
+	}
+	return nil
+}
+
+func (r *Repository) Fetch(pq *dao.PostQuery) []*entity.Post {
+	ps := []*entity.Post{}
+
+	if err := filepath.Walk(filepath.Join(r.localGitRepoPath, "posts"), func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if !postFileRe.MatchString(path) {
+			return nil
+		}
+		key := postFileRe.FindStringSubmatch(path)[1]
+		ps = append(ps, r.loadPost(key))
+		return nil
+	}); err != nil {
+		panic(err)
+	}
+
+	sort.Sort(entity.SortPost(ps))
+
+	start := util.Min(len(ps), util.Max(0, int(pq.Start)-1))
+	ps = ps[start:]
+	if pq.Results >= 1 {
+		end := util.Min(len(ps), util.Max(1, int(pq.Results)))
+		ps = ps[:end]
+	}
+	return ps
+}
+
+func (r *Repository) loadPost(key string) *entity.Post {
 	path := filepath.Join(r.localGitRepoPath, "posts", key+".md")
 	if !util.ExistsFile(path) {
-		return nil
+		panic("Faile to load the post")
 	}
 	bs, err := ioutil.ReadFile(path)
 	if err != nil {
@@ -51,32 +92,4 @@ func (r *Repository) FetchOne(key string) *entity.Post {
 		Body:   body,
 		Labels: util.ConvertToStringSlice(meta["labels"].([]interface{})),
 	}
-}
-
-func (r *Repository) Fetch(pq *dao.PostQuery) []*entity.Post {
-	ps := []*entity.Post{}
-
-	if err := filepath.Walk(filepath.Join(r.localGitRepoPath, "posts"), func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-		if !postFileRe.MatchString(path) {
-			return nil
-		}
-		key := postFileRe.FindStringSubmatch(path)[1]
-		ps = append(ps, r.FetchOne(key))
-		return nil
-	}); err != nil {
-		panic(err)
-	}
-
-	sort.Sort(entity.SortPost(ps))
-
-	start := util.Min(len(ps), util.Max(0, int(pq.Start)-1))
-	ps = ps[start:]
-	if pq.Results >= 1 {
-		end := util.Min(len(ps), util.Max(1, int(pq.Results)))
-		ps = ps[:end]
-	}
-	return ps
 }
