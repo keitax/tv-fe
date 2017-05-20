@@ -97,7 +97,7 @@ func (r *Repository) loadPost(key string) *entity.Post {
 	if err != nil {
 		panic(err)
 	}
-	meta, body := util.StripMetadata(string(bs))
+	meta, body := util.StripFrontMatter(string(bs))
 	d_, err := time.Parse("2006-01-02 15:04:05 Z07:00", meta["date"].(string))
 	d := &d_
 	if err != nil {

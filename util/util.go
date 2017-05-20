@@ -37,7 +37,7 @@ func ConvertToStringSlice(orig []interface{}) []string {
 	return dest
 }
 
-func StripMetadata(content string) (map[string]interface{}, string) {
+func StripFrontMatter(content string) (map[string]interface{}, string) {
 	ms := metadataRe.FindStringSubmatch(content)
 	if len(ms) < 3 {
 		return map[string]interface{}{}, content

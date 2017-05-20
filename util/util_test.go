@@ -21,7 +21,7 @@ hello, world!
 	}
 }
 
-func TestStripMetadata(t *testing.T) {
+func TestStripFrontMatter(t *testing.T) {
 	testCases := []struct {
 		descr            string
 		input            string
@@ -85,7 +85,7 @@ hello, world
 	}
 
 	for _, tc := range testCases {
-		metadata, body := StripMetadata(tc.input)
+		metadata, body := StripFrontMatter(tc.input)
 		if !reflect.DeepEqual(metadata, tc.expectedMetadata) {
 			t.Errorf("%s: StripMetadata() = %#v, _, expected %#v", tc.descr, metadata, tc.expectedMetadata)
 		}
