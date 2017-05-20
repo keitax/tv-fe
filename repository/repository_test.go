@@ -38,6 +38,36 @@ func TestFetchOne(t *testing.T) {
 	}
 }
 
+func TestFetchOneGetsNeighbors(t *testing.T) {
+	r := New("./test-repo", "")
+	testCases := []struct {
+		descr    string
+		iKey     string
+		oNextKey string
+		oPrevKey string
+	}{
+		{"Get neightbors of the post in the middle", "2017/01/test-post-02", "2017/01/test-post-03", "2017/01/test-post-01"},
+		{"Get neightbors of the first post", "2017/01/test-post-03", "", "2017/01/test-post-02"},
+		{"Get neightbors of the last post", "2017/01/test-post-01", "2017/01/test-post-02", ""},
+	}
+	for _, tc := range testCases {
+		p := r.FetchOne(tc.iKey)
+		var nk, pk string
+		if p.NextPost != nil {
+			nk = p.NextPost.Key
+		}
+		if p.PreviousPost != nil {
+			pk = p.PreviousPost.Key
+		}
+		if nk != tc.oNextKey {
+			t.Errorf("%s: NextPost.Key = %v, expected %s", tc.descr, nk, tc.oNextKey)
+		}
+		if pk != tc.oPrevKey {
+			t.Errorf("%s: PreviousPost.Key = %v, expected %s", tc.descr, pk, tc.oPrevKey)
+		}
+	}
+}
+
 func TestFetchAcceptsRangeQuery(t *testing.T) {
 	r := New("./test-repo", "")
 	testCases := []struct {

@@ -34,12 +34,30 @@ func (r *Repository) FetchOne(key string) *entity.Post {
 		Start:   1,
 		Results: 0,
 	})
-	for _, p := range ps {
+
+	var found *entity.Post
+	var foundIdx int
+	for i, p := range ps {
 		if key == p.Key {
-			return p
+			found = p
+			foundIdx = i
+			break
 		}
 	}
-	return nil
+	if found == nil {
+		return nil
+	}
+
+	nextIdx := foundIdx - 1
+	prevIdx := foundIdx + 1
+	if 0 <= nextIdx && nextIdx < len(ps) {
+		found.NextPost = ps[nextIdx]
+	}
+	if 0 <= prevIdx && prevIdx < len(ps) {
+		found.PreviousPost = ps[prevIdx]
+	}
+
+	return found
 }
 
 func (r *Repository) Fetch(pq *dao.PostQuery) []*entity.Post {
