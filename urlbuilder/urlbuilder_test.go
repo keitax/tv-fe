@@ -4,8 +4,8 @@ import (
 	"testing"
 
 	"github.com/keitax/textvid/config"
-	"github.com/keitax/textvid/dao"
 	"github.com/keitax/textvid/entity"
+	"github.com/keitax/textvid/repository"
 )
 
 func TestLinkToTopPage(t *testing.T) {
@@ -36,7 +36,7 @@ func TestLinkToPostListPage(t *testing.T) {
 	ub := &UrlBuilder{config: &config.Config{
 		BaseUrl: "http://localhost/",
 	}}
-	u := ub.LinkToPostListPage(&dao.PostQuery{
+	u := ub.LinkToPostListPage(&repository.PostQuery{
 		Start:   1,
 		Results: 10,
 	})

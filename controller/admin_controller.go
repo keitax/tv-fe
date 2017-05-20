@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/keitax/textvid/config"
-	"github.com/keitax/textvid/dao"
 	"github.com/keitax/textvid/repository"
 	"github.com/keitax/textvid/view"
 )
@@ -24,7 +23,7 @@ func NewAdminController(r *repository.Repository, vs *view.ViewSet, c *config.Co
 }
 
 func (ac *AdminController) GetIndex(w http.ResponseWriter, r *http.Request) {
-	ps := ac.repository.Fetch(&dao.PostQuery{
+	ps := ac.repository.Fetch(&repository.PostQuery{
 		Start:   1,
 		Results: 0,
 	})

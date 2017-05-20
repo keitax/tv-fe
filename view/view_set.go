@@ -2,8 +2,8 @@ package view
 
 import (
 	"github.com/keitax/textvid/config"
-	"github.com/keitax/textvid/dao"
 	"github.com/keitax/textvid/entity"
+	"github.com/keitax/textvid/repository"
 	"github.com/keitax/textvid/urlbuilder"
 )
 
@@ -30,7 +30,7 @@ func (vs *ViewSet) PostSingleView(p *entity.Post) *View {
 	}
 }
 
-func (vs *ViewSet) PostListView(ps []*entity.Post, nextPosts []*entity.Post, previousPosts []*entity.Post, q *dao.PostQuery) *View {
+func (vs *ViewSet) PostListView(ps []*entity.Post, nextPosts []*entity.Post, previousPosts []*entity.Post, q *repository.PostQuery) *View {
 	return &View{
 		vs.urlBuilder,
 		vs.config,

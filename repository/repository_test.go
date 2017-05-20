@@ -4,8 +4,6 @@ import (
 	"reflect"
 	"testing"
 	"time"
-
-	"github.com/keitax/textvid/dao"
 )
 
 func TestFetchOne(t *testing.T) {
@@ -84,7 +82,7 @@ func TestFetchAcceptsRangeQuery(t *testing.T) {
 		{"Results is zero (all results)", 1, 0, []string{"2017/01/test-post-03", "2017/01/test-post-02", "2017/01/test-post-01"}},
 	}
 	for _, tc := range testCases {
-		ps := r.Fetch(&dao.PostQuery{
+		ps := r.Fetch(&PostQuery{
 			Start:   tc.iStart,
 			Results: tc.iResults,
 		})

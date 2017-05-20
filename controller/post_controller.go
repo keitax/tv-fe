@@ -7,7 +7,6 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/keitax/textvid/config"
-	"github.com/keitax/textvid/dao"
 	"github.com/keitax/textvid/entity"
 	"github.com/keitax/textvid/repository"
 	"github.com/keitax/textvid/urlbuilder"
@@ -31,7 +30,7 @@ func NewPostController(r *repository.Repository, vs *view.ViewSet, ub *urlbuilde
 }
 
 func (c *PostController) GetIndex(w http.ResponseWriter, req *http.Request) {
-	q := &dao.PostQuery{
+	q := &repository.PostQuery{
 		Start:   1,
 		Results: 5,
 	}
@@ -58,7 +57,7 @@ func (c *PostController) GetList(w http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		panic(err)
 	}
-	q := &dao.PostQuery{
+	q := &repository.PostQuery{
 		Start:   uint64(s),
 		Results: uint64(r),
 	}

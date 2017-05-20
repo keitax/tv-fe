@@ -7,11 +7,12 @@ import (
 
 	"github.com/keitax/textvid/config"
 	"github.com/keitax/textvid/entity"
+	"github.com/keitax/textvid/repository"
 )
 
 type PostDao interface {
 	SelectOne(id int64) *entity.Post
-	SelectByQuery(query *PostQuery) []*entity.Post
+	SelectByQuery(query *repository.PostQuery) []*entity.Post
 	Insert(post *entity.Post)
 	Update(post *entity.Post)
 }
@@ -67,7 +68,7 @@ func (pd *postDao) SelectOne(id int64) *entity.Post {
 	return p
 }
 
-func (pd *postDao) SelectByQuery(query *PostQuery) []*entity.Post {
+func (pd *postDao) SelectByQuery(query *repository.PostQuery) []*entity.Post {
 	sess := pd.conn.NewSession(nil)
 	sb := sess.Select("id", "created_at", "updated_at", "url_name", "title", "body").From("post")
 	if query.Year != 0 && query.Month != 0 {

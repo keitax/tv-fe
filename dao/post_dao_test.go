@@ -10,6 +10,7 @@ import (
 
 	"github.com/keitax/textvid/config"
 	"github.com/keitax/textvid/entity"
+	"github.com/keitax/textvid/repository"
 )
 
 func TestInsertAndSelectOne(t *testing.T) {
@@ -95,7 +96,7 @@ func TestSelectByQueryToSelectByRange(t *testing.T) {
 		})
 	}
 
-	ps := d.SelectByQuery(&PostQuery{
+	ps := d.SelectByQuery(&repository.PostQuery{
 		Start:   1,
 		Results: 2,
 	})
@@ -125,7 +126,7 @@ func TestSelectByQueryToSelectByMonth(t *testing.T) {
 		d.Insert(makePostSpecificCreatedAt(t, createdAt))
 	}
 
-	ps := d.SelectByQuery(&PostQuery{
+	ps := d.SelectByQuery(&repository.PostQuery{
 		Start:   1,
 		Results: 10,
 		Year:    2017,
@@ -156,7 +157,7 @@ func TestSelectByQueryToSelectByUrlName(t *testing.T) {
 		})
 	}
 
-	ps := d.SelectByQuery(&PostQuery{
+	ps := d.SelectByQuery(&repository.PostQuery{
 		Start:   1,
 		Results: 10,
 		UrlName: "bar",

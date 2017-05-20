@@ -8,7 +8,6 @@ import (
 	"sort"
 	"time"
 
-	"github.com/keitax/textvid/dao"
 	"github.com/keitax/textvid/entity"
 	"github.com/keitax/textvid/util"
 	"gopkg.in/src-d/go-git.v4"
@@ -30,7 +29,7 @@ func New(localGitRepoPath, remoteGitRepoPath string) *Repository {
 }
 
 func (r *Repository) FetchOne(key string) *entity.Post {
-	ps := r.Fetch(&dao.PostQuery{
+	ps := r.Fetch(&PostQuery{
 		Start:   1,
 		Results: 0,
 	})
@@ -60,7 +59,7 @@ func (r *Repository) FetchOne(key string) *entity.Post {
 	return found
 }
 
-func (r *Repository) Fetch(pq *dao.PostQuery) []*entity.Post {
+func (r *Repository) Fetch(pq *PostQuery) []*entity.Post {
 	ps := []*entity.Post{}
 
 	if err := filepath.Walk(filepath.Join(r.localGitRepoPath, "posts"), func(path string, info os.FileInfo, err error) error {
