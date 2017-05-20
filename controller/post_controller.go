@@ -15,16 +15,14 @@ import (
 )
 
 type PostController struct {
-	postDao    dao.PostDao
 	repository *repository.Repository
 	viewSet    *view.ViewSet
 	urlBuilder *util.UrlBuilder
 	config     *config.Config
 }
 
-func NewPostController(postDao dao.PostDao, r *repository.Repository, vs *view.ViewSet, ub *util.UrlBuilder, config_ *config.Config) *PostController {
+func NewPostController(r *repository.Repository, vs *view.ViewSet, ub *util.UrlBuilder, config_ *config.Config) *PostController {
 	return &PostController{
-		postDao,
 		r,
 		vs,
 		ub,
@@ -71,16 +69,12 @@ func (c *PostController) GetList(w http.ResponseWriter, req *http.Request) {
 }
 
 func (c *PostController) GetEditor(w http.ResponseWriter, req *http.Request) {
-	ids := mux.Vars(req)["id"]
+	key := mux.Vars(req)["key"]
 	var p *entity.Post
-	if ids == "" {
+	if key == "" {
 		p = &entity.Post{}
 	} else {
-		id, err := strconv.Atoi(ids)
-		if err != nil {
-			panic(err)
-		}
-		p = c.postDao.SelectOne(int64(id))
+		p = c.repository.FetchOne(key)
 		if p == nil {
 			http.NotFound(w, req)
 			return
@@ -90,35 +84,31 @@ func (c *PostController) GetEditor(w http.ResponseWriter, req *http.Request) {
 }
 
 func (c *PostController) SubmitPost(w http.ResponseWriter, req *http.Request) {
+	key := mux.Vars(req)["key"]
 	if err := req.ParseForm(); err != nil {
 		panic(err)
 	}
-	p := &entity.Post{
+	c.repository.Commit(&entity.Post{
+		Key:     key,
 		Title:   req.Form.Get("title"),
 		Body:    req.Form.Get("body"),
 		UrlName: req.Form.Get("url-name"),
-	}
-	c.postDao.Insert(p)
-	p = c.postDao.SelectOne(int64(p.Id))
-	http.Redirect(w, req, c.urlBuilder.LinkToPostPage(p), http.StatusSeeOther)
+	})
+	committed := c.repository.FetchOne(key)
+	http.Redirect(w, req, c.urlBuilder.LinkToPostPage(committed), http.StatusSeeOther)
 }
 
 func (c *PostController) EditPost(w http.ResponseWriter, req *http.Request) {
-	vs := mux.Vars(req)
-	id, err := strconv.Atoi(vs["id"])
-	if err != nil {
-		panic(err)
-	}
+	key := mux.Vars(req)["key"]
 	if err := req.ParseForm(); err != nil {
 		panic(err)
 	}
-	p := &entity.Post{
-		Id:      int64(id),
+	c.repository.Commit(&entity.Post{
+		Key:     key,
 		Title:   req.Form.Get("title"),
 		Body:    req.Form.Get("body"),
 		UrlName: req.Form.Get("url-name"),
-	}
-	c.postDao.Update(p)
-	p = c.postDao.SelectOne(int64(id))
-	http.Redirect(w, req, c.urlBuilder.LinkToPostPage(p), http.StatusSeeOther)
+	})
+	committed := c.repository.FetchOne(req.Form.Get("key"))
+	http.Redirect(w, req, c.urlBuilder.LinkToPostPage(committed), http.StatusSeeOther)
 }

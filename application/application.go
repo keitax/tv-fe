@@ -42,7 +42,7 @@ func New(config *config.Config) (http.Handler, error) {
 	ub := util.NewUrlBuilder(config)
 	vs := view.NewViewSet(ub, config)
 	re := repository.New(config.LocalGitRepository, config.RemoteGitRepository)
-	pc := controller.NewPostController(d, re, vs, ub, config)
+	pc := controller.NewPostController(re, vs, ub, config)
 	ac := controller.NewAdminController(d, vs, config)
 
 	r := mux.NewRouter()
