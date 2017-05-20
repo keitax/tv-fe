@@ -55,6 +55,7 @@ func (r *Repository) FetchOne(key string) *entity.Post {
 
 func (r *Repository) Fetch(pq *dao.PostQuery) []*entity.Post {
 	ps := []*entity.Post{}
+
 	if err := filepath.Walk(filepath.Join(r.localGitRepoPath, "posts"), func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
@@ -68,6 +69,14 @@ func (r *Repository) Fetch(pq *dao.PostQuery) []*entity.Post {
 	}); err != nil {
 		panic(err)
 	}
+
 	sort.Sort(entity.SortPost(ps))
+
+	start := util.Min(len(ps), util.Max(0, int(pq.Start)-1))
+	ps = ps[start:]
+	if pq.Results >= 1 {
+		end := util.Min(len(ps), util.Max(1, int(pq.Results)))
+		ps = ps[:end]
+	}
 	return ps
 }

@@ -4,11 +4,13 @@ import (
 	"reflect"
 	"testing"
 	"time"
+
+	"github.com/keitax/textvid/dao"
 )
 
 func TestFetchOne(t *testing.T) {
 	r := New("./test-repo", "")
-	p := r.FetchOne("2017/01/test-post")
+	p := r.FetchOne("2017/01/test-post-01")
 	if p == nil {
 		t.Fatal("Failed to fetch the post")
 	}
@@ -18,9 +20,9 @@ func TestFetchOne(t *testing.T) {
 		expected interface{}
 		actual   interface{}
 	}{
-		{"Key", "2017/01/test-post", p.Key},
+		{"Key", "2017/01/test-post-01", p.Key},
 		{"Date", time.Date(2017, 1, 1, 0, 0, 0, 0, jst), *p.Date},
-		{"Title", "Test Post", p.Title},
+		{"Title", "Test Post 1", p.Title},
 	}
 	for _, tc := range testCases {
 		matched := false
@@ -36,14 +38,32 @@ func TestFetchOne(t *testing.T) {
 	}
 }
 
-func TestFetch(t *testing.T) {
+func TestFetchAcceptsRangeQuery(t *testing.T) {
 	r := New("./test-repo", "")
-	ps := r.Fetch(nil)
-	if len(ps) != 1 {
-		t.Fatalf("len(ps) = %d, expected %d", len(ps), 1)
+	testCases := []struct {
+		descr    string
+		iStart   uint64
+		iResults uint64
+		oKeys    []string
+	}{
+		{"Fetch first two posts", 1, 2, []string{"2017/01/test-post-03", "2017/01/test-post-02"}},
+		{"Fetch last two posts", 2, 2, []string{"2017/01/test-post-02", "2017/01/test-post-01"}},
+		{"Start is too large", 99, 2, []string{}},
+		{"Start is too small", 0, 1, []string{"2017/01/test-post-03"}},
+		{"Results is too large", 1, 99, []string{"2017/01/test-post-03", "2017/01/test-post-02", "2017/01/test-post-01"}},
+		{"Results is zero (all results)", 1, 0, []string{"2017/01/test-post-03", "2017/01/test-post-02", "2017/01/test-post-01"}},
 	}
-	expected := "2017/01/test-post"
-	if ps[0].Key != "2017/01/test-post" {
-		t.Errorf("ps[0].Key = %#v, expected %#v", ps[0], expected)
+	for _, tc := range testCases {
+		ps := r.Fetch(&dao.PostQuery{
+			Start:   tc.iStart,
+			Results: tc.iResults,
+		})
+		keys := []string{}
+		for _, p := range ps {
+			keys = append(keys, p.Key)
+		}
+		if !reflect.DeepEqual(keys, tc.oKeys) {
+			t.Errorf("%s: keys = %v, expected %v", tc.descr, keys, tc.oKeys)
+		}
 	}
 }
