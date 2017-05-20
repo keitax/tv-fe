@@ -88,6 +88,10 @@ func (r *Repository) Fetch(pq *dao.PostQuery) []*entity.Post {
 	return ps
 }
 
+func (r *Repository) Commit(p *entity.Post) {
+	panic("not implemented")
+}
+
 func (r *Repository) loadPost(key string) *entity.Post {
 	path := filepath.Join(r.localGitRepoPath, "posts", key+".md")
 	if !util.ExistsFile(path) {
