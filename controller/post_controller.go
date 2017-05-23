@@ -29,26 +29,26 @@ func NewPostController(r *repository.Repository, vs *view.ViewSet, ub *urlbuilde
 	}
 }
 
-func (c *PostController) GetIndex(w http.ResponseWriter, req *http.Request) {
+func (pc *PostController) GetIndex(w http.ResponseWriter, req *http.Request) {
 	q := &repository.PostQuery{
 		Start:   1,
 		Results: 5,
 	}
-	posts := c.repository.Fetch(q)
+	posts := pc.repository.Fetch(q)
 	qp := q.Previous()
 	qp.Results = 1
-	prevPosts := c.repository.Fetch(qp)
-	c.viewSet.PostListView(posts, nil, prevPosts, q).Render(w)
+	prevPosts := pc.repository.Fetch(qp)
+	pc.viewSet.PostListView(posts, nil, prevPosts, q).Render(w)
 }
 
-func (c *PostController) GetSingle(w http.ResponseWriter, req *http.Request) {
+func (pc *PostController) GetSingle(w http.ResponseWriter, req *http.Request) {
 	params := mux.Vars(req)
 	key := fmt.Sprintf("%s/%s/%s", params["year"], params["month"], params["name"])
-	p := c.repository.FetchOne(key)
-	c.viewSet.PostSingleView(p).Render(w)
+	p := pc.repository.FetchOne(key)
+	pc.viewSet.PostSingleView(p).Render(w)
 }
 
-func (c *PostController) GetList(w http.ResponseWriter, req *http.Request) {
+func (pc *PostController) GetList(w http.ResponseWriter, req *http.Request) {
 	s, err := strconv.Atoi(req.URL.Query().Get("start"))
 	if err != nil {
 		panic(err)
@@ -61,53 +61,53 @@ func (c *PostController) GetList(w http.ResponseWriter, req *http.Request) {
 		Start:   uint64(s),
 		Results: uint64(r),
 	}
-	ps := c.repository.Fetch(q)
-	nextPosts := c.repository.Fetch(q.Next())
-	prevPosts := c.repository.Fetch(q.Previous())
-	c.viewSet.PostListView(ps, nextPosts, prevPosts, q).Render(w)
+	ps := pc.repository.Fetch(q)
+	nextPosts := pc.repository.Fetch(q.Next())
+	prevPosts := pc.repository.Fetch(q.Previous())
+	pc.viewSet.PostListView(ps, nextPosts, prevPosts, q).Render(w)
 }
 
-func (c *PostController) GetEditor(w http.ResponseWriter, req *http.Request) {
+func (pc *PostController) GetEditor(w http.ResponseWriter, req *http.Request) {
 	key := mux.Vars(req)["key"]
 	var p *entity.Post
 	if key == "" {
 		p = &entity.Post{}
 	} else {
-		p = c.repository.FetchOne(key)
+		p = pc.repository.FetchOne(key)
 		if p == nil {
 			http.NotFound(w, req)
 			return
 		}
 	}
-	c.viewSet.PostEditorView(p).Render(w)
+	pc.viewSet.PostEditorView(p).Render(w)
 }
 
-func (c *PostController) SubmitPost(w http.ResponseWriter, req *http.Request) {
+func (pc *PostController) SubmitPost(w http.ResponseWriter, req *http.Request) {
 	key := mux.Vars(req)["key"]
 	if err := req.ParseForm(); err != nil {
 		panic(err)
 	}
-	c.repository.Commit(&entity.Post{
+	pc.repository.Commit(&entity.Post{
 		Key:     key,
 		Title:   req.Form.Get("title"),
 		Body:    req.Form.Get("body"),
 		UrlName: req.Form.Get("url-name"),
 	})
-	committed := c.repository.FetchOne(key)
-	http.Redirect(w, req, c.urlBuilder.LinkToPostPage(committed), http.StatusSeeOther)
+	committed := pc.repository.FetchOne(key)
+	http.Redirect(w, req, pc.urlBuilder.LinkToPostPage(committed), http.StatusSeeOther)
 }
 
-func (c *PostController) EditPost(w http.ResponseWriter, req *http.Request) {
+func (pc *PostController) EditPost(w http.ResponseWriter, req *http.Request) {
 	key := mux.Vars(req)["key"]
 	if err := req.ParseForm(); err != nil {
 		panic(err)
 	}
-	c.repository.Commit(&entity.Post{
+	pc.repository.Commit(&entity.Post{
 		Key:     key,
 		Title:   req.Form.Get("title"),
 		Body:    req.Form.Get("body"),
 		UrlName: req.Form.Get("url-name"),
 	})
-	committed := c.repository.FetchOne(req.Form.Get("key"))
-	http.Redirect(w, req, c.urlBuilder.LinkToPostPage(committed), http.StatusSeeOther)
+	committed := pc.repository.FetchOne(req.Form.Get("key"))
+	http.Redirect(w, req, pc.urlBuilder.LinkToPostPage(committed), http.StatusSeeOther)
 }
