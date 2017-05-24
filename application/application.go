@@ -9,7 +9,6 @@ import (
 	"github.com/keitax/textvid"
 	"github.com/keitax/textvid/controller"
 	"github.com/keitax/textvid/repository"
-	"github.com/keitax/textvid/urlbuilder"
 	"github.com/keitax/textvid/view"
 )
 
@@ -29,7 +28,7 @@ func (a *application) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func New(config *textvid.Config) (http.Handler, error) {
-	ub := urlbuilder.New(config)
+	ub := textvid.NewUrlBuilder(config)
 	vs := view.NewViewSet(ub, config)
 	re := repository.New(config.LocalGitRepository, config.RemoteGitRepository)
 	pc := controller.NewPostController(re, vs, ub, config)

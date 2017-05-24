@@ -1,20 +1,19 @@
-package urlbuilder
+package textvid
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/keitax/textvid"
 	"github.com/keitax/textvid/entity"
 	"github.com/keitax/textvid/repository"
 )
 
-func New(conf *textvid.Config) *UrlBuilder {
+func NewUrlBuilder(conf *Config) *UrlBuilder {
 	return &UrlBuilder{conf}
 }
 
 type UrlBuilder struct {
-	config *textvid.Config
+	config *Config
 }
 
 func (ub *UrlBuilder) LinkToTopPage() string {

@@ -7,11 +7,10 @@ import (
 	"time"
 
 	"github.com/keitax/textvid"
-	"github.com/keitax/textvid/urlbuilder"
 )
 
 type View struct {
-	urlBuilder   *urlbuilder.UrlBuilder
+	urlBuilder   *textvid.UrlBuilder
 	config       *textvid.Config
 	templateName string
 	context      map[string]interface{}
