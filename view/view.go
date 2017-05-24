@@ -8,7 +8,6 @@ import (
 
 	"github.com/keitax/textvid"
 	"github.com/keitax/textvid/urlbuilder"
-	"github.com/keitax/textvid/util"
 )
 
 type View struct {
@@ -20,7 +19,7 @@ type View struct {
 
 func (v *View) Render(w io.Writer) {
 	ts := template.New("root").Funcs(template.FuncMap{
-		"RenderMarkdown": util.ParseMarkdown,
+		"RenderMarkdown": textvid.ParseMarkdown,
 		"ShowTime": func(t time.Time) string {
 			return t.Format("Jan. 02, 2006, 3:04 PM")
 		},

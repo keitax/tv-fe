@@ -1,4 +1,4 @@
-package util
+package textvid
 
 import (
 	"html/template"
