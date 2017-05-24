@@ -6,11 +6,11 @@ import (
 
 	"github.com/Sirupsen/logrus"
 	"github.com/gorilla/mux"
-	"github.com/keitax/textvid/config"
+	"github.com/keitax/textvid"
 	"github.com/keitax/textvid/controller"
 	"github.com/keitax/textvid/repository"
-	"github.com/keitax/textvid/view"
 	"github.com/keitax/textvid/urlbuilder"
+	"github.com/keitax/textvid/view"
 )
 
 type application struct {
@@ -28,7 +28,7 @@ func (a *application) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	a.router.ServeHTTP(w, r)
 }
 
-func New(config *config.Config) (http.Handler, error) {
+func New(config *textvid.Config) (http.Handler, error) {
 	ub := urlbuilder.New(config)
 	vs := view.NewViewSet(ub, config)
 	re := repository.New(config.LocalGitRepository, config.RemoteGitRepository)

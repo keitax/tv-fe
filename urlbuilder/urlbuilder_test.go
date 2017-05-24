@@ -3,13 +3,13 @@ package urlbuilder
 import (
 	"testing"
 
-	"github.com/keitax/textvid/config"
+	"github.com/keitax/textvid"
 	"github.com/keitax/textvid/entity"
 	"github.com/keitax/textvid/repository"
 )
 
 func TestLinkToTopPage(t *testing.T) {
-	urlBuilder := &UrlBuilder{config: &config.Config{
+	urlBuilder := &UrlBuilder{config: &textvid.Config{
 		BaseUrl: "http://localhost/",
 	}}
 	url := urlBuilder.LinkToTopPage()
@@ -20,7 +20,7 @@ func TestLinkToTopPage(t *testing.T) {
 }
 
 func TestLinkToPostPage(t *testing.T) {
-	urlBuilder := &UrlBuilder{config: &config.Config{
+	urlBuilder := &UrlBuilder{config: &textvid.Config{
 		BaseUrl: "http://localhost/",
 	}}
 	url := urlBuilder.LinkToPostPage(&entity.Post{
@@ -33,7 +33,7 @@ func TestLinkToPostPage(t *testing.T) {
 }
 
 func TestLinkToPostListPage(t *testing.T) {
-	ub := &UrlBuilder{config: &config.Config{
+	ub := &UrlBuilder{config: &textvid.Config{
 		BaseUrl: "http://localhost/",
 	}}
 	u := ub.LinkToPostListPage(&repository.PostQuery{
@@ -47,7 +47,7 @@ func TestLinkToPostListPage(t *testing.T) {
 }
 
 func TestLinkToPostResource(t *testing.T) {
-	ub := &UrlBuilder{config: &config.Config{
+	ub := &UrlBuilder{config: &textvid.Config{
 		BaseUrl: "http://localhost/",
 	}}
 
@@ -68,7 +68,7 @@ func TestLinkToPostResource(t *testing.T) {
 }
 
 func TestLinkToPostEditorPage(t *testing.T) {
-	ub := &UrlBuilder{config: &config.Config{
+	ub := &UrlBuilder{config: &textvid.Config{
 		BaseUrl: "http://localhost/",
 	}}
 

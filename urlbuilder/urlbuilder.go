@@ -4,17 +4,17 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/keitax/textvid/config"
+	"github.com/keitax/textvid"
 	"github.com/keitax/textvid/entity"
 	"github.com/keitax/textvid/repository"
 )
 
-func New(conf *config.Config) *UrlBuilder {
+func New(conf *textvid.Config) *UrlBuilder {
 	return &UrlBuilder{conf}
 }
 
 type UrlBuilder struct {
-	config *config.Config
+	config *textvid.Config
 }
 
 func (ub *UrlBuilder) LinkToTopPage() string {

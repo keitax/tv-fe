@@ -6,7 +6,7 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"github.com/keitax/textvid/config"
+	"github.com/keitax/textvid"
 	"github.com/keitax/textvid/entity"
 	"github.com/keitax/textvid/repository"
 	"github.com/keitax/textvid/urlbuilder"
@@ -17,10 +17,10 @@ type PostController struct {
 	repository *repository.Repository
 	viewSet    *view.ViewSet
 	urlBuilder *urlbuilder.UrlBuilder
-	config     *config.Config
+	config     *textvid.Config
 }
 
-func NewPostController(r *repository.Repository, vs *view.ViewSet, ub *urlbuilder.UrlBuilder, config_ *config.Config) *PostController {
+func NewPostController(r *repository.Repository, vs *view.ViewSet, ub *urlbuilder.UrlBuilder, config_ *textvid.Config) *PostController {
 	return &PostController{
 		r,
 		vs,

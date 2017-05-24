@@ -1,7 +1,7 @@
 package view
 
 import (
-	"github.com/keitax/textvid/config"
+	"github.com/keitax/textvid"
 	"github.com/keitax/textvid/entity"
 	"github.com/keitax/textvid/repository"
 	"github.com/keitax/textvid/urlbuilder"
@@ -9,10 +9,10 @@ import (
 
 type ViewSet struct {
 	urlBuilder *urlbuilder.UrlBuilder
-	config     *config.Config
+	config     *textvid.Config
 }
 
-func NewViewSet(ub *urlbuilder.UrlBuilder, conf *config.Config) *ViewSet {
+func NewViewSet(ub *urlbuilder.UrlBuilder, conf *textvid.Config) *ViewSet {
 	return &ViewSet{
 		urlBuilder: ub,
 		config:     conf,

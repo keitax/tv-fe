@@ -5,17 +5,17 @@ import (
 	"os"
 
 	"github.com/Sirupsen/logrus"
+	"github.com/keitax/textvid"
 	"github.com/keitax/textvid/application"
-	"github.com/keitax/textvid/config"
 )
 
 func main() {
-	c, err := config.Parse("./config.toml")
+	c, err := textvid.Parse("./config.toml")
 	if err != nil {
 		logrus.Fatal(err)
 		os.Exit(1)
 	}
-	if c.RunLevel == config.DevelopmentRunLevel {
+	if c.RunLevel == textvid.DevelopmentRunLevel {
 		logrus.SetLevel(logrus.DebugLevel)
 	}
 

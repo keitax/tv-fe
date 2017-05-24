@@ -6,14 +6,14 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/keitax/textvid/config"
+	"github.com/keitax/textvid"
 	"github.com/keitax/textvid/urlbuilder"
 	"github.com/keitax/textvid/util"
 )
 
 type View struct {
 	urlBuilder   *urlbuilder.UrlBuilder
-	config       *config.Config
+	config       *textvid.Config
 	templateName string
 	context      map[string]interface{}
 }

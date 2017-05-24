@@ -3,7 +3,7 @@ package controller
 import (
 	"net/http"
 
-	"github.com/keitax/textvid/config"
+	"github.com/keitax/textvid"
 	"github.com/keitax/textvid/repository"
 	"github.com/keitax/textvid/view"
 )
@@ -11,10 +11,10 @@ import (
 type AdminController struct {
 	repository *repository.Repository
 	viewSet    *view.ViewSet
-	config     *config.Config
+	config     *textvid.Config
 }
 
-func NewAdminController(r *repository.Repository, vs *view.ViewSet, c *config.Config) *AdminController {
+func NewAdminController(r *repository.Repository, vs *view.ViewSet, c *textvid.Config) *AdminController {
 	return &AdminController{
 		repository: r,
 		viewSet:    vs,

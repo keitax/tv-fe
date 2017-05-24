@@ -1,4 +1,4 @@
-package config
+package textvid
 
 import (
 	"errors"
