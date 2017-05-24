@@ -1,4 +1,4 @@
-package controller
+package textvid
 
 import (
 	"fmt"
@@ -6,19 +6,18 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"github.com/keitax/textvid"
 	"github.com/keitax/textvid/entity"
 	"github.com/keitax/textvid/view"
 )
 
 type PostController struct {
-	repository *textvid.Repository
+	repository *Repository
 	viewSet    *view.ViewSet
-	urlBuilder *textvid.UrlBuilder
-	config     *textvid.Config
+	urlBuilder *UrlBuilder
+	config     *Config
 }
 
-func NewPostController(r *textvid.Repository, vs *view.ViewSet, ub *textvid.UrlBuilder, config_ *textvid.Config) *PostController {
+func NewPostController(r *Repository, vs *view.ViewSet, ub *UrlBuilder, config_ *Config) *PostController {
 	return &PostController{
 		r,
 		vs,
@@ -28,7 +27,7 @@ func NewPostController(r *textvid.Repository, vs *view.ViewSet, ub *textvid.UrlB
 }
 
 func (pc *PostController) GetIndex(w http.ResponseWriter, req *http.Request) {
-	q := &textvid.PostQuery{
+	q := &PostQuery{
 		Start:   1,
 		Results: 5,
 	}
@@ -55,7 +54,7 @@ func (pc *PostController) GetList(w http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		panic(err)
 	}
-	q := &textvid.PostQuery{
+	q := &PostQuery{
 		Start:   uint64(s),
 		Results: uint64(r),
 	}

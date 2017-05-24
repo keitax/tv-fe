@@ -7,7 +7,6 @@ import (
 	"github.com/Sirupsen/logrus"
 	"github.com/gorilla/mux"
 	"github.com/keitax/textvid"
-	"github.com/keitax/textvid/controller"
 	"github.com/keitax/textvid/view"
 )
 
@@ -30,8 +29,8 @@ func New(config *textvid.Config) (http.Handler, error) {
 	ub := textvid.NewUrlBuilder(config)
 	vs := view.NewViewSet(ub, config)
 	re := textvid.New(config.LocalGitRepository, config.RemoteGitRepository)
-	pc := controller.NewPostController(re, vs, ub, config)
-	ac := controller.NewAdminController(re, vs, config)
+	pc := textvid.NewPostController(re, vs, ub, config)
+	ac := textvid.NewAdminController(re, vs, config)
 
 	r := mux.NewRouter()
 	r.HandleFunc("/", pc.GetIndex)
