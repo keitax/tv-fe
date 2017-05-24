@@ -8,18 +8,17 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/keitax/textvid"
 	"github.com/keitax/textvid/entity"
-	"github.com/keitax/textvid/repository"
 	"github.com/keitax/textvid/view"
 )
 
 type PostController struct {
-	repository *repository.Repository
+	repository *textvid.Repository
 	viewSet    *view.ViewSet
 	urlBuilder *textvid.UrlBuilder
 	config     *textvid.Config
 }
 
-func NewPostController(r *repository.Repository, vs *view.ViewSet, ub *textvid.UrlBuilder, config_ *textvid.Config) *PostController {
+func NewPostController(r *textvid.Repository, vs *view.ViewSet, ub *textvid.UrlBuilder, config_ *textvid.Config) *PostController {
 	return &PostController{
 		r,
 		vs,
@@ -29,7 +28,7 @@ func NewPostController(r *repository.Repository, vs *view.ViewSet, ub *textvid.U
 }
 
 func (pc *PostController) GetIndex(w http.ResponseWriter, req *http.Request) {
-	q := &repository.PostQuery{
+	q := &textvid.PostQuery{
 		Start:   1,
 		Results: 5,
 	}
@@ -56,7 +55,7 @@ func (pc *PostController) GetList(w http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		panic(err)
 	}
-	q := &repository.PostQuery{
+	q := &textvid.PostQuery{
 		Start:   uint64(s),
 		Results: uint64(r),
 	}
@@ -93,7 +92,7 @@ func (pc *PostController) SubmitPost(w http.ResponseWriter, req *http.Request) {
 		UrlName: req.Form.Get("url-name"),
 	})
 	committed := pc.repository.FetchOne(key)
-	http.Redirect(w, req, pc.textvid.LinkToPostPage(committed), http.StatusSeeOther)
+	http.Redirect(w, req, pc.urlBuilder.LinkToPostPage(committed), http.StatusSeeOther)
 }
 
 func (pc *PostController) EditPost(w http.ResponseWriter, req *http.Request) {
@@ -108,5 +107,5 @@ func (pc *PostController) EditPost(w http.ResponseWriter, req *http.Request) {
 		UrlName: req.Form.Get("url-name"),
 	})
 	committed := pc.repository.FetchOne(req.Form.Get("key"))
-	http.Redirect(w, req, pc.textvid.LinkToPostPage(committed), http.StatusSeeOther)
+	http.Redirect(w, req, pc.urlBuilder.LinkToPostPage(committed), http.StatusSeeOther)
 }

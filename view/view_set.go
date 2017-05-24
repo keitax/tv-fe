@@ -3,7 +3,6 @@ package view
 import (
 	"github.com/keitax/textvid"
 	"github.com/keitax/textvid/entity"
-	"github.com/keitax/textvid/repository"
 )
 
 type ViewSet struct {
@@ -29,7 +28,7 @@ func (vs *ViewSet) PostSingleView(p *entity.Post) *View {
 	}
 }
 
-func (vs *ViewSet) PostListView(ps []*entity.Post, nextPosts []*entity.Post, previousPosts []*entity.Post, q *repository.PostQuery) *View {
+func (vs *ViewSet) PostListView(ps []*entity.Post, nextPosts []*entity.Post, previousPosts []*entity.Post, q *textvid.PostQuery) *View {
 	return &View{
 		vs.urlBuilder,
 		vs.config,

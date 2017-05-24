@@ -4,17 +4,16 @@ import (
 	"net/http"
 
 	"github.com/keitax/textvid"
-	"github.com/keitax/textvid/repository"
 	"github.com/keitax/textvid/view"
 )
 
 type AdminController struct {
-	repository *repository.Repository
+	repository *textvid.Repository
 	viewSet    *view.ViewSet
 	config     *textvid.Config
 }
 
-func NewAdminController(r *repository.Repository, vs *view.ViewSet, c *textvid.Config) *AdminController {
+func NewAdminController(r *textvid.Repository, vs *view.ViewSet, c *textvid.Config) *AdminController {
 	return &AdminController{
 		repository: r,
 		viewSet:    vs,
@@ -23,7 +22,7 @@ func NewAdminController(r *repository.Repository, vs *view.ViewSet, c *textvid.C
 }
 
 func (ac *AdminController) GetIndex(w http.ResponseWriter, r *http.Request) {
-	ps := ac.repository.Fetch(&repository.PostQuery{
+	ps := ac.repository.Fetch(&textvid.PostQuery{
 		Start:   1,
 		Results: 0,
 	})

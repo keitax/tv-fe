@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"github.com/keitax/textvid/entity"
-	"github.com/keitax/textvid/repository"
 )
 
 func NewUrlBuilder(conf *Config) *UrlBuilder {
@@ -34,7 +33,7 @@ func (ub *UrlBuilder) LinkToPostResource(post *entity.Post) string {
 	return ub.config.BaseUrl + path
 }
 
-func (ub *UrlBuilder) LinkToPostListPage(query *repository.PostQuery) string {
+func (ub *UrlBuilder) LinkToPostListPage(query *PostQuery) string {
 	q := []string{}
 	if query.Start != 0 {
 		q = append(q, fmt.Sprintf("start=%d", query.Start))

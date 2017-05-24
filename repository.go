@@ -1,4 +1,4 @@
-package repository
+package textvid
 
 import (
 	"io/ioutil"
@@ -8,7 +8,6 @@ import (
 	"sort"
 	"time"
 
-	"github.com/keitax/textvid"
 	"github.com/keitax/textvid/entity"
 	"gopkg.in/src-d/go-git.v4"
 )
@@ -78,10 +77,10 @@ func (r *Repository) Fetch(pq *PostQuery) []*entity.Post {
 
 	sort.Sort(entity.SortPost(ps))
 
-	start := textvid.Min(len(ps), textvid.Max(0, int(pq.Start)-1))
+	start := Min(len(ps), Max(0, int(pq.Start)-1))
 	ps = ps[start:]
 	if pq.Results >= 1 {
-		end := textvid.Min(len(ps), textvid.Max(1, int(pq.Results)))
+		end := Min(len(ps), Max(1, int(pq.Results)))
 		ps = ps[:end]
 	}
 	return ps
@@ -93,14 +92,14 @@ func (r *Repository) Commit(p *entity.Post) {
 
 func (r *Repository) loadPost(key string) *entity.Post {
 	path := filepath.Join(r.localGitRepoPath, "posts", key+".md")
-	if !textvid.ExistsFile(path) {
+	if !ExistsFile(path) {
 		panic("Faile to load the post")
 	}
 	bs, err := ioutil.ReadFile(path)
 	if err != nil {
 		panic(err)
 	}
-	meta, body := textvid.StripFrontMatter(string(bs))
+	meta, body := StripFrontMatter(string(bs))
 	d_, err := time.Parse("2006-01-02 15:04:05 Z07:00", meta["date"].(string))
 	d := &d_
 	if err != nil {
@@ -111,6 +110,6 @@ func (r *Repository) loadPost(key string) *entity.Post {
 		Date:   d,
 		Title:  meta["title"].(string),
 		Body:   body,
-		Labels: textvid.ConvertToStringSlice(meta["labels"].([]interface{})),
+		Labels: ConvertToStringSlice(meta["labels"].([]interface{})),
 	}
 }

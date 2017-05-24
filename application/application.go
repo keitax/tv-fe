@@ -8,7 +8,6 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/keitax/textvid"
 	"github.com/keitax/textvid/controller"
-	"github.com/keitax/textvid/repository"
 	"github.com/keitax/textvid/view"
 )
 
@@ -30,7 +29,7 @@ func (a *application) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func New(config *textvid.Config) (http.Handler, error) {
 	ub := textvid.NewUrlBuilder(config)
 	vs := view.NewViewSet(ub, config)
-	re := repository.New(config.LocalGitRepository, config.RemoteGitRepository)
+	re := textvid.New(config.LocalGitRepository, config.RemoteGitRepository)
 	pc := controller.NewPostController(re, vs, ub, config)
 	ac := controller.NewAdminController(re, vs, config)
 
