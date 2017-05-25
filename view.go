@@ -1,24 +1,22 @@
-package view
+package textvid
 
 import (
 	"html/template"
 	"io"
 	"path/filepath"
 	"time"
-
-	"github.com/keitax/textvid"
 )
 
 type View struct {
-	urlBuilder   *textvid.UrlBuilder
-	config       *textvid.Config
+	urlBuilder   *UrlBuilder
+	config       *Config
 	templateName string
 	context      map[string]interface{}
 }
 
 func (v *View) Render(w io.Writer) {
 	ts := template.New("root").Funcs(template.FuncMap{
-		"RenderMarkdown": textvid.ParseMarkdown,
+		"RenderMarkdown": ParseMarkdown,
 		"ShowTime": func(t time.Time) string {
 			return t.Format("Jan. 02, 2006, 3:04 PM")
 		},

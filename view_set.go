@@ -1,23 +1,18 @@
-package view
-
-import (
-	"github.com/keitax/textvid"
-	"github.com/keitax/textvid/entity"
-)
+package textvid
 
 type ViewSet struct {
-	urlBuilder *textvid.UrlBuilder
-	config     *textvid.Config
+	urlBuilder *UrlBuilder
+	config     *Config
 }
 
-func NewViewSet(ub *textvid.UrlBuilder, conf *textvid.Config) *ViewSet {
+func NewViewSet(ub *UrlBuilder, conf *Config) *ViewSet {
 	return &ViewSet{
 		urlBuilder: ub,
 		config:     conf,
 	}
 }
 
-func (vs *ViewSet) PostSingleView(p *entity.Post) *View {
+func (vs *ViewSet) PostSingleView(p *Post) *View {
 	return &View{
 		vs.urlBuilder,
 		vs.config,
@@ -28,7 +23,7 @@ func (vs *ViewSet) PostSingleView(p *entity.Post) *View {
 	}
 }
 
-func (vs *ViewSet) PostListView(ps []*entity.Post, nextPosts []*entity.Post, previousPosts []*entity.Post, q *textvid.PostQuery) *View {
+func (vs *ViewSet) PostListView(ps []*Post, nextPosts []*Post, previousPosts []*Post, q *PostQuery) *View {
 	return &View{
 		vs.urlBuilder,
 		vs.config,
@@ -42,7 +37,7 @@ func (vs *ViewSet) PostListView(ps []*entity.Post, nextPosts []*entity.Post, pre
 	}
 }
 
-func (vs *ViewSet) AdminView(ps []*entity.Post) *View {
+func (vs *ViewSet) AdminView(ps []*Post) *View {
 	return &View{
 		vs.urlBuilder,
 		vs.config,
@@ -53,7 +48,7 @@ func (vs *ViewSet) AdminView(ps []*entity.Post) *View {
 	}
 }
 
-func (vs *ViewSet) PostEditorView(p *entity.Post) *View {
+func (vs *ViewSet) PostEditorView(p *Post) *View {
 	return &View{
 		vs.urlBuilder,
 		vs.config,

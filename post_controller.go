@@ -6,18 +6,16 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"github.com/keitax/textvid/entity"
-	"github.com/keitax/textvid/view"
 )
 
 type PostController struct {
 	repository *Repository
-	viewSet    *view.ViewSet
+	viewSet    *ViewSet
 	urlBuilder *UrlBuilder
 	config     *Config
 }
 
-func NewPostController(r *Repository, vs *view.ViewSet, ub *UrlBuilder, config_ *Config) *PostController {
+func NewPostController(r *Repository, vs *ViewSet, ub *UrlBuilder, config_ *Config) *PostController {
 	return &PostController{
 		r,
 		vs,
@@ -66,9 +64,9 @@ func (pc *PostController) GetList(w http.ResponseWriter, req *http.Request) {
 
 func (pc *PostController) GetEditor(w http.ResponseWriter, req *http.Request) {
 	key := mux.Vars(req)["key"]
-	var p *entity.Post
+	var p *Post
 	if key == "" {
-		p = &entity.Post{}
+		p = &Post{}
 	} else {
 		p = pc.repository.FetchOne(key)
 		if p == nil {
@@ -84,7 +82,7 @@ func (pc *PostController) SubmitPost(w http.ResponseWriter, req *http.Request) {
 	if err := req.ParseForm(); err != nil {
 		panic(err)
 	}
-	pc.repository.Commit(&entity.Post{
+	pc.repository.Commit(&Post{
 		Key:     key,
 		Title:   req.Form.Get("title"),
 		Body:    req.Form.Get("body"),
@@ -99,7 +97,7 @@ func (pc *PostController) EditPost(w http.ResponseWriter, req *http.Request) {
 	if err := req.ParseForm(); err != nil {
 		panic(err)
 	}
-	pc.repository.Commit(&entity.Post{
+	pc.repository.Commit(&Post{
 		Key:     key,
 		Title:   req.Form.Get("title"),
 		Body:    req.Form.Get("body"),

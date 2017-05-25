@@ -1,4 +1,4 @@
-package application
+package textvid
 
 import (
 	"net/http"
@@ -6,8 +6,6 @@ import (
 
 	"github.com/Sirupsen/logrus"
 	"github.com/gorilla/mux"
-	"github.com/keitax/textvid"
-	"github.com/keitax/textvid/view"
 )
 
 type application struct {
@@ -25,12 +23,12 @@ func (a *application) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	a.router.ServeHTTP(w, r)
 }
 
-func New(config *textvid.Config) (http.Handler, error) {
-	ub := textvid.NewUrlBuilder(config)
-	vs := view.NewViewSet(ub, config)
-	re := textvid.New(config.LocalGitRepository, config.RemoteGitRepository)
-	pc := textvid.NewPostController(re, vs, ub, config)
-	ac := textvid.NewAdminController(re, vs, config)
+func NewApplication(config *Config) (http.Handler, error) {
+	ub := NewUrlBuilder(config)
+	vs := NewViewSet(ub, config)
+	re := New(config.LocalGitRepository, config.RemoteGitRepository)
+	pc := NewPostController(re, vs, ub, config)
+	ac := NewAdminController(re, vs, config)
 
 	r := mux.NewRouter()
 	r.HandleFunc("/", pc.GetIndex)

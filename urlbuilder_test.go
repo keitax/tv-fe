@@ -2,9 +2,6 @@ package textvid
 
 import (
 	"testing"
-
-	"github.com/keitax/textvid/entity"
-	"github.com/keitax/textvid/repository"
 )
 
 func TestLinkToTopPage(t *testing.T) {
@@ -22,7 +19,7 @@ func TestLinkToPostPage(t *testing.T) {
 	urlBuilder := &UrlBuilder{config: &Config{
 		BaseUrl: "http://localhost/",
 	}}
-	url := urlBuilder.LinkToPostPage(&entity.Post{
+	url := urlBuilder.LinkToPostPage(&Post{
 		Key: "2017/01/hello-world",
 	})
 	expected := "http://localhost/2017/01/hello-world.html"
@@ -35,7 +32,7 @@ func TestLinkToPostListPage(t *testing.T) {
 	ub := &UrlBuilder{config: &Config{
 		BaseUrl: "http://localhost/",
 	}}
-	u := ub.LinkToPostListPage(&repository.PostQuery{
+	u := ub.LinkToPostListPage(&PostQuery{
 		Start:   1,
 		Results: 10,
 	})
@@ -53,10 +50,10 @@ func TestLinkToPostResource(t *testing.T) {
 	testCases := []struct {
 		descr    string
 		expected interface{}
-		arg      *entity.Post
+		arg      *Post
 	}{
 		{"to post list", "http://localhost/posts/", nil},
-		{"to single post", "http://localhost/posts/1", &entity.Post{Id: 1}},
+		{"to single post", "http://localhost/posts/1", &Post{Id: 1}},
 	}
 	for _, tc := range testCases {
 		actual := ub.LinkToPostResource(tc.arg)
@@ -74,10 +71,10 @@ func TestLinkToPostEditorPage(t *testing.T) {
 	testCases := []struct {
 		descr    string
 		expected string
-		post     *entity.Post
+		post     *Post
 	}{
 		{"new", "http://localhost/posts/new", nil},
-		{"edit", "http://localhost/posts/10/edit", &entity.Post{Id: 10}},
+		{"edit", "http://localhost/posts/10/edit", &Post{Id: 10}},
 	}
 	for _, tc := range testCases {
 		actual := ub.LinkToPostEditorPage(tc.post)

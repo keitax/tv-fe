@@ -3,8 +3,6 @@ package textvid
 import (
 	"fmt"
 	"strings"
-
-	"github.com/keitax/textvid/entity"
 )
 
 func NewUrlBuilder(conf *Config) *UrlBuilder {
@@ -19,11 +17,11 @@ func (ub *UrlBuilder) LinkToTopPage() string {
 	return ub.config.BaseUrl
 }
 
-func (ub *UrlBuilder) LinkToPostPage(post *entity.Post) string {
+func (ub *UrlBuilder) LinkToPostPage(post *Post) string {
 	return fmt.Sprintf("%s%s.html", ub.config.BaseUrl, post.Key)
 }
 
-func (ub *UrlBuilder) LinkToPostResource(post *entity.Post) string {
+func (ub *UrlBuilder) LinkToPostResource(post *Post) string {
 	var path string
 	if post == nil {
 		path = "posts/"
@@ -50,7 +48,7 @@ func (ub *UrlBuilder) LinkToPostListPage(query *PostQuery) string {
 	return fmt.Sprintf("%sposts/%s", ub.config.BaseUrl, qs)
 }
 
-func (ub *UrlBuilder) LinkToPostEditorPage(post *entity.Post) string {
+func (ub *UrlBuilder) LinkToPostEditorPage(post *Post) string {
 	if post == nil {
 		return fmt.Sprintf("%sposts/new", ub.config.BaseUrl)
 	}

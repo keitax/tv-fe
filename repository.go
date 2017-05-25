@@ -8,7 +8,6 @@ import (
 	"sort"
 	"time"
 
-	"github.com/keitax/textvid/entity"
 	"gopkg.in/src-d/go-git.v4"
 )
 
@@ -27,13 +26,13 @@ func New(localGitRepoPath, remoteGitRepoPath string) *Repository {
 	}
 }
 
-func (r *Repository) FetchOne(key string) *entity.Post {
+func (r *Repository) FetchOne(key string) *Post {
 	ps := r.Fetch(&PostQuery{
 		Start:   1,
 		Results: 0,
 	})
 
-	var found *entity.Post
+	var found *Post
 	var foundIdx int
 	for i, p := range ps {
 		if key == p.Key {
@@ -58,8 +57,8 @@ func (r *Repository) FetchOne(key string) *entity.Post {
 	return found
 }
 
-func (r *Repository) Fetch(pq *PostQuery) []*entity.Post {
-	ps := []*entity.Post{}
+func (r *Repository) Fetch(pq *PostQuery) []*Post {
+	ps := []*Post{}
 
 	if err := filepath.Walk(filepath.Join(r.localGitRepoPath, "posts"), func(path string, info os.FileInfo, err error) error {
 		if err != nil {
@@ -75,7 +74,7 @@ func (r *Repository) Fetch(pq *PostQuery) []*entity.Post {
 		panic(err)
 	}
 
-	sort.Sort(entity.SortPost(ps))
+	sort.Sort(SortPost(ps))
 
 	start := Min(len(ps), Max(0, int(pq.Start)-1))
 	ps = ps[start:]
@@ -86,11 +85,11 @@ func (r *Repository) Fetch(pq *PostQuery) []*entity.Post {
 	return ps
 }
 
-func (r *Repository) Commit(p *entity.Post) {
+func (r *Repository) Commit(p *Post) {
 	panic("not implemented")
 }
 
-func (r *Repository) loadPost(key string) *entity.Post {
+func (r *Repository) loadPost(key string) *Post {
 	path := filepath.Join(r.localGitRepoPath, "posts", key+".md")
 	if !ExistsFile(path) {
 		panic("Faile to load the post")
@@ -105,7 +104,7 @@ func (r *Repository) loadPost(key string) *entity.Post {
 	if err != nil {
 		d = nil
 	}
-	return &entity.Post{
+	return &Post{
 		Key:    key,
 		Date:   d,
 		Title:  meta["title"].(string),

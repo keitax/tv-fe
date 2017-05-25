@@ -2,17 +2,15 @@ package textvid
 
 import (
 	"net/http"
-
-	"github.com/keitax/textvid/view"
 )
 
 type AdminController struct {
 	repository *Repository
-	viewSet    *view.ViewSet
+	viewSet    *ViewSet
 	config     *Config
 }
 
-func NewAdminController(r *Repository, vs *view.ViewSet, c *Config) *AdminController {
+func NewAdminController(r *Repository, vs *ViewSet, c *Config) *AdminController {
 	return &AdminController{
 		repository: r,
 		viewSet:    vs,
