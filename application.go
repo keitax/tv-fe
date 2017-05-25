@@ -28,20 +28,15 @@ func NewApplication(config *Config) (http.Handler, error) {
 	ac := NewAdminController(re, vs, config)
 
 	r := mux.NewRouter()
-	r.HandleFunc("/", pc.GetIndex)
-	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir(config.StaticDir))))
-	r.HandleFunc("/posts/", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == http.MethodPost {
-			pc.SubmitPost(w, r)
-			return
-		}
-		pc.GetList(w, r)
-	})
-	r.HandleFunc("/posts/new", pc.GetEditor)
-	r.HandleFunc("/posts/{id:[0-9]+}", pc.EditPost)
-	r.HandleFunc("/posts/{id:[0-9]+}/edit", pc.GetEditor)
-	r.HandleFunc("/{year:[0-9]{4}}/{month:0[1-9]|1[0-2]}/{name}.html", pc.GetSingle)
-	r.HandleFunc("/admin", ac.GetIndex)
+	r.HandleFunc("/", pc.GetIndex).Methods(http.MethodGet)
+	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir(config.StaticDir)))).Methods(http.MethodGet)
+	r.HandleFunc("/posts/", pc.GetList).Methods(http.MethodGet)
+	r.HandleFunc("/posts/", pc.SubmitPost).Methods(http.MethodPost)
+	r.HandleFunc("/posts/new", pc.GetEditor).Methods(http.MethodGet)
+	r.HandleFunc("/posts/{id:[0-9]+}", pc.EditPost).Methods(http.MethodPost, http.MethodPut)
+	r.HandleFunc("/posts/{id:[0-9]+}/edit", pc.GetEditor).Methods(http.MethodGet)
+	r.HandleFunc("/{year:[0-9]{4}}/{month:0[1-9]|1[0-2]}/{name}.html", pc.GetSingle).Methods(http.MethodGet)
+	r.HandleFunc("/admin", ac.GetIndex).Methods(http.MethodGet)
 
 	app := negroni.New()
 	app.UseHandler(r)
