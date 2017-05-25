@@ -6,13 +6,10 @@ import (
 
 	"github.com/Sirupsen/logrus"
 	"github.com/gorilla/mux"
+	"github.com/urfave/negroni"
 )
 
-type application struct {
-	router http.Handler
-}
-
-func (a *application) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func PanicHandler(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 	defer func() {
 		err := recover()
 		if err != nil {
@@ -20,7 +17,7 @@ func (a *application) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		}
 	}()
-	a.router.ServeHTTP(w, r)
+	next(w, r)
 }
 
 func NewApplication(config *Config) (http.Handler, error) {
@@ -46,5 +43,8 @@ func NewApplication(config *Config) (http.Handler, error) {
 	r.HandleFunc("/{year:[0-9]{4}}/{month:0[1-9]|1[0-2]}/{name}.html", pc.GetSingle)
 	r.HandleFunc("/admin", ac.GetIndex)
 
-	return &application{r}, nil
+	app := negroni.New()
+	app.UseHandler(r)
+	app.UseFunc(PanicHandler)
+	return app, nil
 }
