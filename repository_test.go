@@ -7,7 +7,7 @@ import (
 )
 
 func TestFetchOne(t *testing.T) {
-	r := New("./test-repo", "")
+	r := NewRepository("./test-repo", "")
 	p := r.FetchOne("2017/01/test-post-01")
 	if p == nil {
 		t.Fatal("Failed to fetch the post")
@@ -37,7 +37,7 @@ func TestFetchOne(t *testing.T) {
 }
 
 func TestFetchOneGetsNeighbors(t *testing.T) {
-	r := New("./test-repo", "")
+	r := NewRepository("./test-repo", "")
 	testCases := []struct {
 		descr    string
 		iKey     string
@@ -67,7 +67,7 @@ func TestFetchOneGetsNeighbors(t *testing.T) {
 }
 
 func TestFetchAcceptsRangeQuery(t *testing.T) {
-	r := New("./test-repo", "")
+	r := NewRepository("./test-repo", "")
 	testCases := []struct {
 		descr    string
 		iStart   uint64

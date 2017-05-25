@@ -19,7 +19,7 @@ type Repository struct {
 	gitRepo           *git.Repository
 }
 
-func New(localGitRepoPath, remoteGitRepoPath string) *Repository {
+func NewRepository(localGitRepoPath, remoteGitRepoPath string) *Repository {
 	return &Repository{
 		localGitRepoPath:  localGitRepoPath,
 		remoteGitRepoPath: remoteGitRepoPath,

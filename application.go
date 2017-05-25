@@ -26,7 +26,7 @@ func (a *application) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func NewApplication(config *Config) (http.Handler, error) {
 	ub := NewUrlBuilder(config)
 	vs := NewViewSet(ub, config)
-	re := New(config.LocalGitRepository, config.RemoteGitRepository)
+	re := NewRepository(config.LocalGitRepository, config.RemoteGitRepository)
 	pc := NewPostController(re, vs, ub, config)
 	ac := NewAdminController(re, vs, config)
 
