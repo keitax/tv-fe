@@ -1,8 +1,4 @@
-{{define "stylesheets" -}}
-<link rel="stylesheet" href="static/index.css">
-{{end -}}
-
-{{define "content" -}}
+{{template "_header.tmpl" . -}}
 <ul class="post-list">
 {{range .posts -}}
 <li class="post-list-item">
@@ -42,4 +38,4 @@
 </li>
 </ul>
 </nav>
-{{end -}}
+{{template "_footer.tmpl" . -}}

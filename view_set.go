@@ -18,7 +18,8 @@ func (vs *ViewSet) PostSingleView(p *Post) *View {
 		vs.config,
 		"post_single.tmpl",
 		map[string]interface{}{
-			"post": p,
+			"stylesheets": []string{"index.css"},
+			"post":        p,
 		},
 	}
 }
@@ -29,6 +30,7 @@ func (vs *ViewSet) PostListView(ps []*Post, nextPosts []*Post, previousPosts []*
 		vs.config,
 		"post_list.tmpl",
 		map[string]interface{}{
+			"stylesheets":   []string{"index.css"},
 			"posts":         ps,
 			"NextPosts":     nextPosts,
 			"PreviousPosts": previousPosts,
@@ -43,7 +45,8 @@ func (vs *ViewSet) AdminView(ps []*Post) *View {
 		vs.config,
 		"admin.tmpl",
 		map[string]interface{}{
-			"posts": ps,
+			"stylesheets": []string{"admin.css"},
+			"posts":       ps,
 		},
 	}
 }
@@ -54,7 +57,8 @@ func (vs *ViewSet) PostEditorView(p *Post) *View {
 		vs.config,
 		"post_editor.tmpl",
 		map[string]interface{}{
-			"post": p,
+			"stylesheets": []string{"admin.css"},
+			"post":        p,
 		},
 	}
 }

@@ -22,8 +22,9 @@ func (v *View) Render(w io.Writer) {
 		},
 	})
 	ts = template.Must(ts.ParseFiles(
-		filepath.Join(v.config.TemplateDir, "layout.tmpl"),
 		filepath.Join(v.config.TemplateDir, v.templateName),
+		filepath.Join(v.config.TemplateDir, "_header.tmpl"),
+		filepath.Join(v.config.TemplateDir, "_footer.tmpl"),
 	))
 	context_ := map[string]interface{}{
 		"SiteTitle":  v.config.SiteTitle,
@@ -33,7 +34,7 @@ func (v *View) Render(w io.Writer) {
 	for key, value := range v.context {
 		context_[key] = value
 	}
-	if err := ts.ExecuteTemplate(w, "layout.tmpl", context_); err != nil {
+	if err := ts.ExecuteTemplate(w, v.templateName, context_); err != nil {
 		panic(err)
 	}
 }

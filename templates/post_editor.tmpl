@@ -1,8 +1,4 @@
-{{define "stylesheets" -}}
-<link rel="stylesheet" href="static/admin.css">
-{{end -}}
-
-{{define "content" -}}
+{{template "_header.tmpl" . -}}
 {{with .post -}}
 <section class="post-editor">
 {{if .Id -}}
@@ -30,4 +26,4 @@
 </form>
 </section>
 {{end -}}
-{{end -}}
+{{template "_footer.tmpl" . -}}

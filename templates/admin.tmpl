@@ -1,8 +1,4 @@
-{{define "stylesheets" -}}
-<link rel="stylesheet" href="static/admin.css">
-{{end -}}
-
-{{define "content" -}}
+{{template "_header.tmpl" . -}}
 <header>
 <h2 class="post-editor__title">Manage Posts</h2>
 <a class="new-post-button" href="{{$.Urls.LinkToPostEditorPage nil}}">New post</a>
@@ -16,4 +12,4 @@
 </tr>
 {{end -}}
 </table>
-{{end -}}
+{{template "_footer.tmpl" . -}}

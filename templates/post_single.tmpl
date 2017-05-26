@@ -1,8 +1,4 @@
-{{define "stylesheets" -}}
-<link rel="stylesheet" href="static/index.css">
-{{end -}}
-
-{{define "content" -}}
+{{template "_header.tmpl" . -}}
 {{with .post -}}
 <article class="post">
 <header class="post__header">
@@ -38,4 +34,4 @@
 </ul>
 </nav>
 {{end -}}
-{{end -}}
+{{template "_footer.tmpl" . -}}
