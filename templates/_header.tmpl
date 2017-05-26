@@ -1,0 +1,18 @@
+<!doctype html>
+<html>
+<head>
+<base href="/">
+{{range .stylesheets -}}
+<link rel="stylesheet" href="static/{{.}}" type="text/css">
+{{end -}}
+<meta name=viewport content="width=device-width, initial-scale=1">
+<title>{{.SiteTitle}}</title>
+</head>
+<body>
+<div class="container">
+<header class="site-header">
+<h1 class="site-title">
+<a class="site-title__link" href="{{$.Urls.LinkToTopPage}}">{{.SiteTitle}}</a>
+</h1>
+</header>
+<main class="site-main">
