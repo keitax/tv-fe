@@ -1,6 +1,7 @@
 package textvid
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -8,6 +9,7 @@ import (
 	"sort"
 	"time"
 
+	"github.com/Sirupsen/logrus"
 	"gopkg.in/src-d/go-git.v4"
 )
 
@@ -20,10 +22,21 @@ type Repository struct {
 }
 
 func OpenRepository(localGitRepoPath, remoteGitRepoPath string) (*Repository, error) {
+	logrus.Infof("Try to open the local repository %s.", localGitRepoPath)
 	r, err := git.PlainOpen(localGitRepoPath)
-	if err != nil {
-		return nil, err
+	if err == git.ErrRepositoryNotExists {
+		logrus.Infof("There are no local repository, clone the remote repository: %s -> %s", remoteGitRepoPath, localGitRepoPath)
+		var err error
+		r, err = git.PlainClone(localGitRepoPath, false, &git.CloneOptions{
+			URL: remoteGitRepoPath,
+		})
+		if err != nil {
+			return nil, fmt.Errorf("Failed to clone the remote repository %s: %s", remoteGitRepoPath, err)
+		}
+	} else if err != nil {
+		return nil, fmt.Errorf("Failed to open the local repository: %s", err)
 	}
+	logrus.Infof("Succeeded to open the repository.")
 	return &Repository{
 		localGitRepoPath:  localGitRepoPath,
 		remoteGitRepoPath: remoteGitRepoPath,
