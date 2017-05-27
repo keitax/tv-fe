@@ -18,16 +18,16 @@ type Post struct {
 	PreviousPost *Post
 }
 
-type SortPost []*Post
+type PostList []*Post
 
-func (sp SortPost) Len() int {
+func (sp PostList) Len() int {
 	return len(sp)
 }
 
-func (sp SortPost) Less(i, j int) bool {
+func (sp PostList) Less(i, j int) bool {
 	return sp[i].Date.After(*sp[j].Date)
 }
 
-func (sp SortPost) Swap(i, j int) {
+func (sp PostList) Swap(i, j int) {
 	sp[i], sp[j] = sp[j], sp[i]
 }

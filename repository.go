@@ -140,6 +140,6 @@ func (r *Repository) getPostMetaList() []*Post {
 	for _, p := range r.postMetaCache {
 		ps = append(ps, p)
 	}
-	sort.Sort(SortPost(ps))
+	sort.Sort(PostList(ps))
 	return ps
 }
