@@ -2,11 +2,11 @@ package textvid
 
 import (
 	"fmt"
-	"os"
-	"path/filepath"
 	"regexp"
 	"sort"
 	"time"
+
+	"io"
 
 	"github.com/Sirupsen/logrus"
 	"gopkg.in/src-d/go-git.v4"
@@ -19,6 +19,7 @@ type Repository struct {
 	localGitRepoPath  string
 	remoteGitRepoPath string
 	gitRepo           *git.Repository
+	postMetaCache     map[string]*Post
 }
 
 func OpenRepository(localGitRepoPath, remoteGitRepoPath string) (*Repository, error) {
@@ -44,56 +45,53 @@ func OpenRepository(localGitRepoPath, remoteGitRepoPath string) (*Repository, er
 	}, nil
 }
 
-func (r *Repository) FetchOne(key string) *Post {
-	ps := r.Fetch(&PostQuery{
-		Start:   1,
-		Results: 0,
-	})
-
-	var found *Post
-	var foundIdx int
-	for i, p := range ps {
-		if key == p.Key {
-			found = p
-			foundIdx = i
+func (r *Repository) UpdateCache() {
+	ref, err := r.gitRepo.Head()
+	if err != nil {
+		panic(err)
+	}
+	c, err := r.gitRepo.CommitObject(ref.Hash())
+	if err != nil {
+		panic(err)
+	}
+	fi, err := c.Files()
+	if err != nil {
+		panic(err)
+	}
+	cache := map[string]*Post{}
+	for {
+		f, err := fi.Next()
+		if err == io.EOF {
 			break
 		}
-	}
-	if found == nil {
-		return nil
-	}
-
-	nextIdx := foundIdx - 1
-	prevIdx := foundIdx + 1
-	if 0 <= nextIdx && nextIdx < len(ps) {
-		found.NextPost = ps[nextIdx]
-	}
-	if 0 <= prevIdx && prevIdx < len(ps) {
-		found.PreviousPost = ps[prevIdx]
+		if err != nil {
+			panic(err)
+		}
+		if postFileRe.MatchString(f.Name) {
+			key := postFileRe.FindStringSubmatch(f.Name)[1]
+			p := r.loadPost(key)
+			cache[key] = p
+		}
 	}
 
-	return found
+	r.postMetaCache = cache
+
+	var np *Post
+	for _, p := range r.getPostMetaList() {
+		if np != nil {
+			np.PreviousPost = p
+		}
+		p.NextPost = np
+		np = p
+	}
+}
+
+func (r *Repository) FetchOne(key string) *Post {
+	return r.postMetaCache[key]
 }
 
 func (r *Repository) Fetch(pq *PostQuery) []*Post {
-	ps := []*Post{}
-
-	if err := filepath.Walk(filepath.Join(r.localGitRepoPath, "posts"), func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-		if !postFileRe.MatchString(path) {
-			return nil
-		}
-		key := postFileRe.FindStringSubmatch(path)[1]
-		ps = append(ps, r.loadPost(key))
-		return nil
-	}); err != nil {
-		panic(err)
-	}
-
-	sort.Sort(SortPost(ps))
-
+	ps := r.getPostMetaList()
 	start := Min(len(ps), Max(0, int(pq.Start)-1))
 	ps = ps[start:]
 	if pq.Results >= 1 {
@@ -140,4 +138,13 @@ func (r *Repository) loadPost(key string) *Post {
 		Body:   body,
 		Labels: ConvertToStringSlice(meta["labels"].([]interface{})),
 	}
+}
+
+func (r *Repository) getPostMetaList() []*Post {
+	ps := []*Post{}
+	for _, p := range r.postMetaCache {
+		ps = append(ps, p)
+	}
+	sort.Sort(SortPost(ps))
+	return ps
 }

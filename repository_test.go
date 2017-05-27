@@ -1,13 +1,12 @@
 package textvid
 
 import (
+	"io/ioutil"
 	"os"
+	"path/filepath"
 	"reflect"
 	"testing"
 	"time"
-
-	"io/ioutil"
-	"path/filepath"
 
 	"gopkg.in/src-d/go-git.v4"
 	"gopkg.in/src-d/go-git.v4/plumbing/object"
@@ -100,6 +99,7 @@ Test Post
 `,
 		},
 	})
+	r.UpdateCache()
 
 	p := r.FetchOne("2017/01/test-post-01")
 	if p == nil {
@@ -171,6 +171,7 @@ labels: ["Test"]
 `,
 		},
 	})
+	r.UpdateCache()
 
 	testCases := []struct {
 		descr    string
@@ -237,6 +238,7 @@ labels: ["Test"]
 `,
 		},
 	})
+	r.UpdateCache()
 
 	testCases := []struct {
 		descr    string
