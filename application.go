@@ -23,7 +23,10 @@ func PanicHandler(w http.ResponseWriter, r *http.Request, next http.HandlerFunc)
 func NewApplication(config *Config) (http.Handler, error) {
 	ub := NewUrlBuilder(config)
 	vs := NewViewSet(ub, config)
-	re := NewRepository(config.LocalGitRepository, config.RemoteGitRepository)
+	re, err := OpenRepository(config.LocalGitRepository, config.RemoteGitRepository)
+	if err != nil {
+		return nil, err
+	}
 	pc := NewPostController(re, vs, ub, config)
 	ac := NewAdminController(re, vs, config)
 

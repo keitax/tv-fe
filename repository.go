@@ -19,11 +19,16 @@ type Repository struct {
 	gitRepo           *git.Repository
 }
 
-func NewRepository(localGitRepoPath, remoteGitRepoPath string) *Repository {
+func OpenRepository(localGitRepoPath, remoteGitRepoPath string) (*Repository, error) {
+	r, err := git.PlainOpen(localGitRepoPath)
+	if err != nil {
+		return nil, err
+	}
 	return &Repository{
 		localGitRepoPath:  localGitRepoPath,
 		remoteGitRepoPath: remoteGitRepoPath,
-	}
+		gitRepo:           r,
+	}, nil
 }
 
 func (r *Repository) FetchOne(key string) *Post {

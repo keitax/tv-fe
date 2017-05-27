@@ -6,6 +6,13 @@ import (
 	"time"
 )
 
+func NewRepository(lp, rp string) *Repository {
+	return &Repository{
+		localGitRepoPath:  lp,
+		remoteGitRepoPath: rp,
+	}
+}
+
 func TestFetchOne(t *testing.T) {
 	r := NewRepository("./test-repo", "")
 	p := r.FetchOne("2017/01/test-post-01")
