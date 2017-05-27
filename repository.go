@@ -54,11 +54,7 @@ func (r *Repository) UpdateCache() {
 		panic(err)
 	}
 	cache := map[string]*Post{}
-	for {
-		f, err := fi.Next()
-		if err == io.EOF {
-			break
-		}
+	for f, err := fi.Next(); err != io.EOF; f, err = fi.Next() {
 		if err != nil {
 			panic(err)
 		}
