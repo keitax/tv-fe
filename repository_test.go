@@ -1,20 +1,65 @@
 package textvid
 
 import (
+	"os"
 	"reflect"
 	"testing"
 	"time"
+
+	"gopkg.in/src-d/go-git.v4"
+	"gopkg.in/src-d/go-git.v4/plumbing/object"
 )
 
-func NewRepository(lp, rp string) *Repository {
-	return &Repository{
-		localGitRepoPath:  lp,
-		remoteGitRepoPath: rp,
+func prepareTestRepository(t *testing.T) *Repository {
+	g, err := git.PlainInit("./test-repo", false)
+	if err == git.ErrRepositoryAlreadyExists {
+		return openTestRepository(t)
+	}
+	if err != nil {
+		t.Fatal(err)
+	}
+	w, err := g.Worktree()
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, err = w.Commit("Initial commit", &git.CommitOptions{
+		All: true,
+		Author: &object.Signature{
+			Name:  "textvid-test",
+			Email: "textvid-test@dummy.jp",
+		},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	return openTestRepository(t)
+}
+
+func openTestRepository(t *testing.T) *Repository {
+	r, err := OpenRepository("./test-repo", "")
+	if err != nil {
+		t.Fatal(err)
+	}
+	return r
+}
+
+func cleanupTestRepository(t *testing.T) {
+	repoData := "./test-repo/.git"
+	_, err := os.Stat(repoData)
+	if err == os.ErrNotExist {
+		return
+	}
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.RemoveAll(repoData); err != nil {
+		t.Fatal(err)
 	}
 }
 
 func TestFetchOne(t *testing.T) {
-	r := NewRepository("./test-repo", "")
+	r := prepareTestRepository(t)
+	defer cleanupTestRepository(t)
 	p := r.FetchOne("2017/01/test-post-01")
 	if p == nil {
 		t.Fatal("Failed to fetch the post")
@@ -44,7 +89,8 @@ func TestFetchOne(t *testing.T) {
 }
 
 func TestFetchOneGetsNeighbors(t *testing.T) {
-	r := NewRepository("./test-repo", "")
+	r := prepareTestRepository(t)
+	defer cleanupTestRepository(t)
 	testCases := []struct {
 		descr    string
 		iKey     string
@@ -74,7 +120,8 @@ func TestFetchOneGetsNeighbors(t *testing.T) {
 }
 
 func TestFetchAcceptsRangeQuery(t *testing.T) {
-	r := NewRepository("./test-repo", "")
+	r := prepareTestRepository(t)
+	defer cleanupTestRepository(t)
 	testCases := []struct {
 		descr    string
 		iStart   uint64
