@@ -2,7 +2,6 @@ package textvid
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -11,6 +10,7 @@ import (
 
 	"github.com/Sirupsen/logrus"
 	"gopkg.in/src-d/go-git.v4"
+	"gopkg.in/src-d/go-git.v4/plumbing/object"
 )
 
 var postFileRe = regexp.MustCompile(`^.*([0-9][0-9][0-9][0-9]/[0-9][0-9]/.+)\.md$`)
@@ -108,15 +108,26 @@ func (r *Repository) Commit(p *Post) {
 }
 
 func (r *Repository) loadPost(key string) *Post {
-	path := filepath.Join(r.localGitRepoPath, "posts", key+".md")
-	if !ExistsFile(path) {
-		panic("Faile to load the post")
-	}
-	bs, err := ioutil.ReadFile(path)
+	ref, err := r.gitRepo.Head()
 	if err != nil {
 		panic(err)
 	}
-	meta, body := StripFrontMatter(string(bs))
+	c, err := r.gitRepo.CommitObject(ref.Hash())
+	if err != nil {
+		panic(err)
+	}
+	f, err := c.File(fmt.Sprintf("posts/%s.md", key))
+	if err == object.ErrFileNotFound {
+		panic(err)
+	}
+	if err != nil {
+		panic(err)
+	}
+	cs, err := f.Contents()
+	if err != nil {
+		panic(err)
+	}
+	meta, body := StripFrontMatter(cs)
 	d_, err := time.Parse("2006-01-02 15:04:05 Z07:00", meta["date"].(string))
 	d := &d_
 	if err != nil {
