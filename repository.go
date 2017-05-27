@@ -2,11 +2,10 @@ package textvid
 
 import (
 	"fmt"
+	"io"
 	"regexp"
 	"sort"
 	"time"
-
-	"io"
 
 	"github.com/Sirupsen/logrus"
 	"gopkg.in/src-d/go-git.v4"
@@ -16,10 +15,8 @@ import (
 var postFileRe = regexp.MustCompile(`^.*([0-9][0-9][0-9][0-9]/[0-9][0-9]/.+)\.md$`)
 
 type Repository struct {
-	localGitRepoPath  string
-	remoteGitRepoPath string
-	gitRepo           *git.Repository
-	postMetaCache     map[string]*Post
+	gitRepo       *git.Repository
+	postMetaCache map[string]*Post
 }
 
 func OpenRepository(localGitRepoPath, remoteGitRepoPath string) (*Repository, error) {
@@ -39,9 +36,7 @@ func OpenRepository(localGitRepoPath, remoteGitRepoPath string) (*Repository, er
 	}
 	logrus.Infof("Succeeded to open the repository.")
 	return &Repository{
-		localGitRepoPath:  localGitRepoPath,
-		remoteGitRepoPath: remoteGitRepoPath,
-		gitRepo:           r,
+		gitRepo: r,
 	}, nil
 }
 
