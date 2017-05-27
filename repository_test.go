@@ -6,37 +6,22 @@ import (
 	"testing"
 	"time"
 
+	"io/ioutil"
+	"path/filepath"
+
 	"gopkg.in/src-d/go-git.v4"
 	"gopkg.in/src-d/go-git.v4/plumbing/object"
 )
 
-func prepareTestRepository(t *testing.T) *Repository {
-	g, err := git.PlainInit("./test-repo", false)
-	if err == git.ErrRepositoryAlreadyExists {
-		return openTestRepository(t)
-	}
-	if err != nil {
-		t.Fatal(err)
-	}
-	w, err := g.Worktree()
-	if err != nil {
-		t.Fatal(err)
-	}
-	_, err = w.Commit("Initial commit", &git.CommitOptions{
-		All: true,
-		Author: &object.Signature{
-			Name:  "textvid-test",
-			Email: "textvid-test@dummy.jp",
-		},
-	})
-	if err != nil {
-		t.Fatal(err)
-	}
-	return openTestRepository(t)
-}
+const testRepo = "./tmp-test-repo"
 
-func openTestRepository(t *testing.T) *Repository {
-	r, err := OpenRepository("./test-repo", "")
+var jst = time.FixedZone("Asia/Tokyo", 9*60*60)
+
+func prepareTestRepository(t *testing.T) *Repository {
+	if _, err := git.PlainInit(testRepo, false); err != nil {
+		t.Fatal(err)
+	}
+	r, err := OpenRepository(testRepo, "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -44,27 +29,83 @@ func openTestRepository(t *testing.T) *Repository {
 }
 
 func cleanupTestRepository(t *testing.T) {
-	repoData := "./test-repo/.git"
-	_, err := os.Stat(repoData)
+	_, err := os.Stat(testRepo)
 	if err == os.ErrNotExist {
 		return
 	}
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err := os.RemoveAll(repoData); err != nil {
+	if err := os.RemoveAll(testRepo); err != nil {
 		t.Fatal(err)
+	}
+}
+
+type postFile struct {
+	path    string
+	when    time.Time
+	content string
+}
+
+func preparePostData(t *testing.T, fs []*postFile) {
+	r, err := git.PlainOpen(testRepo)
+	if err != nil {
+		panic(err)
+	}
+	for _, f := range fs {
+		realPath := filepath.Join(testRepo, f.path)
+		if err := os.MkdirAll(filepath.Dir(realPath), 0777); err != nil {
+			t.Fatal(err)
+		}
+		if err := ioutil.WriteFile(realPath, []byte(f.content), 0666); err != nil {
+			t.Fatal(err)
+		}
+		w, err := r.Worktree()
+		if err != nil {
+			t.Fatal(err)
+		}
+		if _, err := w.Add(f.path); err != nil {
+			t.Fatal(err)
+		}
+		if _, err := w.Commit("Update", &git.CommitOptions{
+			Author: &object.Signature{
+				Name:  "textvid-test",
+				Email: "textvid-test@textvid.com",
+				When:  f.when,
+			},
+		}); err != nil {
+			t.Fatal(err)
+		}
 	}
 }
 
 func TestFetchOne(t *testing.T) {
 	r := prepareTestRepository(t)
 	defer cleanupTestRepository(t)
+
+	preparePostData(t, []*postFile{
+		{
+			path: "posts/2017/01/test-post-01.md",
+			when: time.Date(2017, 1, 1, 0, 0, 0, 0, jst),
+			content: `---
+date: 2017-01-01 00:00:00 +09:00
+title: Test Post 1
+labels: ["Test"]
+---
+
+Test Post
+--
+
+Test Post
+`,
+		},
+	})
+
 	p := r.FetchOne("2017/01/test-post-01")
 	if p == nil {
 		t.Fatal("Failed to fetch the post")
 	}
-	jst := time.FixedZone("Asia/Tokyo", 9*60*60)
+
 	testCases := []struct {
 		descr    string
 		expected interface{}
@@ -73,7 +114,13 @@ func TestFetchOne(t *testing.T) {
 		{"Key", "2017/01/test-post-01", p.Key},
 		{"Date", time.Date(2017, 1, 1, 0, 0, 0, 0, jst), *p.Date},
 		{"Title", "Test Post 1", p.Title},
+		{"Body", `Test Post
+--
+
+Test Post
+`, p.Body},
 	}
+
 	for _, tc := range testCases {
 		matched := false
 		switch tc.expected.(type) {
@@ -91,6 +138,40 @@ func TestFetchOne(t *testing.T) {
 func TestFetchOneGetsNeighbors(t *testing.T) {
 	r := prepareTestRepository(t)
 	defer cleanupTestRepository(t)
+
+	preparePostData(t, []*postFile{
+		{
+			path: "posts/2017/01/test-post-01.md",
+			when: time.Date(2017, 1, 1, 0, 0, 0, 0, jst),
+			content: `---
+date: 2017-01-01 00:00:00 +09:00
+title: Test Post 1
+labels: ["Test"]
+---
+`,
+		},
+		{
+			path: "posts/2017/01/test-post-02.md",
+			when: time.Date(2017, 1, 2, 0, 0, 0, 0, jst),
+			content: `---
+date: 2017-01-02 00:00:00 +09:00
+title: Test Post 2
+labels: ["Test"]
+---
+`,
+		},
+		{
+			path: "posts/2017/01/test-post-03.md",
+			when: time.Date(2017, 1, 3, 0, 0, 0, 0, jst),
+			content: `---
+date: 2017-01-03 00:00:00 +09:00
+title: Test Post 3
+labels: ["Test"]
+---
+`,
+		},
+	})
+
 	testCases := []struct {
 		descr    string
 		iKey     string
@@ -101,6 +182,7 @@ func TestFetchOneGetsNeighbors(t *testing.T) {
 		{"Get neightbors of the first post", "2017/01/test-post-03", "", "2017/01/test-post-02"},
 		{"Get neightbors of the last post", "2017/01/test-post-01", "2017/01/test-post-02", ""},
 	}
+
 	for _, tc := range testCases {
 		p := r.FetchOne(tc.iKey)
 		var nk, pk string
@@ -122,6 +204,40 @@ func TestFetchOneGetsNeighbors(t *testing.T) {
 func TestFetchAcceptsRangeQuery(t *testing.T) {
 	r := prepareTestRepository(t)
 	defer cleanupTestRepository(t)
+
+	preparePostData(t, []*postFile{
+		{
+			path: "posts/2017/01/test-post-01.md",
+			when: time.Date(2017, 1, 1, 0, 0, 0, 0, jst),
+			content: `---
+date: 2017-01-01 00:00:00 +09:00
+title: Test Post 1
+labels: ["Test"]
+---
+`,
+		},
+		{
+			path: "posts/2017/01/test-post-02.md",
+			when: time.Date(2017, 1, 2, 0, 0, 0, 0, jst),
+			content: `---
+date: 2017-01-02 00:00:00 +09:00
+title: Test Post 2
+labels: ["Test"]
+---
+`,
+		},
+		{
+			path: "posts/2017/01/test-post-03.md",
+			when: time.Date(2017, 1, 3, 0, 0, 0, 0, jst),
+			content: `---
+date: 2017-01-03 00:00:00 +09:00
+title: Test Post 3
+labels: ["Test"]
+---
+`,
+		},
+	})
+
 	testCases := []struct {
 		descr    string
 		iStart   uint64
