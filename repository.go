@@ -41,15 +41,7 @@ func OpenRepository(localGitRepoPath, remoteGitRepoPath string) (*Repository, er
 }
 
 func (r *Repository) UpdateCache() {
-	ref, err := r.gitRepo.Head()
-	if err != nil {
-		panic(err)
-	}
-	c, err := r.gitRepo.CommitObject(ref.Hash())
-	if err != nil {
-		panic(err)
-	}
-	fi, err := c.Files()
+	fi, err := r.getHeadCommit().Files()
 	if err != nil {
 		panic(err)
 	}
@@ -138,4 +130,16 @@ func (r *Repository) getPostMetaList() []*Post {
 	}
 	sort.Sort(PostList(ps))
 	return ps
+}
+
+func (r *Repository) getHeadCommit() *object.Commit {
+	ref, err := r.gitRepo.Head()
+	if err != nil {
+		panic(err)
+	}
+	c, err := r.gitRepo.CommitObject(ref.Hash())
+	if err != nil {
+		panic(err)
+	}
+	return c
 }
