@@ -27,6 +27,7 @@ func NewApplication(config *Config) (http.Handler, error) {
 	if err != nil {
 		return nil, err
 	}
+	re.UpdateCache()
 	pc := NewPostController(re, vs, ub, config)
 	ac := NewAdminController(re, vs, config)
 
