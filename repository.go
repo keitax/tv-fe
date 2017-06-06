@@ -15,8 +15,8 @@ import (
 var postFileRe = regexp.MustCompile(`^.*([0-9][0-9][0-9][0-9]/[0-9][0-9]/.+)\.md$`)
 
 type Repository struct {
-	gitRepo       *git.Repository
-	postMetaCache map[string]*Post
+	gitRepo   *git.Repository
+	postCache map[string]*Post
 }
 
 func OpenRepository(localGitRepoPath, remoteGitRepoPath string) (*Repository, error) {
@@ -62,10 +62,10 @@ func (r *Repository) UpdateCache() {
 		}
 	}
 
-	r.postMetaCache = cache
+	r.postCache = cache
 
 	var np *Post
-	for _, p := range r.getPostMetaList() {
+	for _, p := range r.getPostList() {
 		if np != nil {
 			np.PreviousPost = p
 		}
@@ -75,11 +75,11 @@ func (r *Repository) UpdateCache() {
 }
 
 func (r *Repository) FetchOne(key string) *Post {
-	return r.postMetaCache[key]
+	return r.postCache[key]
 }
 
 func (r *Repository) Fetch(pq *PostQuery) []*Post {
-	ps := r.getPostMetaList()
+	ps := r.getPostList()
 	start := Min(len(ps), Max(0, int(pq.Start)-1))
 	ps = ps[start:]
 	if pq.Results >= 1 {
@@ -118,9 +118,9 @@ func (r *Repository) loadPost(key string) *Post {
 	return p
 }
 
-func (r *Repository) getPostMetaList() []*Post {
+func (r *Repository) getPostList() []*Post {
 	ps := []*Post{}
-	for _, p := range r.postMetaCache {
+	for _, p := range r.postCache {
 		ps = append(ps, p)
 	}
 	sort.Sort(PostList(ps))
