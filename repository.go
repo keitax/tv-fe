@@ -5,6 +5,7 @@ import (
 	"io"
 	"regexp"
 	"sort"
+	"sync"
 	"time"
 
 	"github.com/Sirupsen/logrus"
@@ -17,6 +18,7 @@ var postFileRe = regexp.MustCompile(`^.*([0-9][0-9][0-9][0-9]/[0-9][0-9]/.+)\.md
 type Repository struct {
 	gitRepo   *git.Repository
 	postCache map[string]*Post
+	mutex     *sync.RWMutex
 }
 
 func OpenRepository(localGitRepoPath, remoteGitRepoPath string) (*Repository, error) {
@@ -37,6 +39,7 @@ func OpenRepository(localGitRepoPath, remoteGitRepoPath string) (*Repository, er
 	logrus.Infof("Succeeded to open the repository.")
 	return &Repository{
 		gitRepo: r,
+		mutex:   &sync.RWMutex{},
 	}, nil
 }
 
@@ -62,7 +65,9 @@ func (r *Repository) UpdateCache() {
 		}
 	}
 
+	r.mutex.Lock()
 	r.postCache = cache
+	r.mutex.Unlock()
 
 	var np *Post
 	for _, p := range r.getPostList() {
@@ -75,7 +80,7 @@ func (r *Repository) UpdateCache() {
 }
 
 func (r *Repository) FetchOne(key string) *Post {
-	return r.postCache[key]
+	return r.refPostCache()[key]
 }
 
 func (r *Repository) Fetch(pq *PostQuery) []*Post {
@@ -118,9 +123,15 @@ func (r *Repository) loadPost(key string) *Post {
 	return p
 }
 
+func (r *Repository) refPostCache() map[string]*Post {
+	r.mutex.RLock()
+	defer r.mutex.RUnlock()
+	return r.postCache
+}
+
 func (r *Repository) getPostList() []*Post {
 	ps := []*Post{}
-	for _, p := range r.postCache {
+	for _, p := range r.refPostCache() {
 		ps = append(ps, p)
 	}
 	sort.Sort(PostList(ps))
