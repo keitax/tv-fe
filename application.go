@@ -6,6 +6,7 @@ import (
 
 	"github.com/Sirupsen/logrus"
 	"github.com/gorilla/mux"
+	"github.com/robfig/cron"
 	"github.com/urfave/negroni"
 )
 
@@ -28,6 +29,12 @@ func NewApplication(config *Config) (http.Handler, error) {
 		return nil, err
 	}
 	re.UpdateCache()
+	c := cron.New()
+	c.AddFunc("*/30 * * * * *", func() {
+		re.UpdateCache()
+	})
+	c.Start()
+
 	pc := NewPostController(re, vs, ub, config)
 	ac := NewAdminController(re, vs, config)
 

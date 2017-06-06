@@ -44,6 +44,8 @@ func OpenRepository(localGitRepoPath, remoteGitRepoPath string) (*Repository, er
 }
 
 func (r *Repository) UpdateCache() {
+	logrus.Info("Update post cache.")
+
 	fi, err := r.getHeadCommit().Files()
 	if err != nil {
 		panic(err)
