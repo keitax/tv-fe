@@ -108,19 +108,27 @@ func (r *Repository) loadPost(key string) *Post {
 	if err != nil {
 		panic(err)
 	}
-	meta, body := StripFrontMatter(cs)
-	d_, err := time.Parse("2006-01-02 15:04:05 Z07:00", meta["date"].(string))
-	d := &d_
-	if err != nil {
-		d = nil
+	fm, body := StripFrontMatter(cs)
+	p := &Post{
+		Key:  key,
+		Body: body,
 	}
-	return &Post{
-		Key:    key,
-		Date:   d,
-		Title:  meta["title"].(string),
-		Body:   body,
-		Labels: ConvertToStringSlice(meta["labels"].([]interface{})),
+	if fm["title"] != nil {
+		p.Title = fm["title"].(string)
 	}
+	if fm["labels"] != nil {
+		ls, ok := fm["labels"].([]string)
+		if ok {
+			p.Labels = ls
+		}
+	}
+	if fm["date"] != nil {
+		d, err := time.Parse("2006-01-02 15:04:05 Z07:00", fm["date"].(string))
+		if err == nil {
+			p.Date = &d
+		}
+	}
+	return p
 }
 
 func (r *Repository) getPostMetaList() []*Post {
