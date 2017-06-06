@@ -41,6 +41,9 @@ func OpenRepository(localGitRepoPath, remoteGitRepoPath string) (*Repository, er
 }
 
 func (r *Repository) UpdateCache() {
+	gitCreatedAtMap := r.collectGitCreatedAt()
+	fmt.Printf("<%v>\n", gitCreatedAtMap)
+
 	fi, err := r.getHeadCommit().Files()
 	if err != nil {
 		panic(err)
@@ -53,6 +56,9 @@ func (r *Repository) UpdateCache() {
 		if postFileRe.MatchString(f.Name) {
 			key := postFileRe.FindStringSubmatch(f.Name)[1]
 			p := r.loadPost(key)
+			if p.CreatedAt == nil {
+				p.CreatedAt = gitCreatedAtMap[postKeyToFilePath(key)]
+			}
 			cache[key] = p
 		}
 	}
@@ -150,4 +156,36 @@ func (r *Repository) getHeadCommit() *object.Commit {
 		panic(err)
 	}
 	return c
+}
+
+func (r *Repository) collectGitCreatedAt() map[string]*time.Time {
+	ts := map[string]*time.Time{}
+	cc := make(chan *object.Commit, 2)
+	cc <- r.getHeadCommit()
+	for len(cc) > 0 {
+		c := <-cc
+		fi, err := c.Files()
+		if err != nil {
+			panic(err)
+		}
+		t := c.Author.When
+		for f, err := fi.Next(); err != io.EOF; f, err = fi.Next() {
+			if err != nil {
+				panic(err)
+			}
+			ts[f.Name] = &t
+		}
+		pi := c.Parents()
+		for p, err := pi.Next(); err != io.EOF; p, err = pi.Next() {
+			if err != nil {
+				panic(err)
+			}
+			cc <- p
+		}
+	}
+	return ts
+}
+
+func postKeyToFilePath(key string) string {
+	return fmt.Sprintf("posts/%s.md", key)
 }
