@@ -25,6 +25,12 @@ func (sp PostList) Len() int {
 }
 
 func (sp PostList) Less(i, j int) bool {
+	if sp[i].Date == nil {
+		return false
+	}
+	if sp[j].Date == nil {
+		return true
+	}
 	return sp[i].Date.After(*sp[j].Date)
 }
 
