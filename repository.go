@@ -41,13 +41,12 @@ func OpenRepository(localGitRepoPath, remoteGitRepoPath string) (*Repository, er
 }
 
 func (r *Repository) UpdateCache() {
-	gitCreatedAtMap := r.collectGitCreatedAt()
-	fmt.Printf("<%v>\n", gitCreatedAtMap)
-
 	fi, err := r.getHeadCommit().Files()
 	if err != nil {
 		panic(err)
 	}
+
+	gitAddedMap := r.collectGitAdded()
 	cache := map[string]*Post{}
 	for f, err := fi.Next(); err != io.EOF; f, err = fi.Next() {
 		if err != nil {
@@ -56,8 +55,8 @@ func (r *Repository) UpdateCache() {
 		if postFileRe.MatchString(f.Name) {
 			key := postFileRe.FindStringSubmatch(f.Name)[1]
 			p := r.loadPost(key)
-			if p.CreatedAt == nil {
-				p.CreatedAt = gitCreatedAtMap[postKeyToFilePath(key)]
+			if p.Date == nil {
+				p.Date = gitAddedMap[postKeyToFilePath(key)]
 			}
 			cache[key] = p
 		}
@@ -95,25 +94,7 @@ func (r *Repository) Commit(p *Post) {
 }
 
 func (r *Repository) loadPost(key string) *Post {
-	ref, err := r.gitRepo.Head()
-	if err != nil {
-		panic(err)
-	}
-	c, err := r.gitRepo.CommitObject(ref.Hash())
-	if err != nil {
-		panic(err)
-	}
-	f, err := c.File(fmt.Sprintf("posts/%s.md", key))
-	if err == object.ErrFileNotFound {
-		panic(err)
-	}
-	if err != nil {
-		panic(err)
-	}
-	cs, err := f.Contents()
-	if err != nil {
-		panic(err)
-	}
+	cs := r.readFile(postKeyToFilePath(key))
 	fm, body := StripFrontMatter(cs)
 	p := &Post{
 		Key:  key,
@@ -158,7 +139,30 @@ func (r *Repository) getHeadCommit() *object.Commit {
 	return c
 }
 
-func (r *Repository) collectGitCreatedAt() map[string]*time.Time {
+func (r *Repository) readFile(filePath string) string {
+	ref, err := r.gitRepo.Head()
+	if err != nil {
+		panic(err)
+	}
+	c, err := r.gitRepo.CommitObject(ref.Hash())
+	if err != nil {
+		panic(err)
+	}
+	f, err := c.File(filePath)
+	if err == object.ErrFileNotFound {
+		panic(err)
+	}
+	if err != nil {
+		panic(err)
+	}
+	cs, err := f.Contents()
+	if err != nil {
+		panic(err)
+	}
+	return cs
+}
+
+func (r *Repository) collectGitAdded() map[string]*time.Time {
 	ts := map[string]*time.Time{}
 	cc := make(chan *object.Commit, 2)
 	cc <- r.getHeadCommit()
