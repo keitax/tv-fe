@@ -135,6 +135,52 @@ Test Post
 	}
 }
 
+func TestFetchOneToGetDatesFromGitInfo(t *testing.T) {
+	r := prepareTestRepository(t)
+	defer cleanupTestRepository(t)
+
+	preparePostData(t, []*postFile{
+		{
+			path: "posts/2017/01/date-specified.md",
+			when: time.Date(2017, 1, 1, 0, 0, 0, 0, jst),
+			content: `---
+title: Date Specified
+date: 2017-01-02 00:00:00 +09:00
+---
+`,
+		},
+		{
+			path: "posts/2017/01/date-not-specified.md",
+			when: time.Date(2017, 1, 3, 0, 0, 0, 0, jst),
+			content: `---
+title: Date Not Specified
+date:
+---
+`,
+		},
+	})
+	r.UpdateCache()
+
+	testCases := []struct {
+		descr            string
+		key              string
+		expectedDateText string
+	}{
+		{"Date Specified (The specified date should be proceded)", "2017/01/date-specified", "2017-01-02 00:00:00 +09:00"},
+		{"Date Not Specified (The commit date should be proceded)", "2017/01/date-not-specified", "2017-01-03 00:00:00 +09:00"},
+	}
+	for _, tc := range testCases {
+		expectedDate, err := time.Parse("2006-01-02 15:04:05 Z07:00", tc.expectedDateText)
+		if err != nil {
+			t.Fatal(err)
+		}
+		p := r.FetchOne(tc.key)
+		if !reflect.DeepEqual(&expectedDate, p.Date) {
+			t.Errorf("%s: p.Date = %v, expected %v", tc.descr, p.Date, expectedDate)
+		}
+	}
+}
+
 func TestFetchOneGetsNeighbors(t *testing.T) {
 	r := prepareTestRepository(t)
 	defer cleanupTestRepository(t)
