@@ -1,6 +1,7 @@
 package textvid
 
 import (
+	"fmt"
 	"net/http"
 	"runtime/debug"
 
@@ -18,6 +19,11 @@ func PanicHandler(w http.ResponseWriter, r *http.Request, next http.HandlerFunc)
 			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		}
 	}()
+	next(w, r)
+}
+
+func RequestLoggingHandler(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
+	logrus.Info(fmt.Sprintf("-> %s %s", r.Method, r.RequestURI))
 	next(w, r)
 }
 
@@ -52,5 +58,6 @@ func NewApplication(config *Config) (http.Handler, error) {
 	app := negroni.New()
 	app.UseHandler(r)
 	app.UseFunc(PanicHandler)
+	app.UseFunc(RequestLoggingHandler)
 	return app, nil
 }
