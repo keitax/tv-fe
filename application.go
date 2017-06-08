@@ -23,8 +23,9 @@ func PanicHandler(w http.ResponseWriter, r *http.Request, next http.HandlerFunc)
 }
 
 func RequestLoggingHandler(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
-	logrus.Info(fmt.Sprintf("-> %s %s", r.Method, r.RequestURI))
+	res := w.(negroni.ResponseWriter)
 	next(w, r)
+	logrus.Info(fmt.Sprintf("%s %s %d", r.Method, r.RequestURI, res.Status()))
 }
 
 func NewApplication(config *Config) (http.Handler, error) {
