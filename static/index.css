@@ -46,6 +46,7 @@ a:hover {
 
 .site-title {
     margin: 1rem 0;
+    font-size: x-large;
 }
 
 .site-title__link:link, .site-title__link:visited {
@@ -86,12 +87,16 @@ a:hover {
 }
 
 .post__meta {
-    font-size: smaller;
+    font-size: small;
     color: #666;
 }
 
+.post h1 {
+    font-size: large;
+}
+
 .post h2 {
-    font-size: larger;
+    font-size: large;
 }
 
 .post h3 {
@@ -121,6 +126,6 @@ a:hover {
     border-top: solid 0.5pt #666;
     color: #666;
     text-align: right;
-    font-size: smaller;
+    font-size: small;
     margin: 2rem 0;
 }
