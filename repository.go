@@ -43,6 +43,17 @@ func OpenRepository(localGitRepoPath, remoteGitRepoPath string) (*Repository, er
 	}, nil
 }
 
+func (r *Repository) SynchronizeRemote() {
+	logrus.Info("Pull the remote repository.")
+	if err := r.gitRepo.Pull(&git.PullOptions{}); err != nil {
+		if err == git.NoErrAlreadyUpToDate {
+			return
+		}
+		panic(err)
+	}
+	r.UpdateCache()
+}
+
 func (r *Repository) UpdateCache() {
 	logrus.Info("Update post cache.")
 
@@ -87,7 +98,7 @@ func (r *Repository) FetchOne(key string) *Post {
 
 func (r *Repository) Fetch(pq *PostQuery) []*Post {
 	ps := r.getPostList()
-	start := Min(len(ps), Max(0, int(pq.Start)-1))
+	start := Min(len(ps), Max(0, int(pq.Start) - 1))
 	ps = ps[start:]
 	if pq.Results >= 1 {
 		end := Min(len(ps), Max(1, int(pq.Results)))
