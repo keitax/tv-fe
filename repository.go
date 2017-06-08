@@ -24,17 +24,19 @@ type Repository struct {
 func OpenRepository(localGitRepoPath, remoteGitRepoPath string) (*Repository, error) {
 	logrus.Infof("Try to open the local repository %s.", localGitRepoPath)
 	r, err := git.PlainOpen(localGitRepoPath)
-	if err == git.ErrRepositoryNotExists {
-		logrus.Infof("There are no local repository, clone the remote repository: %s -> %s", remoteGitRepoPath, localGitRepoPath)
-		var err error
-		r, err = git.PlainClone(localGitRepoPath, false, &git.CloneOptions{
-			URL: remoteGitRepoPath,
-		})
-		if err != nil {
-			return nil, fmt.Errorf("Failed to clone the remote repository %s: %s", remoteGitRepoPath, err)
+	if err != nil {
+		if err == git.ErrRepositoryNotExists {
+			logrus.Infof("There are no local repository, clone the remote repository: %s -> %s", remoteGitRepoPath, localGitRepoPath)
+			var err error
+			r, err = git.PlainClone(localGitRepoPath, false, &git.CloneOptions{
+				URL: remoteGitRepoPath,
+			})
+			if err != nil {
+				return nil, fmt.Errorf("Failed to clone the remote repository %s: %s", remoteGitRepoPath, err)
+			}
+		} else {
+			return nil, fmt.Errorf("Failed to open the local repository: %s", err)
 		}
-	} else if err != nil {
-		return nil, fmt.Errorf("Failed to open the local repository: %s", err)
 	}
 	logrus.Infof("Succeeded to open the repository.")
 	return &Repository{
@@ -98,7 +100,7 @@ func (r *Repository) FetchOne(key string) *Post {
 
 func (r *Repository) Fetch(pq *PostQuery) []*Post {
 	ps := r.getPostList()
-	start := Min(len(ps), Max(0, int(pq.Start) - 1))
+	start := Min(len(ps), Max(0, int(pq.Start)-1))
 	ps = ps[start:]
 	if pq.Results >= 1 {
 		end := Min(len(ps), Max(1, int(pq.Results)))
