@@ -38,7 +38,7 @@ func NewApplication(config *Config) (http.Handler, error) {
 	re.UpdateCache()
 	c := cron.New()
 	c.AddFunc("*/30 * * * * *", func() {
-		re.UpdateCache()
+		re.SynchronizeRemote()
 	})
 	c.Start()
 
