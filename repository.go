@@ -100,7 +100,7 @@ func (r *Repository) FetchOne(key string) *Post {
 
 func (r *Repository) Fetch(pq *PostQuery) []*Post {
 	ps := r.getPostList()
-	start := Min(len(ps), Max(0, int(pq.Start)-1))
+	start := Min(len(ps), Max(0, int(pq.Start) - 1))
 	ps = ps[start:]
 	if pq.Results >= 1 {
 		end := Min(len(ps), Max(1, int(pq.Results)))
@@ -190,27 +190,28 @@ func (r *Repository) readFile(filePath string) string {
 
 func (r *Repository) collectGitAdded() map[string]*time.Time {
 	ts := map[string]*time.Time{}
-	cc := make(chan *object.Commit, 2)
-	cc <- r.getHeadCommit()
-	for len(cc) > 0 {
-		c := <-cc
-		fi, err := c.Files()
+	cs := []*object.Commit{}
+	cs = append(cs, r.getHeadCommit())
+	for len(cs) > 0 {
+		var c *object.Commit
+		c, cs = cs[0], cs[1:]
+		fs, err := c.Files()
 		if err != nil {
 			panic(err)
 		}
 		t := c.Author.When
-		for f, err := fi.Next(); err != io.EOF; f, err = fi.Next() {
+		for f, err := fs.Next(); err != io.EOF; f, err = fs.Next() {
 			if err != nil {
 				panic(err)
 			}
 			ts[f.Name] = &t
 		}
-		pi := c.Parents()
-		for p, err := pi.Next(); err != io.EOF; p, err = pi.Next() {
+		ps := c.Parents()
+		for p, err := ps.Next(); err != io.EOF; p, err = ps.Next() {
 			if err != nil {
 				panic(err)
 			}
-			cc <- p
+			cs = append(cs, p)
 		}
 	}
 	return ts
