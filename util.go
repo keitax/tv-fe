@@ -24,7 +24,7 @@ func ExistsFile(path string) bool {
 }
 
 func ParseMarkdown(text string) template.HTML {
-	bs := blackfriday.MarkdownBasic([]byte(text))
+	bs := blackfriday.Run([]byte(text))
 	bs = bluemonday.UGCPolicy().SanitizeBytes(bs)
 	return template.HTML(string(bs))
 }
