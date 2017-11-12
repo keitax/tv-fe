@@ -1,5 +1,4 @@
 site-title = "Textvid Blog"
-data-source-name = "user:pass@tcp(address:port)/name"
 template-dir = "./templates"
 static-dir = "./static"
 site-footer = "Copyright &copy; YOUR NAME"

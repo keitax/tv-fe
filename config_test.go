@@ -18,7 +18,6 @@ func TestParse(t *testing.T) {
 
 	if _, err := f.WriteString(`
 site-title = "Textvid Blog"
-data-source-name = "user:pass@tcp(address:port)/name"
 template-dir = "./templates"
 static-dir = "./static"
 site-footer = "Copyright &copy; YOUR NAME"
@@ -41,7 +40,6 @@ remote-git-repository = "https://host.git/textvid-blog.git"
 
 	expected := &Config{
 		SiteTitle:           "Textvid Blog",
-		DataSourceName:      "user:pass@tcp(address:port)/name",
 		TemplateDir:         "./templates",
 		StaticDir:           "./static",
 		SiteFooter:          "Copyright &copy; YOUR NAME",

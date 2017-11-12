@@ -14,7 +14,6 @@ const (
 
 type Config struct {
 	SiteTitle           string `toml:"site-title"`
-	DataSourceName      string `toml:"data-source-name"`
 	TemplateDir         string `toml:"template-dir"`
 	StaticDir           string `toml:"static-dir"`
 	SiteFooter          string `toml:"site-footer"`
