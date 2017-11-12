@@ -1,4 +1,3 @@
-Textvid
-==
+# Textvid
 
-Textvid is a modern blog software.
+A git-based blog software.
