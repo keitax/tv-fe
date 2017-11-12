@@ -1,7 +1,6 @@
 package textvid
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -38,8 +37,7 @@ func (pc *PostController) GetIndex(w http.ResponseWriter, req *http.Request) {
 
 func (pc *PostController) GetSingle(w http.ResponseWriter, req *http.Request) {
 	params := mux.Vars(req)
-	key := fmt.Sprintf("%s/%s/%s", params["year"], params["month"], params["name"])
-	p := pc.repository.FetchOne(key)
+	p := pc.repository.FetchOne(params["key"])
 	pc.viewSet.PostSingleView(p).Render(w)
 }
 
