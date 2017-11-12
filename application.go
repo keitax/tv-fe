@@ -49,10 +49,6 @@ func NewApplication(config *Config) (http.Handler, error) {
 	r.HandleFunc("/", pc.GetIndex).Methods(http.MethodGet)
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir(config.StaticDir)))).Methods(http.MethodGet)
 	r.HandleFunc("/posts/", pc.GetList).Methods(http.MethodGet)
-	r.HandleFunc("/posts/", pc.SubmitPost).Methods(http.MethodPost)
-	r.HandleFunc("/posts/new", pc.GetEditor).Methods(http.MethodGet)
-	r.HandleFunc("/posts/{id:[0-9]+}", pc.EditPost).Methods(http.MethodPost, http.MethodPut)
-	r.HandleFunc("/posts/{id:[0-9]+}/edit", pc.GetEditor).Methods(http.MethodGet)
 	r.HandleFunc("/{year:[0-9]{4}}/{month:0[1-9]|1[0-2]}/{name}.html", pc.GetSingle).Methods(http.MethodGet)
 	r.HandleFunc("/admin", ac.GetIndex).Methods(http.MethodGet)
 
