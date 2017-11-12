@@ -84,7 +84,7 @@ func TestFetchOne(t *testing.T) {
 
 	preparePostData(t, []*postFile{
 		{
-			path: "posts/2017/01/test-post-01.md",
+			path: "posts/20170101-test-post-01.md",
 			when: time.Date(2017, 1, 1, 0, 0, 0, 0, jst),
 			content: `---
 date: 2017-01-01 00:00:00 +09:00
@@ -101,7 +101,7 @@ Test Post
 	})
 	r.UpdateCache()
 
-	p := r.FetchOne("2017/01/test-post-01")
+	p := r.FetchOne("20170101-test-post-01")
 	if p == nil {
 		t.Fatal("Failed to fetch the post")
 	}
@@ -111,7 +111,7 @@ Test Post
 		expected interface{}
 		actual   interface{}
 	}{
-		{"Key", "2017/01/test-post-01", p.Key},
+		{"Key", "20170101-test-post-01", p.Key},
 		{"Date", time.Date(2017, 1, 1, 0, 0, 0, 0, jst), *p.Date},
 		{"Title", "Test Post 1", p.Title},
 		{"Body", `Test Post
@@ -141,7 +141,7 @@ func TestFetchOneToGetDatesFromGitInfo(t *testing.T) {
 
 	preparePostData(t, []*postFile{
 		{
-			path: "posts/2017/01/date-specified.md",
+			path: "posts/20170101-date-specified.md",
 			when: time.Date(2017, 1, 1, 0, 0, 0, 0, jst),
 			content: `---
 title: Date Specified
@@ -150,7 +150,7 @@ date: 2017-01-02 00:00:00 +09:00
 `,
 		},
 		{
-			path: "posts/2017/01/date-not-specified.md",
+			path: "posts/20170103-date-not-specified.md",
 			when: time.Date(2017, 1, 3, 0, 0, 0, 0, jst),
 			content: `---
 title: Date Not Specified
@@ -166,8 +166,8 @@ date:
 		key              string
 		expectedDateText string
 	}{
-		{"Date Specified (The specified date should be proceded)", "2017/01/date-specified", "2017-01-02 00:00:00 +09:00"},
-		{"Date Not Specified (The commit date should be proceded)", "2017/01/date-not-specified", "2017-01-03 00:00:00 +09:00"},
+		{"Date Specified (The specified date should be proceded)", "20170101-date-specified", "2017-01-02 00:00:00 +09:00"},
+		{"Date Not Specified (The commit date should be proceded)", "20170103-date-not-specified", "2017-01-03 00:00:00 +09:00"},
 	}
 	for _, tc := range testCases {
 		expectedDate, err := time.Parse("2006-01-02 15:04:05 Z07:00", tc.expectedDateText)
@@ -187,7 +187,7 @@ func TestFetchOneGetsNeighbors(t *testing.T) {
 
 	preparePostData(t, []*postFile{
 		{
-			path: "posts/2017/01/test-post-01.md",
+			path: "posts/20170101-test-post-01.md",
 			when: time.Date(2017, 1, 1, 0, 0, 0, 0, jst),
 			content: `---
 date: 2017-01-01 00:00:00 +09:00
@@ -197,7 +197,7 @@ labels: ["Test"]
 `,
 		},
 		{
-			path: "posts/2017/01/test-post-02.md",
+			path: "posts/20170102-test-post-02.md",
 			when: time.Date(2017, 1, 2, 0, 0, 0, 0, jst),
 			content: `---
 date: 2017-01-02 00:00:00 +09:00
@@ -207,7 +207,7 @@ labels: ["Test"]
 `,
 		},
 		{
-			path: "posts/2017/01/test-post-03.md",
+			path: "posts/20170103-test-post-03.md",
 			when: time.Date(2017, 1, 3, 0, 0, 0, 0, jst),
 			content: `---
 date: 2017-01-03 00:00:00 +09:00
@@ -225,9 +225,9 @@ labels: ["Test"]
 		oNextKey string
 		oPrevKey string
 	}{
-		{"Get neightbors of the post in the middle", "2017/01/test-post-02", "2017/01/test-post-03", "2017/01/test-post-01"},
-		{"Get neightbors of the first post", "2017/01/test-post-03", "", "2017/01/test-post-02"},
-		{"Get neightbors of the last post", "2017/01/test-post-01", "2017/01/test-post-02", ""},
+		{"Get neightbors of the post in the middle", "20170102-test-post-02", "20170103-test-post-03", "20170101-test-post-01"},
+		{"Get neightbors of the first post", "20170103-test-post-03", "", "20170102-test-post-02"},
+		{"Get neightbors of the last post", "20170101-test-post-01", "20170102-test-post-02", ""},
 	}
 
 	for _, tc := range testCases {
@@ -254,7 +254,7 @@ func TestFetchAcceptsRangeQuery(t *testing.T) {
 
 	preparePostData(t, []*postFile{
 		{
-			path: "posts/2017/01/test-post-01.md",
+			path: "posts/20170101-test-post-01.md",
 			when: time.Date(2017, 1, 1, 0, 0, 0, 0, jst),
 			content: `---
 date: 2017-01-01 00:00:00 +09:00
@@ -264,7 +264,7 @@ labels: ["Test"]
 `,
 		},
 		{
-			path: "posts/2017/01/test-post-02.md",
+			path: "posts/20170102-test-post-02.md",
 			when: time.Date(2017, 1, 2, 0, 0, 0, 0, jst),
 			content: `---
 date: 2017-01-02 00:00:00 +09:00
@@ -274,7 +274,7 @@ labels: ["Test"]
 `,
 		},
 		{
-			path: "posts/2017/01/test-post-03.md",
+			path: "posts/20170103-test-post-03.md",
 			when: time.Date(2017, 1, 3, 0, 0, 0, 0, jst),
 			content: `---
 date: 2017-01-03 00:00:00 +09:00
@@ -292,12 +292,12 @@ labels: ["Test"]
 		iResults uint64
 		oKeys    []string
 	}{
-		{"Fetch first two posts", 1, 2, []string{"2017/01/test-post-03", "2017/01/test-post-02"}},
-		{"Fetch last two posts", 2, 2, []string{"2017/01/test-post-02", "2017/01/test-post-01"}},
+		{"Fetch first two posts", 1, 2, []string{"20170103-test-post-03", "20170102-test-post-02"}},
+		{"Fetch last two posts", 2, 2, []string{"20170102-test-post-02", "20170101-test-post-01"}},
 		{"Start is too large", 99, 2, []string{}},
-		{"Start is too small", 0, 1, []string{"2017/01/test-post-03"}},
-		{"Results is too large", 1, 99, []string{"2017/01/test-post-03", "2017/01/test-post-02", "2017/01/test-post-01"}},
-		{"Results is zero (all results)", 1, 0, []string{"2017/01/test-post-03", "2017/01/test-post-02", "2017/01/test-post-01"}},
+		{"Start is too small", 0, 1, []string{"20170103-test-post-03"}},
+		{"Results is too large", 1, 99, []string{"20170103-test-post-03", "20170102-test-post-02", "20170101-test-post-01"}},
+		{"Results is zero (all results)", 1, 0, []string{"20170103-test-post-03", "20170102-test-post-02", "20170101-test-post-01"}},
 	}
 	for _, tc := range testCases {
 		ps := r.Fetch(&PostQuery{

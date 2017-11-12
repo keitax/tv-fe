@@ -13,7 +13,7 @@ import (
 	"gopkg.in/src-d/go-git.v4/plumbing/object"
 )
 
-var postFileRe = regexp.MustCompile(`^.*([0-9][0-9][0-9][0-9]/[0-9][0-9]/.+)\.md$`)
+var postFileRe = regexp.MustCompile(`^posts/([0-9]{8}-.+)\.md$`)
 
 type Repository struct {
 	gitRepo   *git.Repository
