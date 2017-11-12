@@ -21,16 +21,6 @@ func (ub *UrlBuilder) LinkToPostPage(post *Post) string {
 	return fmt.Sprintf("%s%s.html", ub.config.BaseUrl, post.Key)
 }
 
-func (ub *UrlBuilder) LinkToPostResource(post *Post) string {
-	var path string
-	if post == nil {
-		path = "posts/"
-	} else {
-		path = fmt.Sprintf("posts/%d", post.Id)
-	}
-	return ub.config.BaseUrl + path
-}
-
 func (ub *UrlBuilder) LinkToPostListPage(query *PostQuery) string {
 	q := []string{}
 	if query.Start != 0 {
@@ -46,11 +36,4 @@ func (ub *UrlBuilder) LinkToPostListPage(query *PostQuery) string {
 		qs = "?" + strings.Join(q, "&")
 	}
 	return fmt.Sprintf("%sposts/%s", ub.config.BaseUrl, qs)
-}
-
-func (ub *UrlBuilder) LinkToPostEditorPage(post *Post) string {
-	if post == nil {
-		return fmt.Sprintf("%sposts/new", ub.config.BaseUrl)
-	}
-	return fmt.Sprintf("%sposts/%d/edit", ub.config.BaseUrl, post.Id)
 }
