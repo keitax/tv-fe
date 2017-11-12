@@ -2,12 +2,12 @@
 {{with .post -}}
 <article class="post">
 <header class="post__header">
-<h1 class="post__title">
-<a class="post__title-link" href="{{$.Urls.LinkToPostPage .}}">{{.Title}}</a>
-</h1>
 <p class="post__meta">
 {{.Date | ShowTime}}
 </p>
+<h1 class="post__title">
+<a class="post__title-link" href="{{$.Urls.LinkToPostPage .}}">{{.Title}}</a>
+</h1>
 </header>
 <main class="post__body">
 {{.Body | RenderMarkdown -}}

@@ -59,7 +59,7 @@ a:hover {
 }
 
 .post {
-    margin: 1rem 0rem 2rem;
+    margin: 1rem 0rem 4rem;
     position: relative;
 }
 
@@ -72,11 +72,16 @@ a:hover {
     margin-bottom: 3rem;
 }
 
+.post__header {
+    margin-bottom: 2rem;
+}
+
 .post__title {
-    font-size: large;
-    border-left: solid 0.25rem #039;
-    padding-left: 0.5rem;
+    font-size: x-large;
     color: #039;
+    border: solid #ccc;
+    border-width: 1pt 0;
+    padding: 1rem 0;
 }
 
 .post__title-link:link, .post__title-link:visited {
