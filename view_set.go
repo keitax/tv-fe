@@ -38,27 +38,3 @@ func (vs *ViewSet) PostListView(ps []*Post, nextPosts []*Post, previousPosts []*
 		},
 	}
 }
-
-func (vs *ViewSet) AdminView(ps []*Post) *View {
-	return &View{
-		vs.urlBuilder,
-		vs.config,
-		"admin.tmpl",
-		map[string]interface{}{
-			"stylesheets": []string{"admin.css"},
-			"posts":       ps,
-		},
-	}
-}
-
-func (vs *ViewSet) PostEditorView(p *Post) *View {
-	return &View{
-		vs.urlBuilder,
-		vs.config,
-		"post_editor.tmpl",
-		map[string]interface{}{
-			"stylesheets": []string{"admin.css"},
-			"post":        p,
-		},
-	}
-}
