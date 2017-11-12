@@ -74,6 +74,8 @@ a:hover {
 
 .post__title {
     font-size: large;
+    border-left: solid 0.25rem #039;
+    padding-left: 0.5rem;
     color: #039;
 }
 
