@@ -30,7 +30,7 @@ a:hover {
     }
 
     html {
-            font-size: 80%;
+            font-size: 90%;
     }
 }
 
@@ -51,6 +51,7 @@ a:hover {
 .site-title {
     margin: 1rem 0;
     font-size: 150%;
+    font-weight: normal;
 }
 
 .site-title__link:link, .site-title__link:visited {
