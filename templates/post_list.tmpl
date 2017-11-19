@@ -20,20 +20,18 @@
 </ul>
 <nav class="post-nav">
 <ul class="post-nav__list">
-<li class="post-nav__item">
-←
+<li class="post-nav__item-next">
 {{if .NextPosts -}}
-<a href="{{.Urls.LinkToPostListPage .CurrentQuery.Next}}">Next Posts</a>
+&lt; <a href="{{.Urls.LinkToPostListPage .CurrentQuery.Next}}">Next Posts</a>
 {{else -}}
-<span class="post-nav--disable">(no posts)</span>
+<span class="post-nav--disable">&lt; no posts</span>
 {{end -}}
 </li>
-<li class="post-nav__item">
-→
+<li class="post-nav__item-previous">
 {{if .PreviousPosts -}}
-<a href="{{.Urls.LinkToPostListPage .CurrentQuery.Previous}}">Previous Posts</a>
+<a href="{{.Urls.LinkToPostListPage .CurrentQuery.Previous}}">Previous Posts</a> &gt;
 {{else -}}
-<span class="post-nav--disable">(no posts)</span>
+<span class="post-nav--disable">no posts &gt;</span>
 {{end -}}
 </li>
 </ul>
