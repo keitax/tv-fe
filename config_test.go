@@ -44,7 +44,7 @@ remote-git-repository = "https://host.git/textvid-blog.git"
 		StaticDir:           "./static",
 		SiteFooter:          "Copyright &copy; YOUR NAME",
 		Locale:              "UTC",
-		BaseUrl:             "http://localhost/",
+		BaseURL:             "http://localhost/",
 		RunLevel:            ProductionRunLevel,
 		LocalGitRepository:  "/tmp/textvid-blog",
 		RemoteGitRepository: "https://host.git/textvid-blog.git",

@@ -6,12 +6,12 @@ import (
 
 // Post is a entity type representing blog posts.
 type Post struct {
-	Id           int64 `db:"id"`
+	ID           int64 `db:"id"`
 	Key          string
 	Date         *time.Time
 	CreatedAt    *time.Time `db:"created_at"`
 	UpdatedAt    *time.Time `db:"updated_at"`
-	UrlName      string     `db:"url_name"`
+	URLName      string     `db:"url_name"`
 	Title        string     `db:"title"`
 	Body         string     `db:"body"`
 	Labels       []string

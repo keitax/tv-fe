@@ -33,7 +33,7 @@ func RequestLoggingHandler(w http.ResponseWriter, r *http.Request, next http.Han
 
 // NewApplication makes a new Textvid application handler.
 func NewApplication(config *Config) (http.Handler, error) {
-	ub := NewUrlBuilder(config)
+	ub := NewURLBuilder(config)
 	vs := NewViewSet(ub, config)
 	re, err := OpenRepository(config.LocalGitRepository, config.RemoteGitRepository)
 	if err != nil {

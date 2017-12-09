@@ -11,17 +11,17 @@ import (
 type PostController struct {
 	repository *Repository
 	viewSet    *ViewSet
-	urlBuilder *UrlBuilder
+	urlBuilder *URLBuilder
 	config     *Config
 }
 
 // NewPostController is a constructor of PostController.
-func NewPostController(r *Repository, vs *ViewSet, ub *UrlBuilder, config_ *Config) *PostController {
+func NewPostController(r *Repository, vs *ViewSet, ub *URLBuilder, conf *Config) *PostController {
 	return &PostController{
 		r,
 		vs,
 		ub,
-		config_,
+		conf,
 	}
 }
 

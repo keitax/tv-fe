@@ -20,7 +20,7 @@ type Config struct {
 	StaticDir           string `toml:"static-dir"`
 	SiteFooter          string `toml:"site-footer"`
 	Locale              string `toml:"locale"`
-	BaseUrl             string `toml:"base-url"`
+	BaseURL             string `toml:"base-url"`
 	RunLevel            string `toml:"run-level"`
 	LocalGitRepository  string `toml:"local-git-repository"`
 	RemoteGitRepository string `toml:"remote-git-repository"`

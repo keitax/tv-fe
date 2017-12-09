@@ -11,7 +11,7 @@ import (
 
 // View represents the each blog page.
 type View struct {
-	urlBuilder   *UrlBuilder
+	urlBuilder   *URLBuilder
 	config       *Config
 	templateName string
 	context      map[string]interface{}
@@ -19,15 +19,15 @@ type View struct {
 
 // Render renders the view content.
 func (v *View) Render(w io.Writer) {
-	context_ := map[string]interface{}{
+	ctx := map[string]interface{}{
 		"SiteTitle":  v.config.SiteTitle,
 		"SiteFooter": v.config.SiteFooter,
 		"Urls":       v.urlBuilder,
 	}
 	for key, value := range v.context {
-		context_[key] = value
+		ctx[key] = value
 	}
-	if err := v.loadTemplates().ExecuteTemplate(w, v.templateName, context_); err != nil {
+	if err := v.loadTemplates().ExecuteTemplate(w, v.templateName, ctx); err != nil {
 		panic(err)
 	}
 }

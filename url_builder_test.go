@@ -5,8 +5,8 @@ import (
 )
 
 func TestLinkToTopPage(t *testing.T) {
-	urlBuilder := &UrlBuilder{config: &Config{
-		BaseUrl: "http://localhost/",
+	urlBuilder := &URLBuilder{config: &Config{
+		BaseURL: "http://localhost/",
 	}}
 	url := urlBuilder.LinkToTopPage()
 	expected := "http://localhost/"
@@ -16,8 +16,8 @@ func TestLinkToTopPage(t *testing.T) {
 }
 
 func TestLinkToPostPage(t *testing.T) {
-	urlBuilder := &UrlBuilder{config: &Config{
-		BaseUrl: "http://localhost/",
+	urlBuilder := &URLBuilder{config: &Config{
+		BaseURL: "http://localhost/",
 	}}
 	url := urlBuilder.LinkToPostPage(&Post{
 		Key: "2017/01/hello-world",
@@ -29,8 +29,8 @@ func TestLinkToPostPage(t *testing.T) {
 }
 
 func TestLinkToPostListPage(t *testing.T) {
-	ub := &UrlBuilder{config: &Config{
-		BaseUrl: "http://localhost/",
+	ub := &URLBuilder{config: &Config{
+		BaseURL: "http://localhost/",
 	}}
 	u := ub.LinkToPostListPage(&PostQuery{
 		Start:   1,

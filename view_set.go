@@ -2,12 +2,12 @@ package textvid
 
 // ViewSet is a factory type to make views.
 type ViewSet struct {
-	urlBuilder *UrlBuilder
+	urlBuilder *URLBuilder
 	config     *Config
 }
 
 // NewViewSet makes a new ViewSet.
-func NewViewSet(ub *UrlBuilder, conf *Config) *ViewSet {
+func NewViewSet(ub *URLBuilder, conf *Config) *ViewSet {
 	return &ViewSet{
 		urlBuilder: ub,
 		config:     conf,

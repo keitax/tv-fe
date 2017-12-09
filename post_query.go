@@ -10,19 +10,19 @@ type PostQuery struct {
 	Results uint64
 	Year    int
 	Month   time.Month
-	UrlName string
+	URLName string
 }
 
 // Next makes a new post query to get next posts.
 func (pq *PostQuery) Next() *PostQuery {
-	pq_ := *pq
-	pq_.Start = pq.Start - pq.Results
-	return &pq_
+	nextPq := *pq
+	nextPq.Start = pq.Start - pq.Results
+	return &nextPq
 }
 
 // Previous makes a new post query to get previous posts.
 func (pq *PostQuery) Previous() *PostQuery {
-	pq_ := *pq
-	pq_.Start = pq.Start + pq.Results
-	return &pq_
+	prevPq := *pq
+	prevPq.Start = pq.Start + pq.Results
+	return &prevPq
 }

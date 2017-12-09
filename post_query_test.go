@@ -12,7 +12,7 @@ func TestNext(t *testing.T) {
 		Results: 5,
 		Year:    2017,
 		Month:   time.January,
-		UrlName: "test",
+		URLName: "test",
 	}
 	oq := iq.Next()
 	expected := &PostQuery{
@@ -20,7 +20,7 @@ func TestNext(t *testing.T) {
 		Results: 5,
 		Year:    2017,
 		Month:   time.January,
-		UrlName: "test",
+		URLName: "test",
 	}
 	if !reflect.DeepEqual(oq, expected) {
 		t.Errorf("iq.Next() = %v, expected %v", oq, expected)
@@ -33,7 +33,7 @@ func TestPrevious(t *testing.T) {
 		Results: 5,
 		Year:    2017,
 		Month:   time.January,
-		UrlName: "test",
+		URLName: "test",
 	}
 	oq := iq.Previous()
 	expected := &PostQuery{
@@ -41,7 +41,7 @@ func TestPrevious(t *testing.T) {
 		Results: 5,
 		Year:    2017,
 		Month:   time.January,
-		UrlName: "test",
+		URLName: "test",
 	}
 	if !reflect.DeepEqual(oq, expected) {
 		t.Errorf("iq.Previous() = %v, expected %v", oq, expected)
