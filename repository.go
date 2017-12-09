@@ -15,12 +15,14 @@ import (
 
 var postFileRe = regexp.MustCompile(`^posts/([0-9]{8}-.+)\.md$`)
 
+// Repository implements git repository of post files.
 type Repository struct {
 	gitRepo   *git.Repository
 	postCache map[string]*Post
 	mutex     *sync.RWMutex
 }
 
+// OpenRepository initialize repository and returns it.
 func OpenRepository(localGitRepoPath, remoteGitRepoPath string) (*Repository, error) {
 	logrus.Infof("Try to open the local repository %s.", localGitRepoPath)
 	r, err := git.PlainOpen(localGitRepoPath)
@@ -45,6 +47,7 @@ func OpenRepository(localGitRepoPath, remoteGitRepoPath string) (*Repository, er
 	}, nil
 }
 
+// SynchronizeRemote synchronizes local repo with remote one.
 func (r *Repository) SynchronizeRemote() {
 	logrus.Info("Pull the remote repository.")
 	w, err := r.gitRepo.Worktree()
@@ -60,6 +63,7 @@ func (r *Repository) SynchronizeRemote() {
 	r.UpdateCache()
 }
 
+// UpdateCache updates repository cache.
 func (r *Repository) UpdateCache() {
 	logrus.Info("Update post cache.")
 
@@ -98,10 +102,12 @@ func (r *Repository) UpdateCache() {
 	}
 }
 
+// FetchOne fetches single post.
 func (r *Repository) FetchOne(key string) *Post {
 	return r.refPostCache()[key]
 }
 
+// Fetch fetches posts by query.
 func (r *Repository) Fetch(pq *PostQuery) []*Post {
 	ps := r.getPostList()
 	start := Min(len(ps), Max(0, int(pq.Start)-1))
@@ -113,6 +119,7 @@ func (r *Repository) Fetch(pq *PostQuery) []*Post {
 	return ps
 }
 
+// Commit saves a post object into repository.
 func (r *Repository) Commit(p *Post) {
 	panic("not implemented")
 }

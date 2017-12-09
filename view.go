@@ -9,6 +9,7 @@ import (
 	"time"
 )
 
+// View represents the each blog page.
 type View struct {
 	urlBuilder   *UrlBuilder
 	config       *Config
@@ -16,6 +17,7 @@ type View struct {
 	context      map[string]interface{}
 }
 
+// Render renders the view content.
 func (v *View) Render(w io.Writer) {
 	context_ := map[string]interface{}{
 		"SiteTitle":  v.config.SiteTitle,

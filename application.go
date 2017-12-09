@@ -11,6 +11,7 @@ import (
 	"github.com/urfave/negroni"
 )
 
+// PanicHandler handles panics and make an internal server error response.
 func PanicHandler(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 	defer func() {
 		err := recover()
@@ -19,15 +20,18 @@ func PanicHandler(w http.ResponseWriter, r *http.Request, next http.HandlerFunc)
 			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		}
 	}()
+
 	next(w, r)
 }
 
+// RequestLoggingHandler wraps handlers and logs the request content.
 func RequestLoggingHandler(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 	res := w.(negroni.ResponseWriter)
 	next(w, r)
 	logrus.Info(fmt.Sprintf("%s %s %d", r.Method, r.RequestURI, res.Status()))
 }
 
+// NewApplication makes a new Textvid application handler.
 func NewApplication(config *Config) (http.Handler, error) {
 	ub := NewUrlBuilder(config)
 	vs := NewViewSet(ub, config)

@@ -4,6 +4,7 @@ import (
 	"time"
 )
 
+// Post is a entity type representing blog posts.
 type Post struct {
 	Id           int64 `db:"id"`
 	Key          string
@@ -18,6 +19,7 @@ type Post struct {
 	PreviousPost *Post
 }
 
+// PostList is type alias to sort post list.
 type PostList []*Post
 
 func (sp PostList) Len() int {

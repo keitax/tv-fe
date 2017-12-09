@@ -7,11 +7,13 @@ import (
 	"github.com/BurntSushi/toml"
 )
 
+// Run-level flags.
 const (
 	ProductionRunLevel  = "production"
 	DevelopmentRunLevel = "development"
 )
 
+// Config structure of Textvid application.
 type Config struct {
 	SiteTitle           string `toml:"site-title"`
 	TemplateDir         string `toml:"template-dir"`
@@ -24,6 +26,7 @@ type Config struct {
 	RemoteGitRepository string `toml:"remote-git-repository"`
 }
 
+// Parse reads a config file.
 func Parse(configFile string) (*Config, error) {
 	bs, err := ioutil.ReadFile(configFile)
 	if err != nil {

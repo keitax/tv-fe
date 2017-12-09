@@ -7,6 +7,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// PostController handles requests related to blog posts.
 type PostController struct {
 	repository *Repository
 	viewSet    *ViewSet
@@ -14,6 +15,7 @@ type PostController struct {
 	config     *Config
 }
 
+// NewPostController is a constructor of PostController.
 func NewPostController(r *Repository, vs *ViewSet, ub *UrlBuilder, config_ *Config) *PostController {
 	return &PostController{
 		r,
@@ -23,6 +25,7 @@ func NewPostController(r *Repository, vs *ViewSet, ub *UrlBuilder, config_ *Conf
 	}
 }
 
+// GetIndex handles the root post request.
 func (pc *PostController) GetIndex(w http.ResponseWriter, req *http.Request) {
 	q := &PostQuery{
 		Start:   1,
@@ -35,12 +38,14 @@ func (pc *PostController) GetIndex(w http.ResponseWriter, req *http.Request) {
 	pc.viewSet.PostListView(posts, nil, prevPosts, q).Render(w)
 }
 
+// GetSingle handles the single post request.
 func (pc *PostController) GetSingle(w http.ResponseWriter, req *http.Request) {
 	params := mux.Vars(req)
 	p := pc.repository.FetchOne(params["key"])
 	pc.viewSet.PostSingleView(p).Render(w)
 }
 
+// GetList handles the list post request.
 func (pc *PostController) GetList(w http.ResponseWriter, req *http.Request) {
 	s, err := strconv.Atoi(req.URL.Query().Get("start"))
 	if err != nil {

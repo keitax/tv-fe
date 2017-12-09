@@ -1,10 +1,12 @@
 package textvid
 
+// ViewSet is a factory type to make views.
 type ViewSet struct {
 	urlBuilder *UrlBuilder
 	config     *Config
 }
 
+// NewViewSet makes a new ViewSet.
 func NewViewSet(ub *UrlBuilder, conf *Config) *ViewSet {
 	return &ViewSet{
 		urlBuilder: ub,
@@ -12,6 +14,7 @@ func NewViewSet(ub *UrlBuilder, conf *Config) *ViewSet {
 	}
 }
 
+// PostSingleView creates a view of the single post page.
 func (vs *ViewSet) PostSingleView(p *Post) *View {
 	return &View{
 		vs.urlBuilder,
@@ -24,6 +27,7 @@ func (vs *ViewSet) PostSingleView(p *Post) *View {
 	}
 }
 
+// PostListView creates a view of post list page.
 func (vs *ViewSet) PostListView(ps []*Post, nextPosts []*Post, previousPosts []*Post, q *PostQuery) *View {
 	return &View{
 		vs.urlBuilder,
