@@ -82,7 +82,6 @@ a:hover {
 }
 
 .post__title {
-    font-size: 125%;
     color: #039;
     border: solid #ccc;
     border-width: 1pt 0;
@@ -99,16 +98,15 @@ a:hover {
 }
 
 .post__meta {
-    /*font-size: 75%;*/
     color: #666;
 }
 
 .post h1 {
-    font-size: 125%;
+    font-size: 117%;
 }
 
 .post h2 {
-    font-size: 125%;
+    font-size: 117%;
 }
 
 .post h3 {
