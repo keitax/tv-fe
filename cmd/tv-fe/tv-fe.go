@@ -5,20 +5,20 @@ import (
 	"os"
 
 	"github.com/Sirupsen/logrus"
-	"github.com/keitax/textvid"
+	"github.com/keitax/tv-fe"
 )
 
 func main() {
-	c, err := textvid.Parse("./config.toml")
+	c, err := tvfe.Parse("./config.toml")
 	if err != nil {
 		logrus.Fatal(err)
 		os.Exit(1)
 	}
-	if c.RunLevel == textvid.DevelopmentRunLevel {
+	if c.RunLevel == tvfe.DevelopmentRunLevel {
 		logrus.SetLevel(logrus.DebugLevel)
 	}
 
-	app, err := textvid.NewApplication(c)
+	app, err := tvfe.NewApplication(c)
 	if err != nil {
 		logrus.Fatal(err)
 		os.Exit(1)

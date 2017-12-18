@@ -1,4 +1,4 @@
-package textvid
+package tvfe
 
 // ViewSet is a factory type to make views.
 type ViewSet struct {
