@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 
@@ -20,8 +21,9 @@ func main() {
 		os.Exit(1)
 	}
 
-	logrus.Info("Listen on 8080.")
-	if err := http.ListenAndServe(":8080", app); err != nil {
+	port := os.Getenv("PORT")
+	logrus.Infof("Listen on %s.\n", port)
+	if err := http.ListenAndServe(fmt.Sprintf(":%s", port), app); err != nil {
 		logrus.Fatal(err)
 	}
 }
