@@ -9,11 +9,7 @@ import (
 )
 
 func main() {
-	c, err := tvfe.Parse("./config.toml")
-	if err != nil {
-		logrus.Fatal(err)
-		os.Exit(1)
-	}
+	c := tvfe.GetFromEnv()
 	if c.RunLevel == tvfe.DevelopmentRunLevel {
 		logrus.SetLevel(logrus.DebugLevel)
 	}
