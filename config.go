@@ -3,6 +3,7 @@ package tvfe
 import (
 	"fmt"
 	"io/ioutil"
+	"os"
 
 	"github.com/BurntSushi/toml"
 )
@@ -40,4 +41,19 @@ func Parse(configFile string) (*Config, error) {
 		return nil, fmt.Errorf("run-level must be %#v or %#v", ProductionRunLevel, DevelopmentRunLevel)
 	}
 	return &c, nil
+}
+
+// GetFromEnv gets a config from environment vars.
+func GetFromEnv() *Config {
+	return &Config{
+		SiteTitle:           os.Getenv("TV_SITE_TITLE"),
+		TemplateDir:         os.Getenv("TV_TEMPLATE_DIR"),
+		StaticDir:           os.Getenv("TV_STATIC_DIR"),
+		SiteFooter:          os.Getenv("TV_SITE_FOOTER"),
+		Locale:              os.Getenv("TV_LOCALE"),
+		BaseURL:             os.Getenv("TV_BASE_URL"),
+		RunLevel:            os.Getenv("TV_RUN_LEVEL"),
+		LocalGitRepository:  os.Getenv("TV_LOCAL_GIT_REPOSITORY"),
+		RemoteGitRepository: os.Getenv("TV_REMOTE_GIT_REPOSITORY"),
+	}
 }
