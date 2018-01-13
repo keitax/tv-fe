@@ -6,7 +6,11 @@
 <link rel="stylesheet" href="static/{{.}}" type="text/css">
 {{end -}}
 <meta name=viewport content="width=device-width, initial-scale=1">
+{{if .post -}}
+<title>{{.post.Title}} - {{.SiteTitle}}</title>
+{{else -}}
 <title>{{.SiteTitle}}</title>
+{{end -}}
 </head>
 <body>
 <div class="container">
